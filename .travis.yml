@@ -26,6 +26,6 @@ script:
 branches:
     only:
         - master
-        - travis_test
+        - travis
 
 after_success: coveralls
