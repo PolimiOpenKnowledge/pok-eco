@@ -1,0 +1,15 @@
+
+celery==3.1.18
+Django >= 1.4, < 1.5
+django-celery==3.1.16
+
+-e git+https://github.com/infrae/pyoai.git@2.4.4#egg=pyoai==2.4.4
+
+#amqp==1.4.6
+#anyjson==0.3.3
+#argparse==1.2.1
+#billiard==3.3.0.20
+#kombu==3.0.26
+#lxml==3.4.4
+#pytz==2015.4
+#wsgiref==0.1.2

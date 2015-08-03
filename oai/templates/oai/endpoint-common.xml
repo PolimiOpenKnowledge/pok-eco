@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{% load tz %}
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns:eco="http://www.ecolearning.eu/xsd/LOM"
+ xmlns:lom="http://ltsc.ieee.org/xsd/LOM">
+    <responseDate>{{ timestamp }}</responseDate>
+    <request{% for k in params %} {{ k.key }}="{{ k.val }}"{% endfor %}>{{ thisUrl }}</request>
+    {% block mainContent %}{% endblock %}
+</OAI-PMH>

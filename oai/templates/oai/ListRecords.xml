@@ -1,0 +1,23 @@
+{% extends "oai/endpoint-common.xml" %}
+{% load iso %}
+{% block mainContent %}
+{% if matches %}
+<ListRecords>{% for record in matches.all %}
+<record>
+	{% if record.deleted %}
+	<header status="deleted">
+	{% else %}
+    <header>
+    {% endif %}
+        <identifier>{{ record.identifier }}</identifier>
+        <datestamp>{% tisoformat record.timestamp %}</datestamp>{% for setspec in record.sets.all %}
+        <setSpec>{{ setspec }}</setSpec>{% endfor %}
+    </header>
+    {% if not record.deleted %}
+    {% autoescape off %}{{ record.metadata }}{% endautoescape %}
+    {% endif %}
+</record>{% endfor %}{% if token %}
+<resumptionToken cursor="{{ token.cursor }}" completeListSize="{{ token.total_count }}">{{ token.key }}</resumptionToken>
+{% endif %}
+</ListRecords>{% else %}<error code="noRecordsMatch">The query returned no results.</error>{% endif %}{% endblock %}
+
