@@ -10,47 +10,57 @@ from djcelery.models import TaskMeta, PeriodicTask, TaskState
 import hashlib
 
 from oai.utils import nstr, ndt
-from oai.settings import OWN_SET_PREFIX,RESUMPTION_TOKEN_SALT,DISABLE_PRINT_OWN_SET_PREFIX
+from oai.settings import OWN_SET_PREFIX, RESUMPTION_TOKEN_SALT, DISABLE_PRINT_OWN_SET_PREFIX
 from oai import managers
 from time import timezone
 
+
 # An OAI data provider
 class OaiSource(models.Model):
-    url = models.URLField(max_length=255, unique=True) # The URL of the OAI endpoint
-    name = models.CharField(max_length=100, unique=True) # The name of the repository as exposed by Identify
-    prefix = models.CharField(max_length=100, unique=True) # The prefix used for the virtual sets
-    last_update = models.DateTimeField() # Records with a modification date earlier than that are fetched
-    day_granularity = models.BooleanField() # True if the endpoint does not store datetimes but only dates
+    url = models.URLField(max_length=255, unique=True)  # The URL of the OAI endpoint
+    name = models.CharField(max_length=100, unique=True)  # The name of the repository as exposed by Identify
+    prefix = models.CharField(max_length=100, unique=True)  # The prefix used for the virtual sets
+    last_update = models.DateTimeField()  # Records with a modification date earlier than that are fetched
+    day_granularity = models.BooleanField()  # True if the endpoint does not store datetimes but only dates
 
-    harvester = models.CharField(max_length=128, null=True, blank=True) # Task id of the harvester
-    status = models.CharField(max_length=255, null=True, blank=True) # Status of the harvester
-    last_change = models.DateTimeField(auto_now=True) # Last change made to this model
+    harvester = models.CharField(max_length=128, null=True, blank=True)  # Task id of the harvester
+    status = models.CharField(max_length=255, null=True, blank=True)  # Status of the harvester
+    last_change = models.DateTimeField(auto_now=True)  # Last change made to this model
+
     def __unicode__(self):
         return self.name
+
     def sets(self):
         return OaiSet.objects.filter(source=self.pk)
+
     def records(self):
         return OaiRecord.objects.filter(source=self.pk)
+
     def harvesting(self):
         return not (self.harvesterState() in ['SUCCESS', 'FAILURE', 'REVOKED', 'DELETED'])
+
     def harvesterTask(self):
         try:
             return TaskMeta.objects.get(task_id=self.harvester)
         except ObjectDoesNotExist:
             pass
+
     def harvesterState(self):
         task = self.harvesterTask()
         if task:
             return task.status
         return 'DELETED'
 
+
 # An error encountered while harvesting an OAI data provider
 class OaiError(models.Model):
     source = models.ForeignKey(OaiSource)
     timestamp = models.DateTimeField(auto_now=True)
     text = models.CharField(max_length=512, null=True, blank=True)
+
     def __unicode__(self):
         return self.text
+
 
 # An OAI set. If it is not associated with a source, it means that it is introduced by us
 class OaiSet(models.Model):
@@ -58,7 +68,7 @@ class OaiSet(models.Model):
     name = models.CharField(max_length=512)
     fullname = models.CharField(max_length=512, null=True, blank=True)
 
-    unique_together = ('name','source')
+    unique_together = ('name', 'source')
 
     def __unicode__(self):
         prefix = OWN_SET_PREFIX
@@ -68,6 +78,7 @@ class OaiSet(models.Model):
             return self.name
         else:
             return prefix+':'+self.name
+
     @staticmethod
     def byRepresentation(name):
         """
@@ -82,16 +93,19 @@ class OaiSet(models.Model):
                 source = OaiSource.objects.get(prefix=prefix)
             else:
                 source = None
-            return OaiSet.objects.get(source=source,name=name[scpos+1:])
+            return OaiSet.objects.get(source=source, name=name[scpos+1:])
         except ObjectDoesNotExist:
             return None
+
 
 class OaiFormat(models.Model):
     name = models.CharField(max_length=128)
     schema = models.CharField(max_length=512, null=True, blank=True)
     namespace = models.CharField(max_length=512, null=True, blank=True)
+
     def __unicode__(self):
         return self.name
+
 
 # A record from an OAI source
 class OaiRecord(models.Model):
@@ -112,7 +126,7 @@ class OaiRecord(models.Model):
     date_removed = models.DateTimeField(null=True, blank=True)
 
     # For now all query need to show also deleted object so this custom managers is not really used
-    #objects = managers.OaiRecordManager()
+    # objects = managers.OaiRecordManager()
 
     def deleted(self):
         return self.date_removed is not None
@@ -134,7 +148,7 @@ class OaiRecordAdmin(admin.ModelAdmin):
     """
 
     list_display = ("id", "__unicode__", "deleted")
-    #list_filter = ("deleted",)
+    # list_filter = ("deleted",)
 
 #   Commented out as using default django manager
 #    def queryset(self, request):
@@ -157,18 +171,19 @@ class ResumptionToken(models.Model):
     cursor = models.IntegerField()
     total_count = models.IntegerField()
     key = models.CharField(max_length=128, null=True, blank=True)
+
     def __unicode__(self):
         return self.key
+
     def genkey(self):
         m = hashlib.md5()
         m.update('%s_%s_%d_%s_%s_%s_%s_%d' % (RESUMPTION_TOKEN_SALT, ndt(self.date_created),
-                        self.id, nstr(self.set), self.metadataPrefix,
-                        ndt(self.fro), ndt(self.until), self.offset))
+                                              self.id, nstr(self.set), self.metadataPrefix,
+                                              ndt(self.fro), ndt(self.until), self.offset))
         self.key = m.hexdigest()
         self.save()
 
 
-    
 # A statement that some record belongs to some set.
 # class OaiSetSpec(models.Model):
 #    container = models.ForeignKey(OaiSet)
