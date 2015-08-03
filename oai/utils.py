@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 from django.utils.timezone import make_naive, UTC
 
-OAI_ENDPOINT_NAME='oai'
+OAI_ENDPOINT_NAME = 'oai'
+
 
 class KeyValuePair(object):
 

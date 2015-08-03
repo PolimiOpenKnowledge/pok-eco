@@ -30,12 +30,12 @@ def handleListQuery(request, context, queryType, parameters, offset=0):
         token = createResumptionToken(queryType, parameters, offset+RESULTS_LIMIT, count)
         context['token'] = token
     context['matches'] = matches[offset:(offset+RESULTS_LIMIT)]
-    return render(request,'oai/'+queryType+'.xml', context, content_type='application/xml')
+    return render(request, 'oai/'+queryType+'.xml', context, content_type='application/xml')
 
 
 def createResumptionToken(queryType, queryParameters, offset, totalCount):
     token = ResumptionToken(queryType=queryType, offset=offset,
-            cursor=offset-RESULTS_LIMIT, total_count=totalCount)
+                            cursor=offset-RESULTS_LIMIT, total_count=totalCount)
     if 'format' in queryParameters:
         token.metadataPrefix = queryParameters['format']
     if 'timestamp__gte' in queryParameters:
@@ -47,6 +47,7 @@ def createResumptionToken(queryType, queryParameters, offset, totalCount):
     token.save()
     token.genkey()
     return token
+
 
 def resumeRequest(context, request, queryType, key):
     token = ResumptionToken.objects.get(queryType=queryType, key=key)

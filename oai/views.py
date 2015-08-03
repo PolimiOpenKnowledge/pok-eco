@@ -17,7 +17,7 @@ from oai.resumption import *
 def formatError(errorCode, errorMessage, context, request):
     context['errorCode'] = errorCode
     context['errorMessage'] = errorMessage
-    return render(request,'oai/error.xml', context, content_type='text/xml')
+    return render(request, 'oai/error.xml', context, content_type='text/xml')
 
 
 def endpoint(request):
@@ -61,7 +61,7 @@ def identify(request, context):
         context['earliestDatestamp'] = earliest.timestamp
     else:
         context['earliestDatestamp'] = timezone.now()
-    return render(request,'oai/identify.xml', context, content_type='text/xml')
+    return render(request, 'oai/identify.xml', context, content_type='text/xml')
 
 
 def getRecord(request, context):
@@ -78,7 +78,7 @@ def getRecord(request, context):
         raise OaiRequestError(
             'badArgument', 'The record "' + record_id + '" does not exist.')
     context['record'] = record
-    return render(request,'oai/GetRecord.xml', context, content_type='text/xml')
+    return render(request, 'oai/GetRecord.xml', context, content_type='text/xml')
 
 
 def listSomething(request, context, verb):
@@ -101,10 +101,10 @@ def listMetadataFormats(request, context):
             raise OaiRequestError(
                 'badArgument', 'This identifier "' + id + '" does not exist.')
         context['records'] = records
-        return render(request,'oai/ListFormatsByIdentifier.xml', context, content_type='text/xml')
+        return render(request, 'oai/ListFormatsByIdentifier.xml', context, content_type='text/xml')
     else:
         context['matches'] = matches
-        return render(request,'oai/ListMetadataFormats.xml', context, content_type='text/xml')
+        return render(request, 'oai/ListMetadataFormats.xml', context, content_type='text/xml')
 
 
 def getListQuery(context, request):
