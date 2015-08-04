@@ -83,7 +83,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-## From edx standard option settings...here for testing purpose ##
+# From edx standard option settings...here for testing purpose #
 HTTPS = 'on'
 SITE_NAME = 'localhost'
 PLATFORM_NAME = "POK"
