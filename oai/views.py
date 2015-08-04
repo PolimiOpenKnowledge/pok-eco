@@ -13,7 +13,7 @@ from .models import OaiFormat, OaiRecord, OaiSet
 from .utils import to_kv_pairs, OaiRequestError
 from .settings import (
   OAI_BASE_URL, OAI_ENDPOINT_NAME, REPOSITORY_NAME, ADMIN_EMAIL
-  )
+)
 from .resumption import handleListQuery, createResumptionToken, resumeRequest
 
 

@@ -10,4 +10,4 @@ from .utils import OAI_ENDPOINT_NAME
 urlpatterns = patterns(
     '',
     url(r'^'+OAI_ENDPOINT_NAME+'/?$', endpoint, name='oaiEndpoint')
-  )
+)
