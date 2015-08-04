@@ -18,7 +18,7 @@ install:
 
 # command to run tests and quality checks
 script:
-    #- coverage run --source=oai ./manage.py test
+    - coverage run --source=oai ./manage.py test
     - coverage report -m
     - pep8 --config=.pep8 oai
     - pylint --rcfile=.pylintrc oai --report=no
