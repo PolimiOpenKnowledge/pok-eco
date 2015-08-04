@@ -13,10 +13,7 @@ from datetime import datetime
 
 from .models import OaiFormat, OaiRecord, OaiSet
 from .utils import to_kv_pairs, OaiRequestError
-from .settings import (
-  OAI_BASE_URL, OAI_ENDPOINT_NAME,
-  REPOSITORY_NAME, ADMIN_EMAIL
-)
+from .settings import OAI_BASE_URL, OAI_ENDPOINT_NAME, REPOSITORY_NAME, ADMIN_EMAIL
 from .resumption import handle_list_query, resume_request
 
 
@@ -73,7 +70,7 @@ def identify(request, context):
 def get_record(request, context):
     format_name = request.GET.get('metadataPrefix')
     try:
-        oai_format = OaiFormat.objects.get(name=format_name)
+        OaiFormat.objects.get(name=format_name)
     except ObjectDoesNotExist:
         raise OaiRequestError(
             'badArgument', 'The metadata format "' + format_name + '" does not exist.')
@@ -92,7 +89,7 @@ def list_something(request, context, verb):
         return resume_request(context, request, verb, request.GET.get('resumptionToken'))
     query_parameters = dict()
     if verb == 'ListRecords' or verb == 'ListIdentifiers':
-        query_parameters = get_list_query(context, request)
+        query_parameters = get_list_query(request)
     return handle_list_query(request, context, verb, query_parameters)
 
 
@@ -111,7 +108,7 @@ def list_metadata_formats(request, context):
         return render(request, 'oai/ListMetadataFormats.xml', context, content_type='text/xml')
 
 
-def get_list_query(context, request):
+def get_list_query(request):
     """
     Returns the query dictionary corresponding to the request
     Raises OaiRequestError if anything goes wrong

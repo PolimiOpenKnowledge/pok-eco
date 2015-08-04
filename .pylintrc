@@ -8,7 +8,7 @@ ignore = migrations
 #   F0401 = Unable to import module
 #   W0402 = Uses of a deprecated module
 #   C0103 = Invalid name
-#   E1101 = %s %r has no %r member .  Django Foreign Key
+
 disable =
   C0111,
   F0401,
@@ -16,8 +16,7 @@ disable =
   locally-disabled,
   too-few-public-methods,
 	too-many-lines,
-	duplicate-code,
-  E1101
+	duplicate-code
 
 
 [FORMAT]
@@ -47,6 +46,13 @@ generated-members =
 	revision,
 	_meta,
   ObjectDoesNotExist
+
+[REPORTS]
+output-format = text
+files-output = no
+reports = no
+evaluation = 10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
+comment = no
 
 [BASIC]
 required-attributes =

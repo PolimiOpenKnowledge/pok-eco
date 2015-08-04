@@ -68,6 +68,7 @@ class OaiSet(models.Model):
 
     unique_together = ('name', 'source')
 
+    # pylint: disable=E1101
     def __unicode__(self):
         prefix = OWN_SET_PREFIX
         if self.source:
@@ -130,6 +131,7 @@ class OaiRecord(models.Model):
         return self.date_removed is not None
     deleted.boolean = False
 
+    # pylint: disable=W0221
     def delete(self):
         savenow = DTZ.now()
         self.date_removed = savenow
@@ -173,6 +175,7 @@ class ResumptionToken(models.Model):
     def __unicode__(self):
         return self.key
 
+    # pylint: disable=E1101
     def genkey(self):
         m = hashlib.md5()
         m.update('%s_%s_%d_%s_%s_%s_%s_%d' % (RESUMPTION_TOKEN_SALT, ndt(self.date_created),
