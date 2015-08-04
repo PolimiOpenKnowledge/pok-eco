@@ -8,6 +8,7 @@ from django.utils.timezone import make_naive, UTC
 
 register = template.Library()
 
+
 @register.filter(is_safe=True)
 @register.simple_tag(name="tisoformat")
 def tisoformat(date):

@@ -8,10 +8,10 @@ from django.http import (
 )
 from datetime import datetime
 
-from oai.models import *
-from oai.utils import to_kv_pairs, OaiRequestError
-from oai.settings import *
-from oai.resumption import *
+from .models import *
+from .utils import to_kv_pairs, OaiRequestError
+from .settings import *
+from .resumption import *
 
 
 def formatError(errorCode, errorMessage, context, request):

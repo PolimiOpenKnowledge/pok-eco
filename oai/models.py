@@ -9,9 +9,8 @@ from djcelery.models import TaskMeta, PeriodicTask, TaskState
 
 import hashlib
 
-from oai.utils import nstr, ndt
-from oai.settings import OWN_SET_PREFIX, RESUMPTION_TOKEN_SALT, DISABLE_PRINT_OWN_SET_PREFIX
-from oai import managers
+from .utils import nstr, ndt
+from .settings import OWN_SET_PREFIX, RESUMPTION_TOKEN_SALT, DISABLE_PRINT_OWN_SET_PREFIX
 from time import timezone
 
 

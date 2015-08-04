@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from oai.models import *
 from djcelery.models import TaskMeta
+from .models import OaiSource, OaiRecord, OaiSet, OaiFormat, ResumptionToken
 
 
 class OaiErrorInline(admin.TabularInline):
@@ -16,7 +16,7 @@ class OaiSourceAdmin(admin.ModelAdmin):
 
 
 class TaskMetaAdmin(admin.ModelAdmin):
-        readonly_fields = ('result',)
+    readonly_fields = ('result',)
 
 admin.site.register(TaskMeta, TaskMetaAdmin)
 
