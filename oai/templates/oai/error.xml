@@ -1,5 +1,5 @@
 {% extends "oai/endpoint-common.xml" %}
 
 {% block mainContent %}
-<error code="{{ errorCode }}">{{ errorMessage }}</error>
+<error code="{{ error_code }}">{{ error_message }}</error>
 {% endblock %}

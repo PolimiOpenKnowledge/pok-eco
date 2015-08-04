@@ -5,13 +5,12 @@ from django.contrib import admin
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone as DTZ
-from djcelery.models import TaskMeta, PeriodicTask, TaskState
+from djcelery.models import TaskMeta
 
 import hashlib
 
 from .utils import nstr, ndt
 from .settings import OWN_SET_PREFIX, RESUMPTION_TOKEN_SALT, DISABLE_PRINT_OWN_SET_PREFIX
-from time import timezone
 
 
 # An OAI data provider
@@ -36,16 +35,16 @@ class OaiSource(models.Model):
         return OaiRecord.objects.filter(source=self.pk)
 
     def harvesting(self):
-        return not (self.harvesterState() in ['SUCCESS', 'FAILURE', 'REVOKED', 'DELETED'])
+        return not (self.harvester_state() in ['SUCCESS', 'FAILURE', 'REVOKED', 'DELETED'])
 
-    def harvesterTask(self):
+    def harvester_task(self):
         try:
             return TaskMeta.objects.get(task_id=self.harvester)
         except ObjectDoesNotExist:
             pass
 
-    def harvesterState(self):
-        task = self.harvesterTask()
+    def harvester_state(self):
+        task = self.harvester_task()
         if task:
             return task.status
         return 'DELETED'
@@ -79,7 +78,7 @@ class OaiSet(models.Model):
             return prefix+':'+self.name
 
     @staticmethod
-    def byRepresentation(name):
+    def by_representation(name):
         """
         Returns the set s such that unicode(s) == name, or None if not found
         """

@@ -2,14 +2,13 @@
 from __future__ import unicode_literals
 
 from django import template
-from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.timezone import make_naive, UTC
 
-register = template.Library()
+REGISTER = template.Library()
 
 
-@register.filter(is_safe=True)
-@register.simple_tag(name="tisoformat")
+@REGISTER.filter(is_safe=True)
+@REGISTER.simple_tag(name="tisoformat")
 def tisoformat(date):
     return mark_safe(make_naive(date, UTC()).replace(microsecond=0).isoformat()+'Z')

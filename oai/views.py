@@ -1,40 +1,43 @@
 """ Views for OAI-PMH List Records API """
 
-from django.conf import settings
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
-from django.utils.timezone import make_naive, UTC
-from django.http import (
-    QueryDict, HttpResponse,
-    HttpResponseBadRequest, HttpResponseServerError
-)
+from django.utils.timezone import UTC, make_aware
+from django.utils import timezone
+
+from oaipmh.datestamp import tolerant_datestamp_to_datetime
+from oaipmh.error import DatestampError
+
 from datetime import datetime
 
 from .models import OaiFormat, OaiRecord, OaiSet
 from .utils import to_kv_pairs, OaiRequestError
 from .settings import (
-  OAI_BASE_URL, OAI_ENDPOINT_NAME, REPOSITORY_NAME, ADMIN_EMAIL
+  OAI_BASE_URL, OAI_ENDPOINT_NAME,
+  REPOSITORY_NAME, ADMIN_EMAIL
 )
-from .resumption import handleListQuery, createResumptionToken, resumeRequest
+from .resumption import handle_list_query, resume_request
 
 
-def formatError(errorCode, errorMessage, context, request):
-    context['errorCode'] = errorCode
-    context['errorMessage'] = errorMessage
+def format_error(error_code, error_message, context, request):
+    context['error_code'] = error_code
+    context['error_message'] = error_message
     return render(request, 'oai/error.xml', context, content_type='text/xml')
 
 
 def endpoint(request):
     verb = request.GET.get('verb')
-    thisUrl = 'http'
-    if (request.is_secure()):
-        thisUrl = thisUrl+'s'
-    thisUrl = thisUrl+'://' + request.get_host() + request.get_full_path()
+    this_url = 'http'
+    if request.is_secure():
+        this_url = this_url+'s'
+    this_url = this_url+'://' + request.get_host() + request.get_full_path()
     timestamp = datetime.utcnow()
     timestamp = timestamp.replace(microsecond=0)
-    context = {'thisUrl': thisUrl,
+    context = {'this_url': this_url,
                'timestamp': timestamp.isoformat() + 'Z'}
     if not verb:
-        return formatError('badVerb', 'No verb specified!', context, request)
+        return format_error('badVerb', 'No verb specified!', context, request)
 
     params = request.GET
     context['params'] = to_kv_pairs(params)
@@ -43,16 +46,16 @@ def endpoint(request):
         if verb == 'Identify':
             return identify(request, context)
         elif verb == 'GetRecord':
-            return getRecord(request, context)
+            return get_record(request, context)
         elif verb == 'ListRecords' or verb == 'ListIdentifiers' or verb == 'ListSets':
-            return listSomething(request, context, verb)
+            return list_something(request, context, verb)
         elif verb == 'ListMetadataFormats':
-            return listMetadataFormats(request, context)
+            return list_metadata_formats(request, context)
         else:
             raise OaiRequestError(
                 'badVerb', 'Verb "' + verb + '" is not implemented.')
     except OaiRequestError as e:
-        return formatError(e.code, e.reason, context, request)
+        return format_error(e.code, e.reason, context, request)
 
 
 def identify(request, context):
@@ -67,10 +70,10 @@ def identify(request, context):
     return render(request, 'oai/identify.xml', context, content_type='text/xml')
 
 
-def getRecord(request, context):
+def get_record(request, context):
     format_name = request.GET.get('metadataPrefix')
     try:
-        format = OaiFormat.objects.get(name=format_name)
+        oai_format = OaiFormat.objects.get(name=format_name)
     except ObjectDoesNotExist:
         raise OaiRequestError(
             'badArgument', 'The metadata format "' + format_name + '" does not exist.')
@@ -84,25 +87,23 @@ def getRecord(request, context):
     return render(request, 'oai/GetRecord.xml', context, content_type='text/xml')
 
 
-def listSomething(request, context, verb):
+def list_something(request, context, verb):
     if 'resumptionToken' in request.GET:
-        return resumeRequest(context, request, verb, request.GET.get('resumptionToken'))
-    queryParameters = dict()
-    error = None
+        return resume_request(context, request, verb, request.GET.get('resumptionToken'))
+    query_parameters = dict()
     if verb == 'ListRecords' or verb == 'ListIdentifiers':
-        queryParameters = getListQuery(context, request)
-    return handleListQuery(request, context, verb, queryParameters)
+        query_parameters = get_list_query(context, request)
+    return handle_list_query(request, context, verb, query_parameters)
 
 
-def listMetadataFormats(request, context):
-    queryParameters = dict()
+def list_metadata_formats(request, context):
     matches = OaiFormat.objects.all()
     if 'identifier' in request.GET:
-        id = request.GET.get('identifier')
-        records = OaiRecord.objects.filter(identifier=id)
+        identifier = request.GET.get('identifier')
+        records = OaiRecord.objects.filter(identifier=identifier)
         if records.count() == 0:
             raise OaiRequestError(
-                'badArgument', 'This identifier "' + id + '" does not exist.')
+                'badArgument', 'This identifier "' + identifier + '" does not exist.')
         context['records'] = records
         return render(request, 'oai/ListFormatsByIdentifier.xml', context, content_type='text/xml')
     else:
@@ -110,12 +111,12 @@ def listMetadataFormats(request, context):
         return render(request, 'oai/ListMetadataFormats.xml', context, content_type='text/xml')
 
 
-def getListQuery(context, request):
+def get_list_query(context, request):
     """
     Returns the query dictionary corresponding to the request
     Raises OaiRequestError if anything goes wrong
     """
-    queryParameters = dict()
+    query_parameters = dict()
 
     # Both POST and GET arguments *must* be supported according to the standard
     # In this implementation, POST arguments are prioritary.
@@ -127,20 +128,20 @@ def getListQuery(context, request):
         raise OaiRequestError(
             'badArgument', 'The metadataPrefix argument is required.')
     try:
-        format = OaiFormat.objects.get(name=metadataPrefix)
+        oai_format = OaiFormat.objects.get(name=metadataPrefix)
     except ObjectDoesNotExist:
         raise OaiRequestError(
             'badArgument', 'The metadata format "' + metadataPrefix + '" does not exist.')
-    queryParameters['format'] = format
+    query_parameters['format'] = oai_format
 
     # set
-    set = getParams.pop('set', None)
-    if set:
-        matchingSet = OaiSet.byRepresentation(set)
-        if not matchingSet:
+    set_by_param = getParams.pop('set', None)
+    if set_by_param:
+        matching_set = OaiSet.by_representation(set_by_param)
+        if not matching_set:
             raise OaiRequestError(
-                'badArgument', 'The set "' + set + '" does not exist.')
-        queryParameters['sets'] = matchingSet
+                'badArgument', 'The set "' + set_by_param + '" does not exist.')
+        query_parameters['sets'] = matching_set
 
     # from
     from_ = getParams.pop('from', None)
@@ -150,7 +151,7 @@ def getListQuery(context, request):
         except DatestampError:
             raise OaiRequestError('badArgument',
                                   'The parameter "from" expects a valid date, not "' + from_ + "'.")
-        queryParameters['timestamp__gte'] = make_aware(from_, UTC())
+        query_parameters['timestamp__gte'] = make_aware(from_, UTC())
 
     # until
     until = getParams.pop('until', None)
@@ -160,7 +161,7 @@ def getListQuery(context, request):
         except DatestampError:
             raise OaiRequestError('badArgument',
                                   'The parameter "until" expects a valid date, not "' + until + "'.")
-        queryParameters['timestamp__lte'] = make_aware(until, UTC())
+        query_parameters['timestamp__lte'] = make_aware(until, UTC())
 
     # Check that from <= until
     if from_ and until and from_ > until:
@@ -173,4 +174,4 @@ def getListQuery(context, request):
         raise OaiRequestError(
             'badArgument', 'The argument "' + key + '" is illegal.')
 
-    return queryParameters
+    return query_parameters

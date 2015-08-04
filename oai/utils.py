@@ -18,21 +18,22 @@ def to_kv_pairs(dct):
         yield KeyValuePair(k, dct[k])
 
 
-def nstr(t):
-    if t:
-        return t
+def nstr(ts):
+    if ts:
+        return ts
     return ''
 
 
-def ndt(d):
-    if d:
-        return make_naive(d, UTC()).isoformat()
+def ndt(dt):
+    if dt:
+        return make_naive(dt, UTC()).isoformat()
     return ''
 
 
 class OaiRequestError(Exception):
 
     def __init__(self, code, reason):
+        super(OaiRequestError, self).__init__(reason)
         self.code = code
         self.reason = reason
 
