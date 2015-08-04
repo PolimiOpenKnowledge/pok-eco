@@ -8,6 +8,7 @@ from .models import OaiRecord, OaiSet, ResumptionToken
 from .settings import RESULTS_LIMIT
 from .utils import OaiRequestError
 
+
 def handle_list_query(request, context, queryType, parameters, offset=0):
     # TODO use offset
     if queryType == 'ListRecords' or queryType == 'ListIdentifiers':
