@@ -16,7 +16,8 @@ disable =
   locally-disabled,
   too-few-public-methods,
 	too-many-lines,
-	duplicate-code
+  too-many-locals,
+	duplicate-code,
 
 
 [FORMAT]
@@ -71,3 +72,6 @@ good-names = f,i,j,k,db,ex,Run,_,__
 bad-names = foo,bar,baz,toto,tutu,tata
 no-docstring-rgx = __.*__|test_.+|setUp|tearDown
 docstring-min-length = -1
+
+[MISCELLANEOUS]
+notes = FIXME,XXX

@@ -22,6 +22,8 @@ script:
     - coverage report -m
     - pep8 --config=.pep8 oai
     - pylint --rcfile=.pylintrc oai --report=no
+    - pep8 --config=.pep8 ecoapi
+    - pylint --rcfile=.pylintrc ecoapi --report=no
 
 branches:
     only:
