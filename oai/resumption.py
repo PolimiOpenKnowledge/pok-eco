@@ -11,9 +11,9 @@ from oaipmh.error import DatestampError
 
 from datetime import datetime
 
-from .models import *
+from .models import OaiRecord, OaiSet, ResumptionToken
 from .utils import to_kv_pairs
-from .settings import *
+from .settings import RESULTS_LIMIT
 
 
 def handleListQuery(request, context, queryType, parameters, offset=0):

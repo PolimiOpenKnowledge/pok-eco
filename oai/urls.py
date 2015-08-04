@@ -3,7 +3,7 @@ URLs for OAI Integration
 """
 from django.conf.urls import patterns, url
 
-from .views import *
+from .views import endpoint
 from .utils import OAI_ENDPOINT_NAME
 
 # Additionally, we include login URLs for the browseable API.

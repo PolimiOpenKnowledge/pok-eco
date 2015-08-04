@@ -1,6 +1,7 @@
 """ Views for OAI-PMH List Records API """
 
 from django.conf import settings
+from django.shortcuts import render
 from django.utils.timezone import make_naive, UTC
 from django.http import (
     QueryDict, HttpResponse,
@@ -8,10 +9,12 @@ from django.http import (
 )
 from datetime import datetime
 
-from .models import *
+from .models import OaiFormat, OaiRecord, OaiSet
 from .utils import to_kv_pairs, OaiRequestError
-from .settings import *
-from .resumption import *
+from .settings import (
+  OAI_BASE_URL, OAI_ENDPOINT_NAME, REPOSITORY_NAME, ADMIN_EMAIL
+  )
+from .resumption import handleListQuery, createResumptionToken, resumeRequest
 
 
 def formatError(errorCode, errorMessage, context, request):

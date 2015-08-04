@@ -3,7 +3,10 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from djcelery.models import TaskMeta
-from .models import OaiSource, OaiRecord, OaiSet, OaiFormat, ResumptionToken
+from .models import (
+  OaiSource, OaiRecord, OaiSet, OaiFormat, ResumptionToken, OaiError,
+  OaiRecordAdmin
+  )
 
 
 class OaiErrorInline(admin.TabularInline):
