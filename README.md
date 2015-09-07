@@ -11,7 +11,7 @@ In this repository you find different Django application used for this integrati
     - define which courses need to be harvested
     - define some specific metadata involved in ECO portal
     - use some relation information about the courses and the teachers (see also ecoapi)
-  - **ecoapi**i :  This app add a REST endpoint to allow ECO to get additional data like:
+  - **ecoapi** :  This app add a REST endpoint to allow ECO to get additional data like:
     - user enrollments and progress
     - teacher bio   (Teacher is a new model that this app add)
     - heartbeat for the integration
