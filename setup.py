@@ -18,7 +18,7 @@ setup(
         'Programming Language :: Python',
         'Framework :: Django',
     ],
-    packages=['oai'],
+    packages=['oai', 'ecoapi', 'xapi'],
     dependency_links=["https://github.com/infrae/pyoai/archive/2.4.4.zip#egg=pyoai==2.4.4"],
     install_requires=[
         "Django >= 1.4, < 1.5",
