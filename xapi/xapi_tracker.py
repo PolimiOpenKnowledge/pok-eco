@@ -586,7 +586,7 @@ class XapiBackend(BaseBackend):
             try:
                 # Sometimes we receive time as python datetime, sometimes as string...
                 try:
-                    timestamp = event_edx['time'].strftime("%Y-%m-%d %H:%M:%S")
+                    timestamp = event_edx['time'].isoformat()  # ststrftime("%Y-%m-%dT%H:%M:%S%f%z")
                 except AttributeError:
                     timestamp = event_edx['time']
 
