@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import requests
 import json
 import datetime
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-
-
-from django.conf import settings
 from xapi.models import TrackingLog
 from xapi.xapi_tracker import XapiBackend
 

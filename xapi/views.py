@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
 from track import tracker
 
 
@@ -26,7 +25,7 @@ def log_event(event):
     tracker.send(event)
 
 
-def server_track(request, event_type, event, page=None):
+def server_track(request, event_type, event, page=None):  # pylint: disable=unused-argument
     """
     Log events related to server requests.
     Handle the situation where the request may be NULL, as may happen with management commands.

@@ -1,3 +1,4 @@
+# pylint: disable=W1401,W0702
 # -*- coding: utf-8 -*-
 """
 Event tracker backend that saves events to a Django database.
@@ -120,7 +121,7 @@ class TrackingLog(models.Model):
         fmt = (
             u"[{self.dtcreated}] {self.user_id}@{self.course_id}: "
         )
-        return fmt.format(self=self)
+        return fmt.format(self)
 
 
 class XapiBackend(BaseBackend):
@@ -298,7 +299,7 @@ class XapiBackend(BaseBackend):
             obj = {
                 "objectType": "Activity",
                 # "id": fix_id(self.base_url, evt['event']), #['problem_id'],
-                "id": fix_id(self.base_url,  evt['page']),  # ['problem_id'],
+                "id": fix_id(self.base_url, evt['page']),  # ['problem_id'],
                 "definition": {
                     "name": {"en-US": evt['page']},
                     "type": "http://adlnet.gov/expapi/activities/question"

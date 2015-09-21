@@ -1,1 +1,1 @@
-from xapi_tracker import TrackingLog
+from xapi.xapi_tracker import TrackingLog
