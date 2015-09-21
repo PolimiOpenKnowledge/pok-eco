@@ -573,7 +573,6 @@ class XapiBackend(BaseBackend):
         return actor
 
     def get_context(self, course_id):
-        from courseware.courses import get_course_by_id
         parents = []
         try:
             course = get_course_by_id(course_id)
@@ -592,7 +591,7 @@ class XapiBackend(BaseBackend):
                 }
             }
             parents.append(course_parent)
-        except Http404 as e:
+        except Exception as e:
             log.warn(e)
 
         context = {
