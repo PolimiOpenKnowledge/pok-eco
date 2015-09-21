@@ -16,6 +16,9 @@ In this repository you find different Django application used for this integrati
     - teacher bio   (Teacher is a new model that this app add)
     - heartbeat for the integration
     This app has edx dependencies so it works only as an INSTALLED_APPS inside edx-platform
+  - **xapi** :  This app add a Tracking backend (see ["Edx Track app"](https://github.com/edx/edx-platform/tree/master/common/djangoapps/track)) that translate edx events to a Tin Capi (xAPI) statements and push them to a LRS.Currently not all edx events are translated
+    This app has edx dependencies so it works only as an INSTALLED_APPS inside edx-platform
+
 
 ## How to install
 
@@ -35,6 +38,7 @@ INSTALLED_APPS = (
     ...
     'oai',
     'ecoapi',
+    'xapi'
 )
 ```
 
