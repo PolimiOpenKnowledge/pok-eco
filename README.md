@@ -18,7 +18,27 @@ In this repository you find different Django application used for this integrati
     This app has edx dependencies so it works only as an INSTALLED_APPS inside edx-platform
   - **xapi** :  This app add a Tracking backend (see ["Edx Track app"](https://github.com/edx/edx-platform/tree/master/common/djangoapps/track)) that translate edx events to a Tin Capi (xAPI) statements and push them to a LRS.Currently not all edx events are translated
     This app has edx dependencies so it works only as an INSTALLED_APPS inside edx-platform
+    Moreover to use the xapi backend you need to add an additional TRACKING_BACKENDS configuration like this:
 
+    ```python
+    TRACKING_BACKENDS: {
+      ....
+      "xapi": {
+        "ENGINE": "xapi.xapi_tracker.XapiBackend",
+        "OPTIONS": {
+                "name": "xapi",
+                "ID_COURSES": [],  # list of course_id you want to track on LRS
+                "USERNAME_LRS": "",  # username for the LRS endpoint
+                "PASSWORD_LRS": "",  # password for the LRS endpoint
+                "URL": "http://mylrs.endpoint/xAPI/statements",  # the LRS endpoint API URL
+                "EXTRACTED_EVENT_NUMBER": 100  # number of batch statements to extract from db and     sent in a job
+        }
+      }
+    }
+    ```
+    This backend add a translated event on a db table, then you need to add a cron job that extract
+    this statements (max EXTRACTED_EVENT_NUMBER each time) and push them to LRS endpoint using the
+    django command `send_data_2_tincan` .
 
 ## How to install
 
