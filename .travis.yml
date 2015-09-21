@@ -18,12 +18,14 @@ install:
 
 # command to run tests and quality checks
 script:
-    - coverage run --source=oai,ecoapi ./manage.py test
+    - coverage run --source=oai,ecoapi,xapi ./manage.py test
     - coverage report -m
     - pep8 --config=.pep8 oai
     - pylint --rcfile=.pylintrc oai --report=no
     - pep8 --config=.pep8 ecoapi
     - pylint --rcfile=.pylintrc ecoapi --report=no
+    - pep8 --config=.pep8 xapi
+    - pylint --rcfile=.pylintrc xapi --report=no
 
 branches:
     only:
