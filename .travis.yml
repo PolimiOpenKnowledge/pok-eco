@@ -28,6 +28,7 @@ script:
 branches:
     only:
         - master
+        - xapi
         - travis
 
 after_success: coveralls
