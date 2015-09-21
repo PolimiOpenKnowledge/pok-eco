@@ -15,9 +15,11 @@ disable =
   C0103,
   locally-disabled,
   too-few-public-methods,
+  too-many-branches,
+  too-many-statements,
 	too-many-lines,
   too-many-locals,
-	duplicate-code,
+	duplicate-code
 
 
 [FORMAT]

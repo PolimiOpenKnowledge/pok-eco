@@ -29,7 +29,6 @@ class Command(BaseCommand):
 
         # Open the file, parse it and store the data, if not already present
         filename = options['filename']
-        total = 0
         raw_data = open(filename).read()
         lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
 
@@ -51,6 +50,6 @@ class Command(BaseCommand):
                 continue
             try:
                 # t = TrackingLog.objects.get(dtcreated=dt) # used only for local test, comment in the real environment
-                t = TrackingLog.objects.get(dtcreated=dt, user_id=user_id)
+                t = TrackingLog.objects.get(dtcreated=dt, user_id=user_id)  # pylint: disable=unused-variable
             except TrackingLog.DoesNotExist:
                 x.send(event)

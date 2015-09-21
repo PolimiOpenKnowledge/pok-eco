@@ -1,4 +1,4 @@
-# pylint: disable=W1401,W0702
+# pylint: disable=W1401,W0702,E1002
 # -*- coding: utf-8 -*-
 """
 Event tracker backend that saves events to a Django database before send
@@ -12,7 +12,7 @@ them on LRS.
 from __future__ import absolute_import
 
 import logging
-import datetime
+# import datetime
 import json
 import re
 
@@ -21,7 +21,6 @@ from django.db import models
 from track.backends import BaseBackend
 from xmodule_django.models import CourseKeyField
 
-from django.conf import settings
 from social.apps.django_app.default.models import UserSocialAuth
 
 # TODO: è giusto? era così:
@@ -176,8 +175,6 @@ class XapiBackend(BaseBackend):
         # return evt
         action = {}
         obj = {}
-
-        usereco = self.get_actor(evt['context']['user_id'])
 
         if re.match('^/courses/.*/info/?', evt['event_type']) or re.match('^/courses/.*/about/?', evt['event_type']):
             # Learner accesses MOOC
@@ -354,7 +351,7 @@ class XapiBackend(BaseBackend):
             except:
                 pass
             if title:
-                if type(title) == list:
+                if isinstance(title, list):
                     title = title[0]
                 action = EDX2TINCAN['learner_post_new_forum_thread']
                 obj = {
