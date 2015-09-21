@@ -1,7 +1,8 @@
 # pylint: disable=W1401,W0702
 # -*- coding: utf-8 -*-
 """
-Event tracker backend that saves events to a Django database.
+Event tracker backend that saves events to a Django database before send
+them on LRS.
 """
 
 # TODO: this module is very specific to the event schema, and is only
@@ -113,7 +114,7 @@ class TrackingLog(models.Model):
     tincan_error = models.TextField(blank=True, null=True, default='')
     exported = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         app_label = 'xapi'
         db_table = 'xapi_trackinglog'
 

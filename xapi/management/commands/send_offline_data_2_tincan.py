@@ -39,7 +39,7 @@ class Command(BaseCommand):
             event = json.loads(row)
             try:
                 dt = datetime.datetime.strptime(event['time'].split('+')[0], '%Y-%m-%dT%H:%M:%S.%f')
-                i += 1
+                i = i + 1
             except ValueError:
                 # print 'Data error -> ',  event['time']
                 continue
