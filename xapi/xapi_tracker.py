@@ -22,6 +22,7 @@ from track.backends import BaseBackend
 from xmodule_django.models import CourseKeyField
 
 from social.apps.django_app.default.models import UserSocialAuth
+from courseware.courses import get_course_by_id, get_course_about_section
 
 # TODO: è giusto? era così:
 # log = logging.getLogger('track.backends.django')
@@ -160,8 +161,8 @@ class XapiBackend(BaseBackend):
             self.course_ids.add(c)
         """
         self.base_url = options.get('BASE_URL', 'https://www.pok.polimi.it')
-        self.homepage_url = options.get('HOMEPAGE_URL', '')
-        self.oai_prefix = options.get('OAI_PREFIX', '')
+        self.homepage_url = options.get('HOMEPAGE_URL', 'https://portal.ecolearning.eu')
+        self.oai_prefix = options.get('OAI_PREFIX', 'oai:it.polimi.pok:')
         self.name = name
 
     # See https://github.com/adlnet/edx-xapi-bridge/blob/master/xapi-bridge/converter.py
@@ -565,11 +566,39 @@ class XapiBackend(BaseBackend):
         actor = {
             "objectType": "Agent",
             "account": {
-                "homePage": "%s%s" % (self.homepage_url, usereco.uid),
+                "homePage": "%s?user=%s" % (self.homepage_url, usereco.uid),
                 "name": usereco.uid
             }
         }
         return actor
+
+    def get_context(self, course_id):
+        from courseware.courses import get_course_by_id
+        parents = []
+        try:
+            course = get_course_by_id(course_id)
+            title = get_course_about_section(course, "title")
+            course_parent = {
+                "id":  self.oai_prefix + course_id,
+                "objectType": "Activity",
+                "definition": {
+                    "name": {
+                        "en-US": title
+                    },
+                    "description": {
+                        "en-US": ""
+                    },
+                    "type": "http://adlnet.gov/expapi/activities/course"
+                }
+            }
+            parents.append(course_parent)
+        except Http404 as e:
+            log.warn(e)
+
+        context = {
+            "parent": parents
+        }
+        return context
 
     def send(self, event_edx):
 
@@ -597,7 +626,8 @@ class XapiBackend(BaseBackend):
                         'actor': self.get_actor(event_edx['context']['user_id']),
                         'verb': verb,
                         'object': obj,
-                        'timestamp': timestamp
+                        'timestamp': timestamp,
+                        'context': self.get_context(course_id)
                     }
 
                     statement = json.dumps(statement)
