@@ -47,10 +47,19 @@ SUBMIT_VERB = {
     "id": "http://activitystrea.ms/schema/1.0/submit",
     "display": {"en-US": "Indicates the learner submitted something"}
 }
-
+REGISTERED_VERB = {
+    "id": "http://adlnet.gov/expapi/verbs/registered",
+    "display": {"en-US": "Indicates the learner registered/enrolled for MOOC"}
+}
+EXITED_VERB = {
+    "id": "http://adlnet.gov/expapi/verbs/exited",
+    "display": {"en-US": "Indicates the learner leaves the MOOC"}
+}
 EDX2TINCAN = {
     'learner_accesses_MOOC': ACCESS_VERB,
     'learner_accesses_a_module': ACCESS_VERB,
+    'learner_enroll_MOOC': REGISTERED_VERB,
+    'learner_unenroll_MOOC': EXITED_VERB,
 
     # ################ ASSESSMENT ################################
     'learner_accesses_assessment': ACCESS_VERB,
@@ -207,7 +216,30 @@ class XapiBackend(BaseBackend):
                     "type": "http://adlnet.gov/expapi/activities/module"
                 }
             }
-
+        elif evt['event_type'] == 'edx.course.enrollment.activated' and evt['event_source'] == 'server':
+            action = EDX2TINCAN['learner_enroll_MOOC']
+            course = self.get_course(course_id)
+            title = get_course_about_section(course, "title")
+            obj = {
+                "objectType": "Activity",
+                "id":  self.oai_prefix + course_id,
+                "definition": {
+                    "name": {"en-US": title},
+                    "type": "http://adlnet.gov/expapi/activities/course"
+                }
+            }
+        elif evt['event_type'] == 'edx.course.enrollment.deactivated' and evt['event_source'] == 'server':
+            action = EDX2TINCAN['learner_unenroll_MOOC']
+            course = self.get_course(course_id)
+            title = get_course_about_section(course, "title")
+            obj = {
+                "objectType": "Activity",
+                "id":  self.oai_prefix + course_id,
+                "definition": {
+                    "name": {"en-US": title},
+                    "type": "http://adlnet.gov/expapi/activities/course"
+                }
+            }
         elif re.match('/courses[/\w]+/wiki/\w+/_create/?', evt['event_type']):
             title = None
             try:
@@ -576,14 +608,18 @@ class XapiBackend(BaseBackend):
         }
         return actor
 
-    def get_context(self, course_id):
-        parents = []
+    def get_course(self, course_id):
         course_key = ""
         try:
             course_key = CourseKey.from_string(course_id)
         except InvalidKeyError:
             course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
         course = get_course_by_id(course_key)
+        return course
+
+    def get_context(self, course_id):
+        parents = []
+        course = self.get_course(course_id)
         title = get_course_about_section(course, "title")
         description = get_course_about_section(course, "short_description")
         course_parent = {
