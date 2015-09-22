@@ -38,30 +38,33 @@ class Command(BaseCommand):
             event = json.loads(row)
             try:
                 dt = dateutil.parser.parse(event['time'])
-                i = i + 1
             except ValueError:
-                print 'Data error -> ',  event['time']
+                print 'Data error -> ', event['time']
                 continue
 
             # event['context']['user_id'] = 6 # used only for local test, comment in the real environment
             user_id = event['context']['user_id']
             if user_id == '':
                 continue
-            try:
-                # Search for events of same user in the same date (seconds precision)
-                tls = TrackingLog.objects.filter(dtcreated=dt, user_id=user_id)
-                if tls:
-                    differentMillis = True
-                    for t in tls:
-                        t_event = json.load(t.statement)
-                        if t_event['timestamp'] == event['time']:
-                            differentMillis = False
-                            break
-                    if differentMillis:
-                        x.send(event)
-                    else:
-                        print "Tracking event already exists for dt: %s and user_id : %s ", dt.isoformat(), user_id
-                        print event
 
-                else:
+            # Search for events of same user in the same date (seconds precision)
+            tls = TrackingLog.objects.filter(dtcreated=dt, user_id=user_id)
+            if tls:
+                differentMillis = True
+                for t in tls:
+                    t_event = json.load(t.statement)
+                    if t_event['timestamp'] == event['time']:
+                        differentMillis = False
+                        break
+                if differentMillis:
+                    i = i + 1
                     x.send(event)
+                else:
+                    print "Tracking event already exists for dt: %s and user_id : %s ", event['time'], user_id
+                    print event
+
+            else:
+                i = i + 1
+                x.send(event)
+
+        print "Imported %s events ", str(i)
