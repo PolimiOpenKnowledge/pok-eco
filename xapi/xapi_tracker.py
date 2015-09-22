@@ -109,6 +109,7 @@ EDX2TINCAN = {
         "display": {"en-US": "Indicates the learner updated or edited something"}
     },
     # ################ VIDEO ######################################
+    'load_video': ACCESS_VERB,
     'play_video': {
         "id": "http://activitystrea.ms/schema/1.0/watch",
         "display": {"en-US": "Indicates the learner has watched video xyz"}
@@ -358,7 +359,7 @@ class XapiBackend(BaseBackend):
             except:
                 action = None  # No event data, just skip
         elif evt['event_type'] == 'load_video' and evt['event_source'] == 'browser':
-            action = EDX2TINCAN['play_video']
+            action = EDX2TINCAN['load_video']
             try:
                 # We need to do this because we receive a string instead than a dictionary
                 event = json.loads(evt['event'])
