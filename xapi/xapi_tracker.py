@@ -189,8 +189,6 @@ class XapiBackend(BaseBackend):
         # return evt
         action = {}
         obj = {}
-        log.info(evt)
-        log.info(evt['event_type'] == 'edx.course.enrollment.deactivated' and evt['event_source'] == 'server')
         if re.match('^/courses/.*/info/?', evt['event_type']) or re.match('^/courses/.*/about/?', evt['event_type']):
             # Learner accesses MOOC
             action = EDX2TINCAN['learner_accesses_MOOC']
@@ -585,7 +583,7 @@ class XapiBackend(BaseBackend):
         elif re.match('^/courses/.*', evt['event_type']):
             action = None
         else:
-            #log.info('-> EVENT NOT MANAGED: ', evt['event_type'])  # Uncomment for debug
+            # log.info('-> EVENT NOT MANAGED: ', evt['event_type'])  # Uncomment for debug
             evt['time'] = evt['time'].strftime("%Y-%m-%dT%H:%M:%S")
             action = evt
 
@@ -640,11 +638,6 @@ class XapiBackend(BaseBackend):
         return context
 
     def send(self, event_edx):
-
-        log.info(event_edx)
-        log.info((event_edx['event_type'] == 'edx.course.enrollment.deactivated' and
-                 event_edx['event_source'] == 'server')
-                 )
         course_id = event_edx['context'].get('course_id', None)
         if course_id is None or course_id == '':
             try:
