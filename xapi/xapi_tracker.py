@@ -23,6 +23,7 @@ from xmodule_django.models import CourseKeyField
 
 from social.apps.django_app.default.models import UserSocialAuth
 from courseware.courses import get_course_by_id, get_course_about_section
+from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
