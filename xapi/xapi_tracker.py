@@ -173,7 +173,7 @@ class XapiBackend(BaseBackend):
         for c in TEST_COURSES:
             self.course_ids.add(c)
         """
-        self.base_url = options.get('BASE_URL', 'https://www.pok.polimi.it')
+        self.base_url = options.get('BASE_URL', 'https://www.pok.polimi.it/')
         self.homepage_url = options.get('HOMEPAGE_URL', 'https://portal.ecolearning.eu')
         self.oai_prefix = options.get('OAI_PREFIX', 'oai:it.polimi.pok:')
         self.name = name
@@ -647,6 +647,7 @@ class XapiBackend(BaseBackend):
                 event = json.loads(event_edx['event'])
                 course_id = event['POST'].get('course_id', None)[0]
             except:
+                log.warn("EVENT NOT PROCESSED WITHOUT course_id: " + event_edx)
                 pass  # No event data, just skip
 
         if course_id in self.course_ids:
