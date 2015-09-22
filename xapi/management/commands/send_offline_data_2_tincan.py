@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-import datetime
+import dateutil.parser
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
@@ -37,14 +37,13 @@ class Command(BaseCommand):
         for row in lines:
             event = json.loads(row)
             try:
-                dt = datetime.datetime.strptime(event['time'].split('+')[0], '%Y-%m-%dT%H:%M:%S.%f')
+                dt = dateutil.parser.parse(event['time'])
                 i = i + 1
             except ValueError:
                 print 'Data error -> ',  event['time']
                 continue
 
             # event['context']['user_id'] = 6 # used only for local test, comment in the real environment
-            event['time'] = dt
             user_id = event['context']['user_id']
             if user_id == '':
                 continue
