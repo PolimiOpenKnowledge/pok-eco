@@ -189,7 +189,8 @@ class XapiBackend(BaseBackend):
         # return evt
         action = {}
         obj = {}
-
+        log.info(evt)
+        log.info(evt['event_type'] == 'edx.course.enrollment.deactivated' and evt['event_source'] == 'server')
         if re.match('^/courses/.*/info/?', evt['event_type']) or re.match('^/courses/.*/about/?', evt['event_type']):
             # Learner accesses MOOC
             action = EDX2TINCAN['learner_accesses_MOOC']
