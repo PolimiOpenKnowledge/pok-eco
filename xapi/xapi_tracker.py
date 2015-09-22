@@ -674,7 +674,7 @@ class XapiBackend(BaseBackend):
                     statement = json.dumps(statement)
 
                     tldat = TrackingLog(
-                        dtcreated=event_edx['time'],
+                        dtcreated=timestamp,  # event_edx['time'],
                         user_id=event_edx['context']['user_id'],
                         course_id=course_id,
                         statement=statement
