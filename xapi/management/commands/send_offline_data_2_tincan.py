@@ -52,7 +52,7 @@ class Command(BaseCommand):
             if tls:
                 differentMillis = True
                 for t in tls:
-                    t_event = json.load(t.statement)
+                    t_event = json.loads(t.statement)
                     if t_event['timestamp'] == event['time']:
                         differentMillis = False
                         break
