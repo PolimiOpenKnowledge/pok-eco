@@ -48,9 +48,20 @@ class Command(BaseCommand):
             if user_id == '':
                 continue
             try:
-                # t = TrackingLog.objects.get(dtcreated=dt) # used only for local test, comment in the real environment
-                t = TrackingLog.objects.get(dtcreated=dt, user_id=user_id)  # pylint: disable=unused-variable
-                print "Tracking event already exists for dt: %s and user_id : %s ", dt.isoformat(), user_id
-                print event
-            except TrackingLog.DoesNotExist:
-                x.send(event)
+                # Search for events of same user in the same date (seconds precision)
+                tls = TrackingLog.objects.filter(dtcreated=dt, user_id=user_id)
+                if tls:
+                    differentMillis = True
+                    for t in tls:
+                        t_event = json.load(t.statement)
+                        if t_event['timestamp'] == event['time']:
+                            differentMillis = False
+                            break
+                    if differentMillis:
+                        x.send(event)
+                    else:
+                        print "Tracking event already exists for dt: %s and user_id : %s ", dt.isoformat(), user_id
+                        print event
+
+                else:
+                    x.send(event)
