@@ -122,7 +122,7 @@ class TrackingLog(models.Model):
         fmt = (
             u"[{self.dtcreated}] {self.user_id}@{self.course_id}: "
         )
-        return fmt.format(self)
+        return fmt.format(self=self)  # pylint: disable=redundant-keyword-arg
 
 
 class XapiBackend(BaseBackend):
@@ -591,7 +591,7 @@ class XapiBackend(BaseBackend):
                 }
             }
             parents.append(course_parent)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             log.warn(e)
 
         context = {
