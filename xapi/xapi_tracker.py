@@ -563,10 +563,6 @@ class XapiBackend(BaseBackend):
             action = None
         elif evt['event_type'] == '/accounts/login':
             action = None
-        elif evt['event_type'] == 'edx.course.enrollment.activated':
-            action = None
-        elif evt['event_type'] == 'edx.course.enrollment.deactivated':
-            action = None
         elif re.search('render_submission', evt['event_type']):
             action = None
         elif re.search('render_student_training', evt['event_type']):
@@ -588,7 +584,7 @@ class XapiBackend(BaseBackend):
         elif re.match('^/courses/.*', evt['event_type']):
             action = None
         else:
-            # print '-> EVENT NOT MANAGED: ', evt['event_type'] # Uncomment for debug
+            print '-> EVENT NOT MANAGED: ', evt['event_type'] # Uncomment for debug
             evt['time'] = evt['time'].strftime("%Y-%m-%dT%H:%M:%S")
             action = evt
 
