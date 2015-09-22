@@ -60,8 +60,10 @@ class Command(BaseCommand):
                     i = i + 1
                     x.send(event)
                 else:
-                    print "Tracking event already exists for dt: %s and user_id : %s ", event['time'], user_id
-                    print event
+                    # Skip duplicate events
+                    # print "Tracking event already exists for dt: %s and user_id : %s ", event['time'], user_id
+                    # print event
+                    pass
 
             else:
                 i = i + 1

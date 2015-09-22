@@ -643,6 +643,7 @@ class XapiBackend(BaseBackend):
         return context
 
     def send(self, event_edx):
+        print event_edx
         course_id = event_edx['context'].get('course_id', None)
         if course_id is None or course_id == '':
             try:
