@@ -117,6 +117,16 @@ EDX2TINCAN = {
 }
 
 
+def get_course(course_id):
+    course_key = ""
+    try:
+        course_key = CourseKey.from_string(course_id)
+    except InvalidKeyError:
+        course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+    course = get_course_by_id(course_key)
+    return course
+
+
 class TrackingLog(models.Model):
     """This model defines the fields that are stored in the tracking log database."""
 
@@ -218,7 +228,7 @@ class XapiBackend(BaseBackend):
             }
         elif evt['event_type'] == 'edx.course.enrollment.activated' and evt['event_source'] == 'server':
             action = EDX2TINCAN['learner_enroll_MOOC']
-            course = self.get_course(course_id)
+            course = get_course(course_id)
             title = get_course_about_section(course, "title")
             obj = {
                 "objectType": "Activity",
@@ -230,7 +240,7 @@ class XapiBackend(BaseBackend):
             }
         elif evt['event_type'] == 'edx.course.enrollment.deactivated' and evt['event_source'] == 'server':
             action = EDX2TINCAN['learner_unenroll_MOOC']
-            course = self.get_course(course_id)
+            course = get_course(course_id)
             title = get_course_about_section(course, "title")
             obj = {
                 "objectType": "Activity",
@@ -604,18 +614,10 @@ class XapiBackend(BaseBackend):
         }
         return actor
 
-    def get_course(self, course_id):
-        course_key = ""
-        try:
-            course_key = CourseKey.from_string(course_id)
-        except InvalidKeyError:
-            course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-        course = get_course_by_id(course_key)
-        return course
 
     def get_context(self, course_id):
         parents = []
-        course = self.get_course(course_id)
+        course = get_course(course_id)
         title = get_course_about_section(course, "title")
         description = get_course_about_section(course, "short_description")
         course_parent = {
