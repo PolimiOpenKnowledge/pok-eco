@@ -578,30 +578,28 @@ class XapiBackend(BaseBackend):
 
     def get_context(self, course_id):
         parents = []
+        course_key = ""
         try:
-            course_key = ""
-            try:
-                course_key = CourseKey.from_string(course_id)
-            except InvalidKeyError:
-                course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-            course = get_course_by_id(course_key)
-            title = get_course_about_section(course, "title")
-            course_parent = {
-                "id":  self.oai_prefix + course_id,
-                "objectType": "Activity",
-                "definition": {
-                    "name": {
-                        "en-US": title
-                    },
-                    "description": {
-                        "en-US": ""
-                    },
-                    "type": "http://adlnet.gov/expapi/activities/course"
-                }
+            course_key = CourseKey.from_string(course_id)
+        except InvalidKeyError:
+            course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+        course = get_course_by_id(course_key)
+        title = get_course_about_section(course, "title")
+        description = get_course_about_section(course, "short_description")
+        course_parent = {
+            "id":  self.oai_prefix + course_id,
+            "objectType": "Activity",
+            "definition": {
+                "name": {
+                    "en-US": title
+                },
+                "description": {
+                    "en-US": description
+                },
+                "type": "http://adlnet.gov/expapi/activities/course"
             }
-            parents.append(course_parent)
-        except Exception as e:  # pylint: disable=broad-except
-            log.warn(e)
+        }
+        parents.append(course_parent)
 
         context = {
             "parent": parents
@@ -628,14 +626,16 @@ class XapiBackend(BaseBackend):
                     timestamp = event_edx['time']
 
                 verb, obj = self.to_xapi(event_edx, course_id)
+                actor = self.get_actor(event_edx['context']['user_id'])
+                context = self.get_context(course_id)
                 # verb = None means to not record the action
                 if verb:
                     statement = {
-                        'actor': self.get_actor(event_edx['context']['user_id']),
+                        'actor': actor,
                         'verb': verb,
                         'object': obj,
                         'timestamp': timestamp,
-                        'context': self.get_context(course_id)
+                        'context': context
                     }
 
                     statement = json.dumps(statement)
