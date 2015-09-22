@@ -648,7 +648,6 @@ class XapiBackend(BaseBackend):
                 event = json.loads(event_edx['event'])
                 course_id = event['POST'].get('course_id', None)[0]
             except:
-                log.warn("EVENT NOT PROCESSED WITHOUT course_id: " + event_edx)
                 pass  # No event data, just skip
 
         if course_id in self.course_ids:
