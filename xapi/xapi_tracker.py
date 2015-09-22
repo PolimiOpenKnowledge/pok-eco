@@ -584,7 +584,7 @@ class XapiBackend(BaseBackend):
         elif re.match('^/courses/.*', evt['event_type']):
             action = None
         else:
-            print '-> EVENT NOT MANAGED: ', evt['event_type'] # Uncomment for debug
+            log.info('-> EVENT NOT MANAGED: ', evt['event_type'])  # Uncomment for debug
             evt['time'] = evt['time'].strftime("%Y-%m-%dT%H:%M:%S")
             action = evt
 
