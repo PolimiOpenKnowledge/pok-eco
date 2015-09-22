@@ -40,7 +40,7 @@ class Command(BaseCommand):
                 dt = datetime.datetime.strptime(event['time'].split('+')[0], '%Y-%m-%dT%H:%M:%S.%f')
                 i = i + 1
             except ValueError:
-                # print 'Data error -> ',  event['time']
+                print 'Data error -> ',  event['time']
                 continue
 
             # event['context']['user_id'] = 6 # used only for local test, comment in the real environment
