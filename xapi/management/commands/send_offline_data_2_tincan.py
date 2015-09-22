@@ -50,5 +50,7 @@ class Command(BaseCommand):
             try:
                 # t = TrackingLog.objects.get(dtcreated=dt) # used only for local test, comment in the real environment
                 t = TrackingLog.objects.get(dtcreated=dt, user_id=user_id)  # pylint: disable=unused-variable
+                print "Tracking event already exists for dt: %s and user_id : %s ", dt.isoformat(), user_id
+                print event
             except TrackingLog.DoesNotExist:
                 x.send(event)
