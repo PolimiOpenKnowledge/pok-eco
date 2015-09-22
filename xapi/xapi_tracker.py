@@ -633,7 +633,9 @@ class XapiBackend(BaseBackend):
         parents.append(course_parent)
 
         context = {
-            "parent": parents
+            "contextActivities": {
+                "parent": parents
+            }
         }
         return context
 
