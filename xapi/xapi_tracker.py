@@ -575,8 +575,12 @@ class XapiBackend(BaseBackend):
     def get_context(self, course_id):
         parents = []
         try:
+            log.warn("" + course_id)
             course = get_course_by_id(course_id)
+            log.warn("course estratto")
+            log.warn(course)
             title = get_course_about_section(course, "title")
+            log.warn(title)
             course_parent = {
                 "id":  self.oai_prefix + course_id,
                 "objectType": "Activity",
