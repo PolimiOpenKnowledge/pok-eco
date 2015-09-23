@@ -600,10 +600,10 @@ class XapiBackend(BaseBackend):
 
         return action, obj
 
-    def get_actor(self, username):
+    def get_actor(self, user_id):
         # View http://192.168.33.10:8000/admin/default/usersocialauth/
         # No need to check existance, because is mandatory
-        usereco = UserSocialAuth.objects.get(user=username)
+        usereco = UserSocialAuth.objects.get(user=user_id)
 
         actor = {
             "objectType": "Agent",
@@ -613,7 +613,6 @@ class XapiBackend(BaseBackend):
             }
         }
         return actor
-
 
     def get_context(self, course_id):
         parents = []

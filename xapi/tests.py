@@ -4,13 +4,59 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
-
+import os
 from django.test import TestCase
+from django.test.utils import override_settings
+from django.core.management import call_command
+from social.apps.django_app.default.models import UserSocialAuth
+
+from student.tests.factories import UserFactory
+from eventtracking import tracker
+from eventtracking.django import DjangoTracker
+from xapi.xapi_tracker import XapiBackend
+from xapi.models import TrackingLog
+
+TEST_UID = "test_social_uid"
+TEST_HOMEPAGE_URL = "localhost"
+TEST_USERNAME = "test-actor"
+TEST_FILE_TRACKING = os.getcwd()+"./xapi/test_data/tracking.log"
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class XapiTest(TestCase):
+
+    @override_settings(FEATURES={'ENABLE_THIRD_PARTY_AUTH': True})
+    def setUp(self):
+        super(XapiTest, self).setUp()
+        self.tracker = DjangoTracker()
+        tracker.register_tracker(self.tracker)
+
+        user = UserFactory.create(username=TEST_USERNAME)
+        UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
+        self.user = user
+        options = {"HOMEPAGE_URL": TEST_HOMEPAGE_URL}
+        self.backend = XapiBackend(**options)
+
+    def test_send_offline(self):
+
+        print os.getcwd()
+        args = []
+        opts = {"filename": TEST_FILE_TRACKING}
+        call_command('send_offline_data_2_tincan', *args, **opts)
+        self.assertEqual(TrackingLog.objects.count(), 1)
+
+        # Recall to check same event not added anymore
+        call_command('send_offline_data_2_tincan', *args, **opts)
+        self.assertEqual(TrackingLog.objects.count(), 1)
+
+    def test_get_actor(self):
+
+        expected_actor = {
+            "objectType": "Agent",
+            "account": {
+                "homePage": "%s?user=%s" % (TEST_HOMEPAGE_URL, TEST_UID),
+                "name": TEST_UID
+            }
+        }
+        actor = self.backend.get_actor(self.user.id)
+        self.assertIsNotNone(actor)
+        self.assertEqual(expected_actor, actor)

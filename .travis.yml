@@ -1,13 +1,34 @@
 language: python
-
 python:
     - "2.7"
-
+services: mongodb
 env:
-    - TRAVIS_MODE=1
+    global:
+      - PYTHONENV=/home/travis/virtualenv/python2.7.9
+      - BUILD_DIR=${TRAVIS_BUILD_DIR}
+    matrix:
+      - TRAVIS_MODE=1
+addons:
+  apt:
+    packages:
+      - swig
+      - libxml2-dev
+      - libxslt1-dev
+      - libxmlsec1-dev
+      - libfreetype6-dev
+      - python-pip
+      - python-apt
+      - python-dev
+      - gfortran
+      - libopenblas-dev
+      - liblapack-dev
 
 before_install:
-    - export DJANGO_SETTINGS_MODULE=settings
+    - export DJANGO_SETTINGS_MODULE=test-settings
+
+cache:
+  directories:
+    - $PYTHONENV
 
 # command to install dependencies
 install:
@@ -15,10 +36,14 @@ install:
     - "pip install pep8"
     - "pip install pylint"
     - "pip install -r requirements.txt"
+    - "pip install -r test-requirements.txt"
 
 # command to run tests and quality checks
 script:
-    - coverage run --source=oai,ecoapi,xapi ./manage.py test
+    - ./copy_edx_dependencies.sh
+    - coverage run --source=oai,ecoapi,xapi ./manage.py test xapi
+    - coverage run --source=oai,ecoapi,xapi ./manage.py test ecoapi
+    - coverage run --source=oai,ecoapi,xapi ./manage.py test oai
     - coverage report -m
     - pep8 --config=.pep8 oai
     - pylint --rcfile=.pylintrc oai --report=no

@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # make sure file option is present
-        if options['filename'] == None:
+        if options['filename'] is None:
             raise CommandError("Option `--file=...` must be specified.")
 
         # Open the file, parse it and store the data, if not already present

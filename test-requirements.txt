@@ -1,0 +1,5 @@
+-e git+https://github.com/edx/edx-platform@release#egg=edx-platform==release
+
+pymongo==2.8.1
+South==1.0.1
+python-social-auth==0.2.12
