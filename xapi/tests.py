@@ -19,7 +19,7 @@ from xapi.models import TrackingLog
 TEST_UID = "test_social_uid"
 TEST_HOMEPAGE_URL = "localhost"
 TEST_USERNAME = "test-actor"
-TEST_FILE_TRACKING = os.getcwd()+"./xapi/test_data/tracking.log"
+TEST_FILE_TRACKING = os.getcwd()+"/xapi/test_data/tracking.log"
 
 
 class XapiTest(TestCase):
