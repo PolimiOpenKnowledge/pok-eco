@@ -30,6 +30,7 @@ TEST_BACKEND_OPTIONS = {
     "HOMEPAGE_URL": TEST_HOMEPAGE_URL
 }
 
+
 class XapiTest(TestCase):
 
     @override_settings(FEATURES={'ENABLE_THIRD_PARTY_AUTH': True})
