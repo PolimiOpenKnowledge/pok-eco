@@ -20,7 +20,14 @@ TEST_UID = "test_social_uid"
 TEST_HOMEPAGE_URL = "localhost"
 TEST_USERNAME = "test-actor"
 TEST_FILE_TRACKING = os.getcwd()+"/xapi/test_data/tracking.log"
-
+TEST_BACKEND_OPTIONS = {
+    "name": "xapi",
+    "ID_COURSES": ['course-v1:ORG+COURSE+RUN'],  # list of course_id you want to track on LRS
+    "USERNAME_LRS": "",  # username for the LRS endpoint
+    "PASSWORD_LRS": "",  # password for the LRS endpoint
+    "URL": "http://mylrs.endpoint/xAPI/statements",  # the LRS endpoint API URL
+    "EXTRACTED_EVENT_NUMBER": 100  # number of batch statements to extract from db and     sent in a job
+}
 
 class XapiTest(TestCase):
 
