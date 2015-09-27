@@ -26,7 +26,8 @@ TEST_BACKEND_OPTIONS = {
     "USERNAME_LRS": "",  # username for the LRS endpoint
     "PASSWORD_LRS": "",  # password for the LRS endpoint
     "URL": "http://mylrs.endpoint/xAPI/statements",  # the LRS endpoint API URL
-    "EXTRACTED_EVENT_NUMBER": 100  # number of batch statements to extract from db and     sent in a job
+    "EXTRACTED_EVENT_NUMBER": 100,  # number of batch statements to extract from db and     sent in a job
+    "HOMEPAGE_URL": TEST_HOMEPAGE_URL
 }
 
 class XapiTest(TestCase):
@@ -40,7 +41,7 @@ class XapiTest(TestCase):
         user = UserFactory.create(username=TEST_USERNAME)
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
         self.user = user
-        options = {"HOMEPAGE_URL": TEST_HOMEPAGE_URL}
+        options = TEST_BACKEND_OPTIONS
         self.backend = XapiBackend(**options)
 
     def test_send_offline(self):
