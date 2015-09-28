@@ -32,7 +32,7 @@ class Command(BaseCommand):
         raw_data = open(filename).read()
         lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
 
-        i = 1
+        i = 0
         x = XapiBackend()
         for row in lines:
             event = json.loads(row)
