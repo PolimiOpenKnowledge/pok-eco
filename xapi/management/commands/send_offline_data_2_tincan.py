@@ -42,8 +42,8 @@ class Command(BaseCommand):
         lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
 
         i = 0
-        course_ids = course_ids.split(",")
-        opts = {"ID_COURSES": course_ids}
+        courses = course_ids.split(",")
+        opts = {"ID_COURSES": courses}
         x = XapiBackend(**opts)
         for row in lines:
             event = json.loads(row)
