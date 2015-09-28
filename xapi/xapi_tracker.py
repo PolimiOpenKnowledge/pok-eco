@@ -650,7 +650,7 @@ class XapiBackend(BaseBackend):
                 course_id = event['POST'].get('course_id', None)[0]
             except:
                 pass  # No event data, just skip
-
+        print "########## SELF COURSE_IDS ######### :  " + str(self.course_ids)
         if course_id in self.course_ids:
             try:
                 # Sometimes we receive time as python datetime, sometimes as string...
@@ -688,5 +688,5 @@ class XapiBackend(BaseBackend):
                 log.exception(e)
         else:
             if course_id != '':
-                # print 'Course not activated', course_id # Uncomment for debug
+                print 'Course not activated', course_id # Uncomment for debug
                 pass
