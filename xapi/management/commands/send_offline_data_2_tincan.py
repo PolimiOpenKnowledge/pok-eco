@@ -33,7 +33,7 @@ class Command(BaseCommand):
         # make sure file option is present
         if options['filename'] is None:
             raise CommandError("Option `--file=...` must be specified.")
-        if options['filename'] is None:
+        if options['course_ids'] is None:
             raise CommandError("Option `--courses=...` must be specified.")
 
         # Open the file, parse it and store the data, if not already present
