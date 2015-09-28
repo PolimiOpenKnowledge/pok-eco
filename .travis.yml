@@ -32,25 +32,12 @@ cache:
 
 # command to install dependencies
 install:
-    - "pip install coveralls"
-    - "pip install pep8"
-    - "pip install pylint"
-    - "pip install -r requirements.txt"
-    - "pip install -r test-requirements.txt"
+    - ./pip_install_local.sh
 
 # command to run tests and quality checks
 script:
     - ./copy_edx_dependencies.sh
-    - coverage run --source=oai,ecoapi,xapi ./manage.py test xapi
-    - coverage run --source=oai,ecoapi,xapi ./manage.py test ecoapi
-    - coverage run --source=oai,ecoapi,xapi ./manage.py test oai
-    - coverage report -m
-    - pep8 --config=.pep8 oai
-    - pylint --rcfile=.pylintrc oai --report=no
-    - pep8 --config=.pep8 ecoapi
-    - pylint --rcfile=.pylintrc ecoapi --report=no
-    - pep8 --config=.pep8 xapi
-    - pylint --rcfile=.pylintrc xapi --report=no
+    - ./run_tests.sh
 
 branches:
     only:
