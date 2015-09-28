@@ -20,12 +20,21 @@ class Command(BaseCommand):
             help="specify import file",
             metavar="FILE"
         ),
+        make_option(
+            "-c",
+            "--courses",
+            dest="course_ids",
+            help="specify import file",
+            action="extend"
+        ),
     )
 
     def handle(self, *args, **options):
         # make sure file option is present
         if options['filename'] is None:
             raise CommandError("Option `--file=...` must be specified.")
+        if options['filename'] is None:
+            raise CommandError("Option `--courses=...` must be specified.")
 
         # Open the file, parse it and store the data, if not already present
         filename = options['filename']
@@ -33,7 +42,8 @@ class Command(BaseCommand):
         lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
 
         i = 0
-        x = XapiBackend()
+        opts = {"ID_COURSES": course_ids}
+        x = XapiBackend(**opts)
         for row in lines:
             event = json.loads(row)
             try:
