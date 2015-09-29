@@ -49,7 +49,7 @@ class XapiTest(TestCase):
 
         print os.getcwd()
         args = []
-        opts = {"filename": TEST_FILE_TRACKING, "course_ids": TEST_BACKEND_OPTIONS.get("ID_COURSES")}
+        opts = {"filename": TEST_FILE_TRACKING, "course_ids": TEST_BACKEND_OPTIONS.get("ID_COURSES").join(',')}
         call_command('send_offline_data_2_tincan', *args, **opts)
         self.assertEqual(TrackingLog.objects.count(), 1)
 

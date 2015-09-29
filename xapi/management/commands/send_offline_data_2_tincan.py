@@ -42,7 +42,7 @@ class Command(BaseCommand):
         lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
 
         i = 0
-        courses = str(options['course_ids']).split(",")
+        courses = options['course_ids'].split(",")
         opts = {"ID_COURSES": courses}
         x = XapiBackend(**opts)
         for row in lines:
