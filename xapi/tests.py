@@ -14,6 +14,7 @@ from student.tests.factories import UserFactory
 
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.tests.factories import CourseFactory
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
 from xapi.xapi_tracker import XapiBackend
@@ -34,7 +35,7 @@ TEST_BACKEND_OPTIONS = {
 }
 
 
-class XapiTest(TestCase):
+class XapiTest(ModuleStoreTestCase):
 
     @override_settings(FEATURES={'ENABLE_THIRD_PARTY_AUTH': True})
     def setUp(self):
