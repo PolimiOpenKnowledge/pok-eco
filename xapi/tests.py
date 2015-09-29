@@ -13,7 +13,7 @@ from social.apps.django_app.default.models import UserSocialAuth
 from student.tests.factories import UserFactory
 
 from xmodule.modulestore import ModuleStoreEnum
-from xmodule.tests.xml.factories import CourseFactory
+from xmodule.modulestore.tests.factories import CourseFactory
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
 from xapi.xapi_tracker import XapiBackend
