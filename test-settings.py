@@ -47,6 +47,11 @@ XQUEUE_INTERFACE = {
 }
 TRACK_MAX_EVENT = 50000
 
+PROJECT_ROOT = path(__file__).abspath().dirname().dirname()  # /edx-platform/cms
+REPO_ROOT = PROJECT_ROOT.dirname()
+COMMON_ROOT = REPO_ROOT / "common"
+COMMON_TEST_DATA_ROOT = COMMON_ROOT / "test" / "data"
+
 TEST_ROOT = path("test_root")
 DOC_STORE_CONFIG = {
     'host': 'localhost',
