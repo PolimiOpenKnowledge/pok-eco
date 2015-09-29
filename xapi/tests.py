@@ -44,7 +44,7 @@ class XapiTest(TestCase):
         course = CourseFactory.create(
             org="ORG", course="COURSE", display_name="RUN", default_store=ModuleStoreEnum.Type.mongo
         )
-        print str(course)
+        print "######### COURSE CREATE " + course.id
         user = UserFactory.create(username=TEST_USERNAME)
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
         self.user = user
