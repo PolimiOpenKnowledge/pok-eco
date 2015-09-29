@@ -41,9 +41,13 @@ class XapiTest(TestCase):
         super(XapiTest, self).setUp()
         self.tracker = DjangoTracker()
         tracker.register_tracker(self.tracker)
-        course = CourseFactory.create(
+        course1 = CourseFactory.create(
             org="ORG", course="COURSE", display_name="RUN", default_store=ModuleStoreEnum.Type.mongo
         )
+        course2 = CourseFactory.create(
+            org="ORG", course="COURSE", display_name="RUN", default_store=ModuleStoreEnum.Type.split
+        )
+        print "######### COURSE2 CREATE " + course2.id
         print "######### COURSE CREATE " + course.id
         user = UserFactory.create(username=TEST_USERNAME)
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
