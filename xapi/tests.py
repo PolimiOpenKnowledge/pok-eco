@@ -11,6 +11,7 @@ from django.core.management import call_command
 from social.apps.django_app.default.models import UserSocialAuth
 
 from student.tests.factories import UserFactory
+from xmodule.tests.xml.factories import CourseFactory
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
 from xapi.xapi_tracker import XapiBackend
@@ -38,7 +39,8 @@ class XapiTest(TestCase):
         super(XapiTest, self).setUp()
         self.tracker = DjangoTracker()
         tracker.register_tracker(self.tracker)
-
+        course = CourseFactory.create(org='ORG', number='COURSE', display_name='RUN', name="RUN")
+        print str(course)
         user = UserFactory.create(username=TEST_USERNAME)
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
         self.user = user
