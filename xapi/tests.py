@@ -25,7 +25,7 @@ TEST_HOMEPAGE_URL = "localhost"
 TEST_USERNAME = "test-actor"
 TEST_FILE_TRACKING = os.getcwd()+"/xapi/test_data/tracking.log"
 TEST_BACKEND_OPTIONS = {
-    "name": "xapi",
+    "name": "default",
     "ID_COURSES": ['course-v1:ORG+COURSE+RUN', 'ORG/COURSE/RUN'],  # list of course_id you want to track on LRS
     "USERNAME_LRS": "",  # username for the LRS endpoint
     "PASSWORD_LRS": "",  # password for the LRS endpoint
