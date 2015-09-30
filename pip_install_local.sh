@@ -1,6 +1,6 @@
 #!/bin/bash
 set -ex
-
+easy_install pip
 pip install coveralls
 pip install pep8
 pip install pylint
