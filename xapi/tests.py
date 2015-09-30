@@ -5,8 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 import os
-from mock import Mock, patch
-from django.test import TestCase
+from mock import patch
 from django.conf import settings
 from django.test.utils import override_settings
 from django.core.management import call_command
@@ -15,11 +14,9 @@ from social.apps.django_app.default.models import UserSocialAuth
 from student.tests.factories import UserFactory
 from courseware.tests.helpers import get_request_for_user
 
-from track.tests import EventTrackingTestCase
-from xmodule.course_module import CATALOG_VISIBILITY_ABOUT, CATALOG_VISIBILITY_NONE
-from xmodule.modulestore import ModuleStoreEnum
+from xmodule.course_module import CATALOG_VISIBILITY_ABOUT
 from xmodule.modulestore.django import clear_existing_modulestores
-from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+from xmodule.modulestore.tests.factories import CourseFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
@@ -41,10 +38,6 @@ TEST_BACKEND_OPTIONS = {
 }
 
 
-def mock_get_course_about_section(course, section):
-    return "Ciao"
-
-
 class XapiTest(ModuleStoreTestCase):
 
     MODULESTORE = settings.MODULESTORE
@@ -59,11 +52,6 @@ class XapiTest(ModuleStoreTestCase):
             org="ORG", course="COURSE", display_name="RUN",
             catalog_visibility=CATALOG_VISIBILITY_ABOUT
         )
-        # ItemFactory.create(
-        #     category="about", parent_location=course.location,
-        #     data="COURSE ABOUT", display_name="overview"
-        # )
-        print "######### COURSE CREATE " + str(course.id)
         user = UserFactory.create(username=TEST_USERNAME)
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
         self.user = user

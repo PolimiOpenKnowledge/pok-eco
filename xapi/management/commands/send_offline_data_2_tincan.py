@@ -49,45 +49,45 @@ class Command(BaseCommand):
 
 
 def process_data(x, lines):
-            i = 0
-            for row in lines:
-                event = json.loads(row)
-                try:
-                    dt = dateutil.parser.parse(event['time'])
-                except ValueError:
-                    print 'Data error -> ', event['time']
-                    continue
+    i = 0
+    for row in lines:
+        event = json.loads(row)
+        try:
+            dt = dateutil.parser.parse(event['time'])
+        except ValueError:
+            print 'Data error -> ', event['time']
+            continue
 
-                # event['context']['user_id'] = 6 # used only for local test, comment in the real environment
-                user_id = event['context']['user_id']
-                if user_id == '':
-                    continue
+        # event['context']['user_id'] = 6 # used only for local test, comment in the real environment
+        user_id = event['context']['user_id']
+        if user_id == '':
+            continue
 
-                # Search for events of same user in the same date (seconds precision)
-                tls = TrackingLog.objects.filter(dtcreated=dt, user_id=user_id)
-                if tls:
-                    differentMillis = True
-                    for t in tls:
-                        t_event = json.loads(t.statement)
-                        print "t_event['timestamp']: "+str(t_event['timestamp'])
-                        print "event['time']: "+str(event['time'])
-                        print "equals : %s", (t_event['timestamp'] == event['time'])
-                        if t_event['timestamp'] == event['time']:
-                            differentMillis = False
-                            break
-                    if differentMillis:
-                        i = i + 1
-                        event['time'] = dt
-                        x.send(event)
-                    else:
-                        # Skip duplicate events
-                        # print "Tracking event already exists for dt: %s and user_id : %s ", event['time'], user_id
-                        # print event
-                        pass
+        # Search for events of same user in the same date (seconds precision)
+        tls = TrackingLog.objects.filter(dtcreated=dt, user_id=user_id)
+        if tls:
+            differentMillis = True
+            for t in tls:
+                t_event = json.loads(t.statement)
+                print "t_event['timestamp']: "+str(t_event['timestamp'])
+                print "event['time']: "+str(event['time'])
+                print "equals : %s", (t_event['timestamp'] == event['time'])
+                if t_event['timestamp'] == event['time']:
+                    differentMillis = False
+                    break
+            if differentMillis:
+                i = i + 1
+                event['time'] = dt
+                x.send(event)
+            else:
+                # Skip duplicate events
+                # print "Tracking event already exists for dt: %s and user_id : %s ", event['time'], user_id
+                # print event
+                pass
 
-                else:
-                    i = i + 1
-                    event['time'] = dt
-                    x.send(event)
+        else:
+            i = i + 1
+            event['time'] = dt
+            x.send(event)
 
-            print "Imported %s events ", str(i)
+    print "Imported %s events ", str(i)
