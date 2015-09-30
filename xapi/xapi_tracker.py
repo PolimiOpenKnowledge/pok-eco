@@ -687,5 +687,5 @@ class XapiBackend(BaseBackend):
                 log.exception(e)
         else:
             if course_id != '':
-                print 'Course not activated', course_id # Uncomment for debug
+                print 'Course not activated', course_id  # Uncomment for debug
                 pass
