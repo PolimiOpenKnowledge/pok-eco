@@ -52,6 +52,7 @@ TRACK_MAX_EVENT = 50000
 COMMON_ROOT = os.environ.get("PYTHONENV", "") + "/edx-platform/common"
 COMMON_TEST_DATA_ROOT = COMMON_ROOT + "/test/data"
 TEST_ROOT = path("test_root")
+print TEST_ROOT
 MONGO_PORT_NUM = int(os.environ.get('MONGO_PORT_27017_TCP_PORT', '27017'))
 MONGO_HOST = os.environ.get('MONGO_PORT_27017_TCP_ADDR', 'localhost')
 
@@ -80,7 +81,7 @@ MODULESTORE = {
                     'DOC_STORE_CONFIG': DOC_STORE_CONFIG,
                     'OPTIONS': {
                         'default_class': 'xmodule.hidden_module.HiddenDescriptor',
-                        'fs_root': TEST_ROOT / "/data",
+                        'fs_root': TEST_ROOT / "data",
                         'render_template': 'edxmako.shortcuts.render_to_string',
                     }
                 },
