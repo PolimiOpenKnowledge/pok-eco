@@ -5,6 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 import os
+import mock
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.core.management import call_command
@@ -61,8 +62,9 @@ class XapiTest(ModuleStoreTestCase):
         options = TEST_BACKEND_OPTIONS
         self.backend = XapiBackend(**options)
 
-    def test_send_offline(self):
-
+    @mock.patch('courseware.courses.get_request_for_thread')
+    def test_send_offline(self, mock_get_request):
+        mock_get_request.return_value = self.request
         print os.getcwd()
         args = []
         opts = {"filename": TEST_FILE_TRACKING, "course_ids": (",").join(TEST_BACKEND_OPTIONS.get("ID_COURSES"))}
