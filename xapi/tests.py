@@ -39,7 +39,7 @@ class XapiTest(ModuleStoreTestCase):
 
     @override_settings(FEATURES={'ENABLE_THIRD_PARTY_AUTH': True})
     def setUp(self):
-        super(XapiTest, self).setUp()
+        super(XapiTest, self).setUp(create_user=False)
         self.tracker = DjangoTracker()
         tracker.register_tracker(self.tracker)
         course1 = CourseFactory.create(
