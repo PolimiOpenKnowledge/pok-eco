@@ -54,7 +54,6 @@ class Command(BaseCommand):
                 continue
 
             # event['context']['user_id'] = 6 # used only for local test, comment in the real environment
-            event['time'] = dt
             user_id = event['context']['user_id']
             if user_id == '':
                 continue
@@ -65,11 +64,15 @@ class Command(BaseCommand):
                 differentMillis = True
                 for t in tls:
                     t_event = json.loads(t.statement)
+                    print "t_event['timestamp']: "+str(t_event['timestamp'])
+                    print "event['time']: "+str(event['time'])
+                    print "equals : %s", (t_event['timestamp'] == event['time'])
                     if t_event['timestamp'] == event['time']:
                         differentMillis = False
                         break
                 if differentMillis:
                     i = i + 1
+                    event['time'] = dt
                     x.send(event)
                 else:
                     # Skip duplicate events
@@ -79,6 +82,7 @@ class Command(BaseCommand):
 
             else:
                 i = i + 1
+                event['time'] = dt
                 x.send(event)
 
         print "Imported %s events ", str(i)

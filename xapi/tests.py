@@ -5,8 +5,9 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 import os
-import mock
+from mock import Mock, patch
 from django.test import TestCase
+from django.conf import settings
 from django.test.utils import override_settings
 from django.core.management import call_command
 from social.apps.django_app.default.models import UserSocialAuth
@@ -17,6 +18,7 @@ from courseware.tests.helpers import get_request_for_user
 from track.tests import EventTrackingTestCase
 from xmodule.course_module import CATALOG_VISIBILITY_ABOUT, CATALOG_VISIBILITY_NONE
 from xmodule.modulestore import ModuleStoreEnum
+from xmodule.modulestore.django import clear_existing_modulestores
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from eventtracking import tracker
@@ -39,22 +41,28 @@ TEST_BACKEND_OPTIONS = {
 }
 
 
+def mock_get_course_about_section(course, section):
+    return "Ciao"
+
+
 class XapiTest(ModuleStoreTestCase):
+
+    MODULESTORE = settings.MODULESTORE
 
     @override_settings(FEATURES={'ENABLE_THIRD_PARTY_AUTH': True})
     def setUp(self):
         super(XapiTest, self).setUp(create_user=False)
+        clear_existing_modulestores()
         self.tracker = DjangoTracker()
         tracker.register_tracker(self.tracker)
         course = CourseFactory.create(
-            org="ORG", course="COURSE", display_name="RUN", default_store=ModuleStoreEnum.Type.mongo,
+            org="ORG", course="COURSE", display_name="RUN",
             catalog_visibility=CATALOG_VISIBILITY_ABOUT
         )
-        course.static_asset_path = "foo"
-        ItemFactory.create(
-            category="about", parent_location=course.location,
-            data="COURSE ABOUT", display_name="overview"
-        )
+        # ItemFactory.create(
+        #     category="about", parent_location=course.location,
+        #     data="COURSE ABOUT", display_name="overview"
+        # )
         print "######### COURSE CREATE " + str(course.id)
         user = UserFactory.create(username=TEST_USERNAME)
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
@@ -63,18 +71,21 @@ class XapiTest(ModuleStoreTestCase):
         options = TEST_BACKEND_OPTIONS
         self.backend = XapiBackend(**options)
 
-    @mock.patch('courseware.courses.get_request_for_thread')
-    def test_send_offline(self, mock_get_request):
-        mock_get_request.return_value = self.request
-        print os.getcwd()
+    def test_send_offline(self):
         args = []
         opts = {"filename": TEST_FILE_TRACKING, "course_ids": (",").join(TEST_BACKEND_OPTIONS.get("ID_COURSES"))}
-        call_command('send_offline_data_2_tincan', *args, **opts)
-        self.assertEqual(TrackingLog.objects.count(), 1)
 
-        print "# Recall to check same event not added anymore"
-        call_command('send_offline_data_2_tincan', *args, **opts)
-        self.assertEqual(TrackingLog.objects.count(), 1)
+        with patch('xapi.xapi_tracker.XapiBackend.get_context') as get_context:
+            get_context.return_value = {}
+            call_command('send_offline_data_2_tincan', *args, **opts)
+            self.assertEqual(TrackingLog.objects.count(), 1)
+
+            print "# Recall to check same event not added anymore"
+            call_command('send_offline_data_2_tincan', *args, **opts)
+            for i in TrackingLog.objects.all():
+                print i.dtcreated
+
+            self.assertEqual(TrackingLog.objects.count(), 1)
 
     def test_get_actor(self):
 
