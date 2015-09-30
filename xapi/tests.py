@@ -38,7 +38,7 @@ TEST_BACKEND_OPTIONS = {
 }
 
 
-class XapiTest(ModuleStoreTestCase):
+class XapiTest(ModuleStoreTestCase):   # pylint: disable=too-many-ancestors
 
     MODULESTORE = settings.MODULESTORE
 
@@ -48,7 +48,7 @@ class XapiTest(ModuleStoreTestCase):
         clear_existing_modulestores()
         self.tracker = DjangoTracker()
         tracker.register_tracker(self.tracker)
-        course = CourseFactory.create(
+        self.course = CourseFactory.create(
             org="ORG", course="COURSE", display_name="RUN",
             catalog_visibility=CATALOG_VISIBILITY_ABOUT
         )
