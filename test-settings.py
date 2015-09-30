@@ -53,10 +53,14 @@ COMMON_ROOT = REPO_ROOT / "common"
 COMMON_TEST_DATA_ROOT = COMMON_ROOT / "test" / "data"
 
 TEST_ROOT = path("test_root")
+MONGO_PORT_NUM = int(os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017'))
+MONGO_HOST = os.environ.get('EDXAPP_TEST_MONGO_HOST', 'localhost')
+
 DOC_STORE_CONFIG = {
-    'host': 'localhost',
+    'host': MONGO_HOST,
     'db': 'xmodule',
     'collection': 'modulestore',
+    'port': MONGO_PORT_NUM
     # If 'asset_collection' defined, it'll be used
     # as the collection name for asset metadata.
     # Otherwise, a default collection name will be used.
@@ -104,8 +108,8 @@ MODULESTORE = {
 CONTENTSTORE = {
     'ENGINE': 'xmodule.contentstore.mongo.MongoContentStore',
     'DOC_STORE_CONFIG': {
-        'host': 'localhost',
-        'db': 'xcontent',
-        'port': 27017,
+        'host': MONGO_HOST,
+        'port': MONGO_PORT_NUM,
+        'db': 'xcontent'
     }
 }
