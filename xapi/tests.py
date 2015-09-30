@@ -48,9 +48,9 @@ class XapiTest(ModuleStoreTestCase):
         tracker.register_tracker(self.tracker)
         course = CourseFactory.create(
             org="ORG", course="COURSE", display_name="RUN", default_store=ModuleStoreEnum.Type.mongo,
-            catalog_visibility=CATALOG_VISIBILITY_ABOUT,
-            static_asset_path="foo"
+            catalog_visibility=CATALOG_VISIBILITY_ABOUT
         )
+        course.static_asset_path = "foo"
         ItemFactory.create(
             category="about", parent_location=course.location,
             data="COURSE ABOUT", display_name="overview"
