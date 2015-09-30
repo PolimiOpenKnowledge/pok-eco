@@ -69,9 +69,6 @@ def process_data(x, lines):
             differentMillis = True
             for t in tls:
                 t_event = json.loads(t.statement)
-                print "t_event['timestamp']: "+str(t_event['timestamp'])
-                print "event['time']: "+str(event['time'])
-                print "equals : %s", (t_event['timestamp'] == event['time'])
                 if t_event['timestamp'] == event['time']:
                     differentMillis = False
                     break
