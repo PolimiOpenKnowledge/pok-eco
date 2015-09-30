@@ -11,9 +11,12 @@ from django.core.management import call_command
 from social.apps.django_app.default.models import UserSocialAuth
 
 from student.tests.factories import UserFactory
+from courseware.tests.helpers import get_request_for_user
 
+from track.tests import EventTrackingTestCase
+from xmodule.course_module import CATALOG_VISIBILITY_ABOUT, CATALOG_VISIBILITY_NONE
 from xmodule.modulestore import ModuleStoreEnum
-from xmodule.modulestore.tests.factories import CourseFactory
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
@@ -43,13 +46,18 @@ class XapiTest(ModuleStoreTestCase):
         self.tracker = DjangoTracker()
         tracker.register_tracker(self.tracker)
         course = CourseFactory.create(
-            org="ORG", course="COURSE", display_name="RUN", default_store=ModuleStoreEnum.Type.mongo
+            org="ORG", course="COURSE", display_name="RUN", default_store=ModuleStoreEnum.Type.mongo,
+            catalog_visibility=CATALOG_VISIBILITY_ABOUT
         )
-
+        ItemFactory.create(
+            category="about", parent_location=course.location,
+            data="COURSE ABOUT", display_name="overview"
+        )
         print "######### COURSE CREATE " + str(course.id)
         user = UserFactory.create(username=TEST_USERNAME)
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
         self.user = user
+        self.request = get_request_for_user(user)
         options = TEST_BACKEND_OPTIONS
         self.backend = XapiBackend(**options)
 
