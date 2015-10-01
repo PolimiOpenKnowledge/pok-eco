@@ -27,21 +27,27 @@ class ECOOpenIdBackend(BaseOAuth2):
     def USERINFO_URL(self):
         return self.additional_setting('IDP_URL') + "/userinfo"
 
+    #  pylint: disable=attribute-defined-outside-init
     def additional_setting(self, setting_name, default=None):
         """ Get a setting, from OAuth2ProviderConfig """
         if not hasattr(self, '_config'):
-            from .models import OAuth2ProviderConfig
+            from third_party_auth.models import OAuth2ProviderConfig
             try:
                 self._config = OAuth2ProviderConfig.objects.filter(
-                                backend_name=self.name,
-                                enabled=True
-                            ).order_by('-change_date')[0]
+                    backend_name=self.name, enabled=True
+                ).order_by('-change_date')[0]
             except IndexError:
                 self._config = None
         try:
             return self._config.get_setting(setting_name)
         except KeyError:
             return self.strategy.setting(setting_name, default)
+
+    def auth_html(self):
+        """
+        Not used
+        """
+        raise NotImplementedError("Not used")
 
     def auth_headers(self):
         return {
@@ -66,8 +72,8 @@ class ECOOpenIdBackend(BaseOAuth2):
     def user_data(self, access_token, *args, **kwargs):
         """Return user data from Google API"""
         values = self.get_json(
-                    self.USERINFO_URL,
-                    headers={'Authorization': 'Bearer {0}'.format(access_token)}
-                )
+            self.USERINFO_URL,
+            headers={'Authorization': 'Bearer {0}'.format(access_token)}
+        )
         values['username'] = values['nickname']
         return values
