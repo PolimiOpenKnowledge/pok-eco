@@ -70,9 +70,6 @@ class XapiTest(ModuleStoreTestCase):   # pylint: disable=too-many-ancestors
 
             print "# Recall to check same event not added anymore"
             call_command('send_offline_data_2_tincan', *args, **opts)
-            for i in TrackingLog.objects.all():
-                print i.dtcreated
-
             self.assertEqual(TrackingLog.objects.count(), 1)
 
     def test_get_actor(self):
