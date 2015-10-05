@@ -184,9 +184,9 @@ class XapiBackend(BaseBackend):
         for c in TEST_COURSES:
             self.course_ids.add(c)
         """
-        self.base_url = options.get('BASE_URL', 'https://www.pok.polimi.it/')
-        self.homepage_url = options.get('HOMEPAGE_URL', 'https://portal.ecolearning.eu')
-        self.oai_prefix = options.get('OAI_PREFIX', 'oai:it.polimi.pok:')
+        self.base_url = options.get('BASE_URL', '')
+        self.homepage_url = options.get('HOMEPAGE_URL', '')
+        self.oai_prefix = options.get('OAI_PREFIX', '')
         self.name = name
 
     # See https://github.com/adlnet/edx-xapi-bridge/blob/master/xapi-bridge/converter.py

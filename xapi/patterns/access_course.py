@@ -1,0 +1,31 @@
+import re
+import abc
+
+from tincan import (
+    Agent,
+    AgentAccount,
+    Activity,
+    ActivityDefinition,
+    LanguageMap,
+    Verb
+)
+from xapi.patterns.base import BasePattern
+from xapi.patterns.verbs import AccessVerb
+
+
+# Learner accesses MOOC
+class AccessCourseRule(BasePattern, AccessVerb):
+    def match(self, evt, course_id):
+        return (re.match('^/courses/.*/info/?', evt['event_type']) or
+                re.match('^/courses/.*/about/?', evt['event_type']))
+
+    def convert(self, evt, course_id):
+        verb = self.get_verb()
+        obj = Activity(
+            id=self.fix_id(self.base_url, evt['event_type']),
+            definition=ActivityDefinition(
+                name=LanguageMap({'en-US': self.oai_prefix + course_id}),
+                type="http://adlnet.gov/expapi/activities/course"
+            )
+        )
+        return verb, obj

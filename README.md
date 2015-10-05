@@ -36,7 +36,10 @@ In this repository you find different Django application used for this integrati
                 "USERNAME_LRS": "",  # username for the LRS endpoint
                 "PASSWORD_LRS": "",  # password for the LRS endpoint
                 "URL": "http://mylrs.endpoint/xAPI/statements",  # the LRS endpoint API URL
-                "EXTRACTED_EVENT_NUMBER": 100  # number of batch statements to extract from db and     sent in a job
+                "HOMEPAGE_URL": "",  # homepage url for user profile (third party auth)
+                "BASE_URL": "",  # base url for lms platform
+                'OAI_PREFIX': '',  # the oai prefix course (eg oai:it.polimi.pok:)
+                "EXTRACTED_EVENT_NUMBER": 100  # number of batch statements to extract from db and sent in a job
         }
       }
     }

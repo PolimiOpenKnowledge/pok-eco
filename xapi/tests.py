@@ -5,6 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 import os
+import json
 from mock import patch
 from django.conf import settings
 from django.test.utils import override_settings
@@ -21,10 +22,11 @@ from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
 from xapi.xapi_tracker import XapiBackend
+from xapi.tincan_wrapper import TinCanWrapper
 from xapi.models import TrackingLog
 
 TEST_UID = "test_social_uid"
-TEST_HOMEPAGE_URL = "localhost"
+TEST_HOMEPAGE_URL = "https://portal.ecolearning.eu"
 TEST_USERNAME = "test-actor"
 TEST_FILE_TRACKING = os.getcwd()+"/xapi/test_data/tracking.log"
 TEST_BACKEND_OPTIONS = {
@@ -34,7 +36,9 @@ TEST_BACKEND_OPTIONS = {
     "PASSWORD_LRS": "",  # password for the LRS endpoint
     "URL": "http://mylrs.endpoint/xAPI/statements",  # the LRS endpoint API URL
     "EXTRACTED_EVENT_NUMBER": 100,  # number of batch statements to extract from db and     sent in a job
-    "HOMEPAGE_URL": TEST_HOMEPAGE_URL
+    "HOMEPAGE_URL": TEST_HOMEPAGE_URL,
+    "BASE_URL": "https://www.pok.polimi.it/",
+    'OAI_PREFIX': 'oai:it.polimi.pok:'
 }
 
 
@@ -58,6 +62,7 @@ class XapiTest(ModuleStoreTestCase):   # pylint: disable=too-many-ancestors
         self.request = get_request_for_user(user)
         options = TEST_BACKEND_OPTIONS
         self.backend = XapiBackend(**options)
+        self.tincanwrapper = TinCanWrapper(**options)
 
     def test_send_offline(self):
         args = []
@@ -84,3 +89,32 @@ class XapiTest(ModuleStoreTestCase):   # pylint: disable=too-many-ancestors
         actor = self.backend.get_actor(self.user.id)
         self.assertIsNotNone(actor)
         self.assertEqual(expected_actor, actor)
+
+    def test_tincan(self):
+        from tincan import Agent, AgentAccount
+        account = AgentAccount(
+            home_page="%s?user=%s" % (TEST_HOMEPAGE_URL, TEST_UID),
+            name=TEST_UID
+        )
+        expected_actor = Agent(
+            account=account
+        )
+        actor = self.backend.get_actor(self.user.id)
+        self.assertIsNotNone(actor)
+        self.assertEqual(expected_actor.to_json(), json.dumps(actor))
+
+    def test_migrate(self):
+        raw_data = open(TEST_FILE_TRACKING).read()
+        lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
+        basic_event = json.loads(lines[0])
+        course_id = "course-v1:ORG+COURSE+RUN"
+        basic_event["event_type"] = "/courses/course-v1:ORG+COURSE+RUN/info"
+
+        verb_1, obj_1 = self.backend.to_xapi(basic_event, course_id)
+        verb_2, obj_2 = self.tincanwrapper.to_xapi(basic_event, course_id)
+        self.assertIsNotNone(verb_1)
+        self.assertIsNotNone(obj_1)
+        self.assertIsNotNone(verb_2)
+        self.assertIsNotNone(obj_2)
+        self.assertEqual(json.dumps(verb_1), verb_2.to_json())
+        self.assertEqual(json.dumps(obj_1), obj_2.to_json())
