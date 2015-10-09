@@ -1,8 +1,10 @@
+# pylint: disable=no-init
+
 from tincan import (
     Verb
 )
 
-import xapi.patterns.verbs
+from xapi.patterns.verbs import *
 
 
 class LearnerAccessesMoocVerb(AccessVerb):
@@ -87,7 +89,7 @@ class LearnerEditsWikiPageVerb(UpdateVerb):
 
 
 # ################ VIDEO ######################################
-class LoadVideoVerb (AccessVerb):
+class LoadVideoVerb(AccessVerb):
     pass
 
 

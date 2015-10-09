@@ -6,7 +6,7 @@ from tincan import (
 
 class AccessVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://activitystrea.ms/schema/1.0/access",
             display=LanguageMap({'en-US': "Indicates the learner accessed something"}),
@@ -16,7 +16,7 @@ class AccessVerb:
 
 class AuthorVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://activitystrea.ms/schema/1.0/author",
             display=LanguageMap({'en-US': "Indicates the learner authored something"})
@@ -26,7 +26,7 @@ class AuthorVerb:
 
 class UpdateVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://activitystrea.ms/schema/1.0/update",
             display=LanguageMap({'en-US': "Indicates the learner updated or edited something"})
@@ -36,7 +36,7 @@ class UpdateVerb:
 
 class AnsweredVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://adlnet.gov/expapi/verbs/answered",
             display=LanguageMap({'en-US': "Indicates the learner answered a question"})
@@ -46,7 +46,7 @@ class AnsweredVerb:
 
 class WatchVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://activitystrea.ms/schema/1.0/watch",
             display=LanguageMap({'en-US': 'Indicates the learner has watched video xyz'}),
@@ -56,7 +56,7 @@ class WatchVerb:
 
 class LikeVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://activitystrea.ms/schema/1.0/like",
             display=LanguageMap({'en-US': "Indicates the learner liked a forum message"}),
@@ -66,7 +66,7 @@ class LikeVerb:
 
 class ReadVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://activitystrea.ms/schema/1.0/read",
             display=LanguageMap({'en-US': "Indicates the learner read a forum message"}),
@@ -76,7 +76,7 @@ class ReadVerb:
 
 class CommentedVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://adlnet.gov/expapi/verbs/commented",
             display=LanguageMap({'en-US': "Indicates the learner commented on something"}),
@@ -86,7 +86,7 @@ class CommentedVerb:
 
 class CreateVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://activitystrea.ms/schema/1.0/create",
             display=LanguageMap({'en-US': "Indicates the learner created something"}),
@@ -96,7 +96,7 @@ class CreateVerb:
 
 class SubmitVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://activitystrea.ms/schema/1.0/submit",
             display=LanguageMap({'en-US': "Indicates the learner submitted something"}),
@@ -106,7 +106,7 @@ class SubmitVerb:
 
 class RegisteredVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://adlnet.gov/expapi/verbs/registered",
             display=LanguageMap({'en-US': "Indicates the learner registered/enrolled for MOOC"}),
@@ -116,7 +116,7 @@ class RegisteredVerb:
 
 class ExitedVerb:
     @classmethod
-    def get_verb(self):
+    def get_verb(cls):
         verb = Verb(
             id="http://adlnet.gov/expapi/verbs/exited",
             display=LanguageMap({'en-US': "Indicates the learner leaves the MOOC"}),

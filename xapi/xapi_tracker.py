@@ -27,6 +27,7 @@ from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
+import xapi.utils as xutils
 
 # TODO: è giusto? era così:
 # log = logging.getLogger('track.backends.django')
@@ -115,16 +116,6 @@ EDX2TINCAN = {
         "display": {"en-US": "Indicates the learner has watched video xyz"}
     }
 }
-
-
-def get_course(course_id):
-    course_key = ""
-    try:
-        course_key = CourseKey.from_string(course_id)
-    except InvalidKeyError:
-        course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    course = get_course_by_id(course_key)
-    return course
 
 
 class TrackingLog(models.Model):
@@ -228,8 +219,7 @@ class XapiBackend(BaseBackend):
             }
         elif evt['event_type'] == 'edx.course.enrollment.activated' and evt['event_source'] == 'server':
             action = EDX2TINCAN['learner_enroll_MOOC']
-            course = get_course(course_id)
-            title = get_course_about_section(course, "title")
+            title = xutils.get_course_title(course_id)
             obj = {
                 "objectType": "Activity",
                 "id":  self.oai_prefix + course_id,
@@ -240,8 +230,7 @@ class XapiBackend(BaseBackend):
             }
         elif evt['event_type'] == 'edx.course.enrollment.deactivated' and evt['event_source'] == 'server':
             action = EDX2TINCAN['learner_unenroll_MOOC']
-            course = get_course(course_id)
-            title = get_course_about_section(course, "title")
+            title = xutils.get_course_title(course_id)
             obj = {
                 "objectType": "Activity",
                 "id":  self.oai_prefix + course_id,
@@ -616,7 +605,7 @@ class XapiBackend(BaseBackend):
 
     def get_context(self, course_id):
         parents = []
-        course = get_course(course_id)
+        course = xutils.get_course(course_id)
         title = get_course_about_section(course, "title")
         description = get_course_about_section(course, "short_description")
         course_parent = {
