@@ -13,9 +13,6 @@ from xapi.patterns.eco_verbs import LearnerEnrollMoocVerb, LearnerUnenrollMoocVe
 import xapi.utils as xutils
 
 
-
-
-
 class BaseEnrollRule(BasePattern):
 
     def convert(self, evt, course_id):
