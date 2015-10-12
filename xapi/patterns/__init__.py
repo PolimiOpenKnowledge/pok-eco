@@ -4,4 +4,5 @@ from xapi.patterns.enrollment import (
      LearnerUnEnrollMOOCRule,
      LearnerEnrollMOOCRule
 )
+from xapi.patterns.createwiki import CreateWikiRule
 from xapi.patterns.base import BasePattern

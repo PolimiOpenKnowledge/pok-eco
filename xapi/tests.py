@@ -158,3 +158,13 @@ class XapiMigrateTest(XapiTest):
 
         mock_get_course_title.return_value = "COURSE_TITLE"
         self.base_migrate_test(self.basic_event, self.course_id)
+
+    @data(
+        "/courses/"+SPLIT_COURSE_ID+"/wiki/122324/_create/",
+        "/courses/"+SPLIT_COURSE_ID+"/wiki/ANewPage/_create/"
+    )
+    def test_migrate_createwiki(self, event_type):
+        self.basic_event["event_type"] = event_type
+        event = {"POST": {"title": ["WIKI_TITLE"]}}
+        self.basic_event["event"] = event
+        self.base_migrate_test(self.basic_event, self.course_id)

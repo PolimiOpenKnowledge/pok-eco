@@ -4,7 +4,8 @@ from xapi.patterns import (
     AccessCourseRule,
     AccessModuleRule,
     LearnerEnrollMOOCRule,
-    LearnerUnEnrollMOOCRule
+    LearnerUnEnrollMOOCRule,
+    CreateWikiRule
 )
 
 
@@ -21,7 +22,8 @@ class TinCanWrapper(object):
             AccessCourseRule(**options),
             AccessModuleRule(**options),
             LearnerEnrollMOOCRule(**options),
-            LearnerUnEnrollMOOCRule(**options)
+            LearnerUnEnrollMOOCRule(**options),
+            CreateWikiRule(**options)
         ]
 
     def to_xapi(self, evt, course_id):
