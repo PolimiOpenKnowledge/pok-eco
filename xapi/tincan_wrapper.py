@@ -5,7 +5,10 @@ from xapi.patterns import (
     AccessModuleRule,
     LearnerEnrollMOOCRule,
     LearnerUnEnrollMOOCRule,
-    CreateWikiRule
+    CreateWikiRule,
+    EditWikiRule,
+    AccessWikiRule,
+    AccessWikiPageRule
 )
 
 
@@ -23,7 +26,10 @@ class TinCanWrapper(object):
             AccessModuleRule(**options),
             LearnerEnrollMOOCRule(**options),
             LearnerUnEnrollMOOCRule(**options),
-            CreateWikiRule(**options)
+            CreateWikiRule(**options),
+            EditWikiRule(**options),
+            AccessWikiPageRule(**options),
+            AccessWikiRule(**options)
         ]
 
     def to_xapi(self, evt, course_id):
@@ -32,4 +38,5 @@ class TinCanWrapper(object):
         """
         for p in self.patterns:
             if p.match(evt, course_id):
+                # print "MATCHED RULE " + str(type(p))
                 return p.convert(evt, course_id)

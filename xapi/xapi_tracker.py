@@ -23,11 +23,7 @@ from track.backends import BaseBackend
 from xmodule_django.models import CourseKeyField
 
 from social.apps.django_app.default.models import UserSocialAuth
-from courseware.courses import get_course_by_id, get_course_about_section
-from opaque_keys.edx.keys import CourseKey
-from opaque_keys import InvalidKeyError
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
-
+from courseware.courses import get_course_about_section
 import xapi.utils as xutils
 
 # TODO: è giusto? era così:
@@ -240,15 +236,17 @@ class XapiBackend(BaseBackend):
                     "type": "http://adlnet.gov/expapi/activities/course"
                 }
             }
-        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+'/wiki/\w+/_create/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+'/wiki/_create/?', evt['event_type']):
             title = None
             try:
                 # We need to do this because we receive a string instead than a dictionary
-                event_data = json.loads(evt['event'])
+                # event_data = json.loads(evt['event'])
+                event_data = evt['event']
                 title = event_data['POST'].get('title', None)
             except:
                 pass
             if title:
+                title = title[0]  # from parametervalues to single value
                 action = EDX2TINCAN['learner_creates_wiki_page']
                 obj = {
                     "objectType": "Activity",
@@ -260,17 +258,19 @@ class XapiBackend(BaseBackend):
                 }
             else:
                 action = None  # Skip the not really created pages
-        elif re.match('/courses[/\w]+/wiki[/\w]+/_edit/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+'/wiki[/\w]+/_edit/?', evt['event_type']):
             # EX: /courses/edX/DemoX/Demo_Course/wiki/DemoX/_edit/ or
             #     /courses/edX/DemoX/Demo_Course/wiki/DemoX/page/_edit/
             title = None
             try:
                 # We need to do this because we receive a string instead than a dictionary
-                event_data = json.loads(evt['event'])
+                # event_data = json.loads(evt['event'])
+                event_data = evt['event']
                 title = event_data['POST'].get('title', None)
             except:
                 pass
             if title:
+                title = title[0]  # from parametervalues to single value
                 action = EDX2TINCAN['learner_edits_wiki_page']
                 obj = {
                     "objectType": "Activity",
@@ -283,7 +283,7 @@ class XapiBackend(BaseBackend):
             else:
                 action = None  # Skip the not really edited pages
 
-        elif re.match('/courses[/\w]+/wiki/\w+/\w+/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+'/wiki/\w+/\w+/?', evt['event_type']):
             action = EDX2TINCAN['learner_accesses_wiki_page']
             obj = {
                 "objectType": "Activity",
@@ -293,7 +293,7 @@ class XapiBackend(BaseBackend):
                     "type": "http://www.ecolearning.eu/expapi/activitytype/wiki"
                 }
             }
-        elif re.match('/courses[/\w]+/wiki/\w+/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+'/wiki/\w+/?', evt['event_type']):
             action = EDX2TINCAN['learner_accesses_wiki']
             obj = {
                 "objectType": "Activity",

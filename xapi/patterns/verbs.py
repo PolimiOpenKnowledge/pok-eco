@@ -4,7 +4,7 @@ from tincan import (
 )
 
 
-class AccessVerb:
+class AccessVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -14,7 +14,7 @@ class AccessVerb:
         return verb
 
 
-class AuthorVerb:
+class AuthorVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -24,7 +24,7 @@ class AuthorVerb:
         return verb
 
 
-class UpdateVerb:
+class UpdateVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -34,7 +34,7 @@ class UpdateVerb:
         return verb
 
 
-class AnsweredVerb:
+class AnsweredVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -44,7 +44,7 @@ class AnsweredVerb:
         return verb
 
 
-class WatchVerb:
+class WatchVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -54,7 +54,7 @@ class WatchVerb:
         return verb
 
 
-class LikeVerb:
+class LikeVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -64,7 +64,7 @@ class LikeVerb:
         return verb
 
 
-class ReadVerb:
+class ReadVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -74,7 +74,7 @@ class ReadVerb:
         return verb
 
 
-class CommentedVerb:
+class CommentedVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -84,7 +84,7 @@ class CommentedVerb:
         return verb
 
 
-class CreateVerb:
+class CreateVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -94,7 +94,7 @@ class CreateVerb:
         return verb
 
 
-class SubmitVerb:
+class SubmitVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -104,7 +104,7 @@ class SubmitVerb:
         return verb
 
 
-class RegisteredVerb:
+class RegisteredVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(
@@ -114,7 +114,7 @@ class RegisteredVerb:
         return verb
 
 
-class ExitedVerb:
+class ExitedVerb(object):
     @classmethod
     def get_verb(cls):
         verb = Verb(

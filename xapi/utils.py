@@ -17,3 +17,4 @@ def get_course(course_id):
 def get_course_title(course_id):
     course = get_course(course_id)
     title = get_course_about_section(course, "title")
+    return title

@@ -1,10 +1,19 @@
 # pylint: disable=no-init
 
-from tincan import (
-    Verb
+from xapi.patterns.verbs import (
+    AccessVerb,
+    RegisteredVerb,
+    ExitedVerb,
+    AnsweredVerb,
+    SubmitVerb,
+    AuthorVerb,
+    CommentedVerb,
+    LikeVerb,
+    ReadVerb,
+    CreateVerb,
+    UpdateVerb,
+    WatchVerb
 )
-
-from xapi.patterns.verbs import *
 
 
 class LearnerAccessesMoocVerb(AccessVerb):

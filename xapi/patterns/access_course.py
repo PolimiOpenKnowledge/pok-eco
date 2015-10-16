@@ -1,12 +1,9 @@
 import re
 
 from tincan import (
-    Agent,
-    AgentAccount,
     Activity,
     ActivityDefinition,
-    LanguageMap,
-    Verb
+    LanguageMap
 )
 from xapi.patterns.base import BasePattern
 from xapi.patterns.verbs import AccessVerb

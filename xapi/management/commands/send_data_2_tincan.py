@@ -39,7 +39,7 @@ class Command(BaseCommand):
                 else:
                     evt.tincan_key = resp.content
                     evt.exported = True
-            except:  # pylint: disable=W0702
+            except:  # pylint: disable=bare-except
                 evt.tincan_error = resp.content
             evt.save()
         self.stdout.write('Data sent\n')

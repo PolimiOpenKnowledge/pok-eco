@@ -8,7 +8,7 @@ import os
 import json
 from ddt import ddt, data
 from mock import patch
-from django.conf import settings
+# from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.core.management import call_command
@@ -17,10 +17,10 @@ from social.apps.django_app.default.models import UserSocialAuth
 from student.tests.factories import UserFactory
 from courseware.tests.helpers import get_request_for_user
 
-from xmodule.course_module import CATALOG_VISIBILITY_ABOUT
-from xmodule.modulestore.django import clear_existing_modulestores
-from xmodule.modulestore.tests.factories import CourseFactory
-from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+# from xmodule.course_module import CATALOG_VISIBILITY_ABOUT
+# from xmodule.modulestore.django import clear_existing_modulestores
+# from xmodule.modulestore.tests.factories import CourseFactory
+# from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
 from xapi.xapi_tracker import XapiBackend
@@ -55,7 +55,7 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
     def setUp(self):
         # super(XapiTest, self).setUp(create_user=False)
         super(XapiTest, self).setUp()
-        clear_existing_modulestores()
+        # clear_existing_modulestores()
         self.tracker = DjangoTracker()
         tracker.register_tracker(self.tracker)
         # self.course = CourseFactory.create(
@@ -128,15 +128,19 @@ class XapiMigrateTest(XapiTest):
         # self.assertIsNotNone(obj_1)
         # self.assertIsNotNone(verb_2)
         # self.assertIsNotNone(obj_2)
-        if (verb_1 and verb_2):
+        if verb_1 and verb_2:
             self.assertEqual(json.dumps(verb_1), verb_2.to_json())
             self.assertEqual(json.dumps(obj_1), obj_2.to_json())
         else:
-            print "verbs NONE"
+            print "verbs NONE for basic_event: "+json.dumps(basic_event)
+            print "verbs1 " + str(verb_1 is None)
+            print "verbs2 " + str(verb_2 is None)
 
     @data(
         "/courses/"+SPLIT_COURSE_ID+"/info",
-        "/courses/"+SPLIT_COURSE_ID+"/about"
+        "/courses/"+COURSE_ID+"/info",
+        "/courses/"+SPLIT_COURSE_ID+"/about",
+        "/courses/"+COURSE_ID+"/about"
     )
     def test_migrate_access_course(self, event_type):
         self.basic_event["event_type"] = event_type
@@ -144,7 +148,9 @@ class XapiMigrateTest(XapiTest):
 
     @data(
         "/courses/"+SPLIT_COURSE_ID+"/courseware/122324",
-        "/courses/"+SPLIT_COURSE_ID+"/courseware/"
+        "/courses/"+COURSE_ID+"/courseware/122324",
+        "/courses/"+SPLIT_COURSE_ID+"/courseware/",
+        "/courses/"+COURSE_ID+"/courseware/"
     )
     def test_migrate_access_module(self, event_type):
         self.basic_event["event_type"] = event_type
@@ -163,10 +169,14 @@ class XapiMigrateTest(XapiTest):
         self.base_migrate_test(self.basic_event, self.course_id)
 
     @data(
-        "/courses/"+SPLIT_COURSE_ID+"/wiki/122324/_create/",
-        "/courses/"+SPLIT_COURSE_ID+"/wiki/ANewPage/_create/"
+        "/courses/"+SPLIT_COURSE_ID+"/wiki/_create/***",
+        "/courses/"+COURSE_ID+"/wiki/_create/",
+        "/courses/"+SPLIT_COURSE_ID+"/wiki/UpdatePage/_edit/",
+        "/courses/"+COURSE_ID+"/wiki/UpdatePage/_edit/",
+        "/courses/"+SPLIT_COURSE_ID+"/wiki/APage/",
+        "/courses/"+COURSE_ID+"/wiki/APage/",
     )
-    def test_migrate_createwiki(self, event_type):
+    def test_migrate_wiki(self, event_type):
         self.basic_event["event_type"] = event_type
         event = {"POST": {"title": ["WIKI_TITLE"]}}
         self.basic_event["event"] = event

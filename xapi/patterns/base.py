@@ -20,6 +20,7 @@ class BasePattern(object):
     def convert(self, evt, course_id):
         pass
 
+    # pylint: disable=no-self-use
     def fix_id(self, base_url, obj_id):
         if not obj_id.startswith("https"):
             return base_url + obj_id
