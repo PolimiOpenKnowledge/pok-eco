@@ -30,8 +30,6 @@ INSTALLED_APPS = (
 
 # Copy from edx-platform
 FEATURES = {}
-COURSE_KEY_PATTERN = r'(?P<course_key_string>[^/+]+(/|\+)[^/+]+(/|\+)[^/]+)'
-COURSE_ID_PATTERN = COURSE_KEY_PATTERN.replace('course_key_string', 'course_id')
 ALL_LANGUAGES = (
     [u"en", u"English"],
     [u"it", u"Italian"],

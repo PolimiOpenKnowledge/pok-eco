@@ -17,6 +17,7 @@ import json
 import re
 
 from django.db import models
+from django.conf import settings
 
 from track.backends import BaseBackend
 from xmodule_django.models import CourseKeyField
@@ -239,7 +240,7 @@ class XapiBackend(BaseBackend):
                     "type": "http://adlnet.gov/expapi/activities/course"
                 }
             }
-        elif re.match('/courses[/\w]+/wiki/\w+/_create/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+'/wiki/\w+/_create/?', evt['event_type']):
             title = None
             try:
                 # We need to do this because we receive a string instead than a dictionary
