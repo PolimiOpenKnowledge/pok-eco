@@ -7,7 +7,7 @@ from tincan import (
 )
 from xapi.patterns.base import BasePattern
 from xapi.patterns.verbs import AccessVerb
-
+from django.conf import settings
 
 # learner_accesses_a_module
 class AccessModuleRule(BasePattern, AccessVerb):

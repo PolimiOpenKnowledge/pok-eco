@@ -8,7 +8,11 @@ from xapi.patterns import (
     CreateWikiRule,
     EditWikiRule,
     AccessWikiRule,
-    AccessWikiPageRule
+    AccessWikiPageRule,
+    AccessProblemRule,
+    ProblemCheckRule,
+    LoadVideoRule,
+    PlayVideoRule
 )
 
 
@@ -29,7 +33,11 @@ class TinCanWrapper(object):
             CreateWikiRule(**options),
             EditWikiRule(**options),
             AccessWikiPageRule(**options),
-            AccessWikiRule(**options)
+            AccessWikiRule(**options),
+            AccessProblemRule(**options),
+            ProblemCheckRule(**options),
+            LoadVideoRule(**options),
+            PlayVideoRule(**options)
         ]
 
     def to_xapi(self, evt, course_id):
@@ -40,3 +48,6 @@ class TinCanWrapper(object):
             if p.match(evt, course_id):
                 # print "MATCHED RULE " + str(type(p))
                 return p.convert(evt, course_id)
+
+        # EVENT NOT MANAGED
+        return None, None

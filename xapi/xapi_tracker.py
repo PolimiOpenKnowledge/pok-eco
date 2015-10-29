@@ -305,7 +305,7 @@ class XapiBackend(BaseBackend):
             }
 
         # ########################## ASSESSMENT ################################################
-        elif re.match('^/courses/[/:;_\w]+/problem_get/?', evt['event_type']) and evt['event_source'] == 'server':
+        elif evt['event_type'].endswith("problem_get") and evt['event_source'] == 'server':
             action = EDX2TINCAN['learner_accesses_assessment']
             # TODO: cosa ci mettiamo come id? non sembra ci sia nient'altro di utile oltre al path
             # self.path aggiunto per poter risolvere l'errore "id is not a valid IRI in object" ricevuto dall'LRS
@@ -347,7 +347,8 @@ class XapiBackend(BaseBackend):
             action = EDX2TINCAN['play_video']
             try:
                 # We need to do this because we receive a string instead than a dictionary
-                event = json.loads(evt['event'])
+                # event = json.loads(evt['event'])
+                event = evt['event']
                 obj = {
                     "objectType": "Activity",
                     "id": fix_id(self.base_url, evt['page']),
@@ -357,12 +358,17 @@ class XapiBackend(BaseBackend):
                     }
                 }
             except:
+                print "Failed to create action for event"
+                print '-'*60
+                traceback.print_exc(file=sys.stdout)
+                print '-'*60
                 action = None  # No event data, just skip
         elif evt['event_type'] == 'load_video' and evt['event_source'] == 'browser':
             action = EDX2TINCAN['load_video']
             try:
                 # We need to do this because we receive a string instead than a dictionary
-                event = json.loads(evt['event'])
+                # event = json.loads(evt['event'])
+                event = evt['event']
                 obj = {
                     "objectType": "Activity",
                     "id": fix_id(self.base_url, evt['page']),
@@ -372,6 +378,10 @@ class XapiBackend(BaseBackend):
                     }
                 }
             except:
+                print "Failed to create action for event"
+                print '-'*60
+                traceback.print_exc(file=sys.stdout)
+                print '-'*60
                 action = None  # No event data, just skip
 
         # ########################## END VIDEO ##################################################

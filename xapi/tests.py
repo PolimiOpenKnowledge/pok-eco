@@ -136,6 +136,7 @@ class XapiMigrateTest(XapiTest):
             print "verbs1 " + str(verb_1 is None)
             print "verbs2 " + str(verb_2 is None)
 
+
     @data(
         "/courses/"+SPLIT_COURSE_ID+"/info",
         "/courses/"+COURSE_ID+"/info",
@@ -179,5 +180,37 @@ class XapiMigrateTest(XapiTest):
     def test_migrate_wiki(self, event_type):
         self.basic_event["event_type"] = event_type
         event = {"POST": {"title": ["WIKI_TITLE"]}}
+        self.basic_event["event"] = event
+        self.base_migrate_test(self.basic_event, self.course_id)
+
+    @data(
+        "/courses/"+SPLIT_COURSE_ID,
+        "/courses/"+COURSE_ID
+    )
+    def test_migrate_access_problem(self, baseeventtype):
+        event_type = baseeventtype
+        event_type += "/xblock/block-v1:edx+Demo+demo+type@problem+block@__27"
+        event_type += "/handler/xmodule_handler/problem_get"
+        self.basic_event["event_type"] = event_type
+        self.basic_event["event_source"] = "server"
+        self.base_migrate_test(self.basic_event, self.course_id)
+
+    def test_migrate_problem_check(self):
+        self.basic_event["event_type"] = "problem_check"
+        self.basic_event["event_source"] = "server"
+        event = {"problem_id": "PROBLEM_ID"}
+        context = {"module": {"display_name": "Quiz 1"}}
+        self.basic_event["event"] = event
+        self.basic_event["context"] = context
+        self.base_migrate_test(self.basic_event, self.course_id)
+
+    @data(
+        "play_video",
+        "load_video"
+    )
+    def test_migrate_video(self, event_type):
+        self.basic_event["event_type"] = event_type
+        self.basic_event["event_source"] = "browser"
+        event = {"id": "VIDEO_ID"}
         self.basic_event["event"] = event
         self.base_migrate_test(self.basic_event, self.course_id)
