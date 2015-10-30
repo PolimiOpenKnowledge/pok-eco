@@ -11,7 +11,7 @@ copyEdxApp()
 installEdxRequirements()
 {
   echo "Installing edx-platform requirements $1 .."
-  pip install -r requirements/edx/$1
+  pip install --exists-action w -r requirements/edx/$1
   echo "..done"
 }
 
