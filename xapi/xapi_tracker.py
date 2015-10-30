@@ -358,10 +358,6 @@ class XapiBackend(BaseBackend):
                     }
                 }
             except:
-                print "Failed to create action for event"
-                print '-'*60
-                traceback.print_exc(file=sys.stdout)
-                print '-'*60
                 action = None  # No event data, just skip
         elif evt['event_type'] == 'load_video' and evt['event_source'] == 'browser':
             action = EDX2TINCAN['load_video']
@@ -378,24 +374,20 @@ class XapiBackend(BaseBackend):
                     }
                 }
             except:
-                print "Failed to create action for event"
-                print '-'*60
-                traceback.print_exc(file=sys.stdout)
-                print '-'*60
                 action = None  # No event data, just skip
 
         # ########################## END VIDEO ##################################################
 
         # ########################### FORUM #####################################################
 
-        elif re.match('/courses[/\S]+/discussion/[\S]+/create/?', evt['event_type']):
+        elif evt['event_type'] == "edx.forum.thread.created":
             # Ex: /courses/Polimi/mat101/2012_01/discussion/i4x-Polimi-MAT101-2015_M2/threads/create
             title = None
             try:
                 # We need to do this because we receive a string instead than a dictionary
                 # event_data = json.loads(evt['event'])
                 event_data = evt['event']
-                title = event_data['POST'].get('title', None)
+                title = event_data.get('title', None)
             except:
                 pass
             if title:
@@ -413,19 +405,21 @@ class XapiBackend(BaseBackend):
             else:
                 action = None  # Skip the not really created post
 
-        elif re.match('/courses[/\S]+/discussion/[\S]+/reply/?', evt['event_type']):
+        elif evt['event_type'] == "edx.forum.response.created":
             # Ex: /courses/Polimi/mat101/2012_01/discussion/i4x-Polimi-MAT101-2015_M2/threads/create
             action = EDX2TINCAN['learner_replies_to_forum_message']
             obj = {
                 "objectType": "Activity",
                 "id": fix_id(self.base_url, evt['context']['path']),
                 "definition": {
-                    "name": {"en-US": evt['event_type'].split('reply')[0]},
+                    "name": {"en-US": evt['referer']},
                     "type": "http://www.ecolearning.eu/expapi/activitytype/forummessage"
                 }
             }
 
-        elif re.match('/courses[/\S]+/discussion/[\S]+/upvote/?', evt['event_type']):
+        elif re.match(
+                r'/courses/'+settings.COURSE_ID_PATTERN+'/discussion/(threads|comments)/[\S]+/upvote/?',
+                evt['event_type']):
             # Ex: /courses/Polimi/mat101/2012_01/discussion/i4x-Polimi-MAT101-2015_M2/threads/create
             action = EDX2TINCAN['learner_liked_forum_message']
             obj = {
@@ -437,7 +431,9 @@ class XapiBackend(BaseBackend):
                 }
             }
 
-        elif re.match('/courses[/\S]+/discussion/[\S]+/threads/[\S]+/?', evt['event_type']):
+        elif re.match(
+                '/courses/'+settings.COURSE_ID_PATTERN+'/discussion/forum/[\S]+/threads/[\S]+/?',
+                evt['event_type']):
             # Ex: /courses/{ coursId }/discussion/forum/i4x-Polimi-MAT101-2015_M2/threads/5519ab9656c02c3e9f000005
             action = EDX2TINCAN['learner_reads_forum_message']
             obj = {
@@ -449,7 +445,7 @@ class XapiBackend(BaseBackend):
                 }
             }
 
-        elif re.match('/courses[/\S]+/discussion/\w+/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+'/discussion/forum/?', evt['event_type']):
             # Ex: /courses/{courseId}/discussion/forum
             action = EDX2TINCAN['learner_accesses_forum']
             obj = {

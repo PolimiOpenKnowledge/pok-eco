@@ -1,5 +1,3 @@
-import re
-
 from tincan import (
     Activity,
     ActivityDefinition,
@@ -10,7 +8,6 @@ from xapi.patterns.eco_verbs import (
     LoadVideoVerb,
     PlayVideoVerb
 )
-from django.conf import settings
 
 
 class BaseVideoRule(BasePattern):  # pylint: disable=abstract-method

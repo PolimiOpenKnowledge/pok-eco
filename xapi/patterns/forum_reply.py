@@ -4,21 +4,20 @@ from tincan import (
     LanguageMap
 )
 from xapi.patterns.base import BasePattern
-from xapi.patterns.verbs import AccessVerb
+from xapi.patterns.eco_verbs import LearnerRepliesToForumMessageVerb
 
 
-class AccessProblemRule(BasePattern, AccessVerb):
+class ForumReplyRule(BasePattern, LearnerRepliesToForumMessageVerb):
     def match(self, evt, course_id):
-        return (evt['event_type'].endswith("problem_get") and
-                evt['event_source'] == 'server')
+        return evt['event_type'] == "edx.forum.response.created"
 
     def convert(self, evt, course_id):
         verb = self.get_verb()
         obj = Activity(
             id=self.fix_id(self.base_url, evt['context']['path']),
             definition=ActivityDefinition(
-                name=LanguageMap({'en-US': evt['context']['path']}),
-                type="http://adlnet.gov/expapi/activities/question"
+                name=LanguageMap({'en-US': evt['referer']}),
+                type="http://www.ecolearning.eu/expapi/activitytype/forummessage"
             )
         )
         return verb, obj

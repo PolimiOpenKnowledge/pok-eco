@@ -136,7 +136,6 @@ class XapiMigrateTest(XapiTest):
             print "verbs1 " + str(verb_1 is None)
             print "verbs2 " + str(verb_2 is None)
 
-
     @data(
         "/courses/"+SPLIT_COURSE_ID+"/info",
         "/courses/"+COURSE_ID+"/info",
@@ -213,4 +212,25 @@ class XapiMigrateTest(XapiTest):
         self.basic_event["event_source"] = "browser"
         event = {"id": "VIDEO_ID"}
         self.basic_event["event"] = event
+        self.base_migrate_test(self.basic_event, self.course_id)
+
+    @data(
+        "edx.forum.thread.created",
+        "edx.forum.response.created",
+        "/courses/"+SPLIT_COURSE_ID+"/discussion/comments/56334b88424072495b000001/upvote",
+        "/courses/"+COURSE_ID+"/discussion/comments/56334b88424072495b000001/upvote",
+        "/courses/"+SPLIT_COURSE_ID+"/discussion/threads/56334b88424072495b000001/upvote",
+        "/courses/"+COURSE_ID+"/discussion/threads/56334b88424072495b000001/upvote",
+        "/courses/"+SPLIT_COURSE_ID+"/discussion/forum/an-i4x-string/threads/56334b88424072495b000001",
+        "/courses/"+COURSE_ID+"/discussion/forum/an-i4x-string/threads/56334b88424072495b000001",
+        "/courses/"+SPLIT_COURSE_ID+"/discussion/forum",
+        "/courses/"+COURSE_ID+"/discussion/forum",
+    )
+    def test_migrate_forum(self, event_type):
+        self.basic_event["event_type"] = event_type
+        self.basic_event["referer"] = "REFERER"
+        event = {"title": "TITLE_MESSAGE"}
+        self.basic_event["event"] = event
+        context = {"path": "PATH"}
+        self.basic_event["context"] = context
         self.base_migrate_test(self.basic_event, self.course_id)

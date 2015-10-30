@@ -3,16 +3,21 @@ from __future__ import absolute_import
 from xapi.patterns import (
     AccessCourseRule,
     AccessModuleRule,
-    LearnerEnrollMOOCRule,
-    LearnerUnEnrollMOOCRule,
-    CreateWikiRule,
-    EditWikiRule,
+    AccessProblemRule,
     AccessWikiRule,
     AccessWikiPageRule,
-    AccessProblemRule,
-    ProblemCheckRule,
+    CreateWikiRule,
+    EditWikiRule,
+    ForumAccessRule,
+    ForumCreateThreadRule,
+    ForumLikesRule,
+    ForumReadsRule,
+    ForumReplyRule,
+    LearnerEnrollMOOCRule,
+    LearnerUnEnrollMOOCRule,
     LoadVideoRule,
-    PlayVideoRule
+    PlayVideoRule,
+    ProblemCheckRule
 )
 
 
@@ -37,12 +42,18 @@ class TinCanWrapper(object):
             AccessProblemRule(**options),
             ProblemCheckRule(**options),
             LoadVideoRule(**options),
-            PlayVideoRule(**options)
+            PlayVideoRule(**options),
+            ForumCreateThreadRule(**options),
+            ForumReplyRule(**options),
+            ForumLikesRule(**options),
+            ForumReadsRule(**options),
+            ForumAccessRule(**options)
         ]
 
     def to_xapi(self, evt, course_id):
         """
         Convert edx event using a list of patterns to convert. First match win
+        so the order in self.patterns does matter!
         """
         for p in self.patterns:
             if p.match(evt, course_id):
