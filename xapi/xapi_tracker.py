@@ -460,7 +460,9 @@ class XapiBackend(BaseBackend):
         # ######################### END FORUM ###################################################
 
         # ######################### PEER ASSESSMENT #############################################
-        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+r'/xblock/[\S]+/handler/render_peer_assessment/?', evt['event_type']):
+        elif re.match(
+                '/courses/'+settings.COURSE_ID_PATTERN +
+                r'/xblock/[\S]+/handler/render_peer_assessment/?', evt['event_type']):
             # Ex: /courses/{courseId}/xblock/{item_id}}/handler/render_peer_assessment
             action = EDX2TINCAN['learner_accesses_peer_assessment']
             obj = {
