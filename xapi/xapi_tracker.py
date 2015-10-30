@@ -393,7 +393,8 @@ class XapiBackend(BaseBackend):
             title = None
             try:
                 # We need to do this because we receive a string instead than a dictionary
-                event_data = json.loads(evt['event'])
+                # event_data = json.loads(evt['event'])
+                event_data = evt['event']
                 title = event_data['POST'].get('title', None)
             except:
                 pass
