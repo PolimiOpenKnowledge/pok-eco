@@ -13,7 +13,7 @@ dependencies:
   override:
     - ./pip_install_local.sh
     - ./copy_edx_dependencies.sh:
-        timeout: 1200
+        timeout: 1600
 
 test:
   override:
