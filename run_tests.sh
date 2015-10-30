@@ -1,9 +1,11 @@
 #!/bin/bash
 set -ex
 
-coverage run --source=oai,ecoapi,xapi ./manage.py test xapi
-coverage run --source=oai,ecoapi,xapi ./manage.py test ecoapi
-coverage run --source=oai,ecoapi,xapi ./manage.py test oai
+coverage run --source=xapi ./manage.py test xapi
+coverage report -m
+coverage run --source=ecoapi ./manage.py test ecoapi
+coverage report -m
+coverage run --source=oai ./manage.py test oai
 coverage report -m
 pep8 --config=.pep8 oai
 pylint --rcfile=.pylintrc oai --report=no

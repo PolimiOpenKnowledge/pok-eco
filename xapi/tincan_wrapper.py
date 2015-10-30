@@ -17,7 +17,11 @@ from xapi.patterns import (
     LearnerUnEnrollMOOCRule,
     LoadVideoRule,
     PlayVideoRule,
-    ProblemCheckRule
+    ProblemCheckRule,
+    AccessPeerAssessmentRule,
+    SubmitsPeerAssessmentRule,
+    SubmitsPeerFeedbackRule,
+    SubmitsSelfFeedbackRule,
 )
 
 
@@ -47,7 +51,11 @@ class TinCanWrapper(object):
             ForumReplyRule(**options),
             ForumLikesRule(**options),
             ForumReadsRule(**options),
-            ForumAccessRule(**options)
+            ForumAccessRule(**options),
+            AccessPeerAssessmentRule(**options),
+            SubmitsPeerAssessmentRule(**options),
+            SubmitsPeerFeedbackRule(**options),
+            SubmitsSelfFeedbackRule(**options)
         ]
 
     def to_xapi(self, evt, course_id):

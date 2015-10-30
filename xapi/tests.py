@@ -26,7 +26,29 @@ from eventtracking.django import DjangoTracker
 from xapi.xapi_tracker import XapiBackend
 from xapi.tincan_wrapper import TinCanWrapper
 from xapi.models import TrackingLog
-
+from xapi.patterns import (
+    AccessCourseRule,
+    AccessModuleRule,
+    AccessProblemRule,
+    AccessWikiRule,
+    AccessWikiPageRule,
+    CreateWikiRule,
+    EditWikiRule,
+    ForumAccessRule,
+    ForumCreateThreadRule,
+    ForumLikesRule,
+    ForumReadsRule,
+    ForumReplyRule,
+    LearnerEnrollMOOCRule,
+    LearnerUnEnrollMOOCRule,
+    LoadVideoRule,
+    PlayVideoRule,
+    ProblemCheckRule,
+    AccessPeerAssessmentRule,
+    SubmitsPeerAssessmentRule,
+    SubmitsPeerFeedbackRule,
+    SubmitsSelfFeedbackRule,
+)
 
 SPLIT_COURSE_ID = "course-v1:ORG+COURSE+RUN"
 COURSE_ID = 'ORG/COURSE/RUN'
@@ -234,3 +256,26 @@ class XapiMigrateTest(XapiTest):
         context = {"path": "PATH"}
         self.basic_event["context"] = context
         self.base_migrate_test(self.basic_event, self.course_id)
+
+    @data(
+        "/courses/"+SPLIT_COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/render_peer_assessment",
+        "/courses/"+COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/render_peer_assessment",
+        "/courses/"+SPLIT_COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/submit",
+        "/courses/"+COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/submit",
+        "/courses/"+SPLIT_COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/peer_assess",
+        "/courses/"+COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/peer_assess",
+        "/courses/"+SPLIT_COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/self_assess",
+        "/courses/"+COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/self_assess",
+
+    )
+    def test_migrate_peer(self, event_type):
+        self.basic_event["event_type"] = event_type
+        context = {"path": "PATH"}
+        self.basic_event["context"] = context
+        self.base_migrate_test(self.basic_event, self.course_id)
+
+    def test_access_course(self):
+        self.basic_event["event_type"] = "/courses/"+SPLIT_COURSE_ID+"/info"
+        rule = AccessCourseRule()
+        is_matched = rule.match(self.basic_event, COURSE_ID)
+        self.assertTrue(is_matched)

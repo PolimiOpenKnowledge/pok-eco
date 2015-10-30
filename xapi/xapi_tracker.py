@@ -460,7 +460,7 @@ class XapiBackend(BaseBackend):
         # ######################### END FORUM ###################################################
 
         # ######################### PEER ASSESSMENT #############################################
-        elif re.match('/courses/[\S]+/render_peer_assessment/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+r'/xblock/[\S]+/handler/render_peer_assessment/?', evt['event_type']):
             # Ex: /courses/{courseId}/xblock/{item_id}}/handler/render_peer_assessment
             action = EDX2TINCAN['learner_accesses_peer_assessment']
             obj = {
@@ -472,7 +472,7 @@ class XapiBackend(BaseBackend):
                 }
             }
 
-        elif re.match('/courses/[\S]+/submit/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+r'/xblock/[\S]+/handler/submit/?', evt['event_type']):
             # Ex: /courses/{courseId}/xblock/{item_id}/handler/submit
             action = EDX2TINCAN['learner_submits_assessment']
             obj = {
@@ -484,7 +484,7 @@ class XapiBackend(BaseBackend):
                 }
             }
 
-        elif re.match('/courses/[\S]+/peer_assess/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+r'/xblock/[\S]+/handler/peer_assess/?', evt['event_type']):
             # Ex: /courses/{courseId}/xblock/{item_id}/handler/peer_assess
             action = EDX2TINCAN['learner_submits_peer_feedback']
             obj = {
@@ -496,7 +496,7 @@ class XapiBackend(BaseBackend):
                 }
             }
 
-        elif re.match('/courses/[\S]+/self_assess/?', evt['event_type']):
+        elif re.match('/courses/'+settings.COURSE_ID_PATTERN+r'/xblock/[\S]+/handler/self_assess/?', evt['event_type']):
             # Ex: /courses/{courseId}/xblock/{item_id}/handler/self_assess
             action = EDX2TINCAN['learner_submits_peer_product']
             obj = {
