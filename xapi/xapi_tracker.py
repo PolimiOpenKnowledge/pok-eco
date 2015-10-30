@@ -406,7 +406,7 @@ class XapiBackend(BaseBackend):
                     "id": fix_id(self.base_url, evt['context']['path']),
                     "definition": {
                         "name": {"en-US": title},
-                        "type": "http://www.ecolearning.eu/expapi/activitytype/wiki"
+                        "type": "http://www.ecolearning.eu/expapi/activitytype/discussionthread"
                     }
                 }
             else:
@@ -420,7 +420,7 @@ class XapiBackend(BaseBackend):
                 "id": fix_id(self.base_url, evt['context']['path']),
                 "definition": {
                     "name": {"en-US": evt['event_type'].split('reply')[0]},
-                    "type": "http://www.ecolearning.eu/expapi/activitytype/wiki"
+                    "type": "http://www.ecolearning.eu/expapi/activitytype/forummessage"
                 }
             }
 
@@ -432,7 +432,7 @@ class XapiBackend(BaseBackend):
                 "id": fix_id(self.base_url, evt['context']['path']),
                 "definition": {
                     "name": {"en-US": evt['event_type'].split('upvote')[0]},
-                    "type": "http://www.ecolearning.eu/expapi/activitytype/wiki"
+                    "type": "http://www.ecolearning.eu/expapi/activitytype/forummessage"
                 }
             }
 
@@ -444,7 +444,7 @@ class XapiBackend(BaseBackend):
                 "id": fix_id(self.base_url, evt['context']['path']),
                 "definition": {
                     "name": {"en-US": evt['event_type']},
-                    "type": "http://www.ecolearning.eu/expapi/activitytype/wiki"
+                    "type": "http://www.ecolearning.eu/expapi/activitytype/forummessage"
                 }
             }
 
@@ -456,7 +456,7 @@ class XapiBackend(BaseBackend):
                 "id": fix_id(self.base_url, evt['context']['path']),
                 "definition": {
                     "name": {"en-US": evt['event_type']},
-                    "type": "http://www.ecolearning.eu/expapi/activitytype/wiki"
+                    "type": "http://id.tincanapi.com/activitytype/discussion"
                 }
             }
 
