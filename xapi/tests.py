@@ -133,7 +133,7 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
 
 
 @ddt
-class XapiMigrateTest(XapiTest):
+class XapiMigrateTest(XapiTest):  # pylint: disable=too-many-ancestors
 
     @override_settings(FEATURES={'ENABLE_THIRD_PARTY_AUTH': True})
     def setUp(self):
