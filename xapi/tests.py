@@ -132,8 +132,8 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
         self.assertEqual(expected_actor.to_json(), json.dumps(actor))
 
 
-@ddt
-class XapiMigrateTest(XapiTest):  # pylint: disable=too-many-ancestors
+@ddt  # pylint: disable=too-many-ancestors
+class XapiMigrateTest(XapiTest):
 
     @override_settings(FEATURES={'ENABLE_THIRD_PARTY_AUTH': True})
     def setUp(self):
