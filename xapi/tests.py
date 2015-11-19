@@ -56,6 +56,7 @@ TEST_UID = "test_social_uid"
 TEST_HOMEPAGE_URL = "https://portal.ecolearning.eu"
 TEST_USERNAME = "test-actor"
 TEST_FILE_TRACKING = os.getcwd()+"/xapi/test_data/tracking.log"
+TEST_FILE_TRACKING_OFFLINE = os.getcwd()+"/xapi/test_data/tracking_offline.log"
 TEST_BACKEND_OPTIONS = {
     "name": "default",
     "ID_COURSES": [SPLIT_COURSE_ID, COURSE_ID],  # list of course_id you want to track on LRS
@@ -94,8 +95,8 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
 
     def test_send_offline(self):
         args = []
-        opts = {"filename": TEST_FILE_TRACKING, "course_ids": (",").join(TEST_BACKEND_OPTIONS.get("ID_COURSES"))}
-
+        opts = {"filename": TEST_FILE_TRACKING_OFFLINE,
+                "course_ids": (",").join(TEST_BACKEND_OPTIONS.get("ID_COURSES"))}
         with patch('xapi.xapi_tracker.XapiBackend.get_context') as get_context:
             get_context.return_value = {}
             call_command('send_offline_data_2_tincan', *args, **opts)
@@ -151,8 +152,8 @@ class XapiMigrateTest(XapiTest):
         # self.assertIsNotNone(verb_2)
         # self.assertIsNotNone(obj_2)
         if verb_1 and verb_2:
-            self.assertEqual(json.dumps(verb_1), verb_2.to_json())
-            self.assertEqual(json.dumps(obj_1), obj_2.to_json())
+            self.assertEqual(verb_1.to_json(), verb_2.to_json())
+            self.assertEqual(obj_1.to_json(), obj_2.to_json())
         else:
             print "verbs NONE for basic_event: "+json.dumps(basic_event)
             print "verbs1 " + str(verb_1 is None)
