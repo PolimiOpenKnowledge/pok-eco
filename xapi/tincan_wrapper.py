@@ -67,6 +67,5 @@ class TinCanWrapper(object):
             if p.match(evt, course_id):
                 # print "MATCHED RULE " + str(type(p))
                 return p.convert(evt, course_id)
-        print str(evt) + " NONT MANAGADE #########"
         # EVENT NOT MANAGED
         return None, None

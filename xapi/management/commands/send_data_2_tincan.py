@@ -29,7 +29,7 @@ class Command(BaseCommand):
                               .filter(tincan_error='') \
                               .order_by('dtcreated')[:options['EXTRACTED_EVENT_NUMBER']]
         for evt in evt_list:
-            resp = requests.post(options['URL'], data=evt.statement, auth=auth, headers=headers)
+            resp = requests.post(options['URL'], data=evt.statement, auth=auth, headers=headers, timeout=0.4)
             try:
                 evt.tincan_key = ''
                 answer = json.loads(resp.content)
