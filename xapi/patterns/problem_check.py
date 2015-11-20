@@ -4,10 +4,10 @@ from tincan import (
     LanguageMap
 )
 from xapi.patterns.base import BasePattern
-from xapi.patterns.verbs import AnsweredVerb
+from xapi.patterns.eco_verbs import LearnerAnswersQuestionVerb
 
 
-class ProblemCheckRule(BasePattern, AnsweredVerb):
+class ProblemCheckRule(BasePattern, LearnerAnswersQuestionVerb):
     def match(self, evt, course_id):
         return (evt['event_type'] == 'problem_check' and
                 evt['event_source'] == 'server')

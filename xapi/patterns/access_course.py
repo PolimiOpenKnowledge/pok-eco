@@ -6,11 +6,11 @@ from tincan import (
     LanguageMap
 )
 from xapi.patterns.base import BasePattern
-from xapi.patterns.verbs import AccessVerb
+from xapi.patterns.eco_verbs import LearnerAccessesMoocVerb
 
 
 # Learner accesses MOOC
-class AccessCourseRule(BasePattern, AccessVerb):
+class AccessCourseRule(BasePattern, LearnerAccessesMoocVerb):
     def match(self, evt, course_id):
         return (re.match('^/courses/.*/info/?', evt['event_type']) or
                 re.match('^/courses/.*/about/?', evt['event_type']))

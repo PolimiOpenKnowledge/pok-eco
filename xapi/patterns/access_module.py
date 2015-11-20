@@ -6,11 +6,11 @@ from tincan import (
     LanguageMap
 )
 from xapi.patterns.base import BasePattern
-from xapi.patterns.verbs import AccessVerb
+from xapi.patterns.eco_verbs import LearnerAccessesAModuleVerb
 
 
 # learner_accesses_a_module
-class AccessModuleRule(BasePattern, AccessVerb):
+class AccessModuleRule(BasePattern, LearnerAccessesAModuleVerb):
     def match(self, evt, course_id):
         return (re.match(r'^/courses/.*/courseware/?\w*', evt['event_type']) or
                 evt['event_type'] == "seq_goto" or
