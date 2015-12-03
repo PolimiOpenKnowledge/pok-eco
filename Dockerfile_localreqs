@@ -1,0 +1,13 @@
+# Use as base image the image builded with docker/base/Dockerfile. This is essentially done to use docker caching layer 
+FROM marcore/pok_eco_base
+MAINTAINER Marco Re <mrc.re@tiscali.it>
+
+ENV PYTHONENV="/src"
+# grab contents of source directory
+ADD . /src/
+
+# specify working directory
+WORKDIR /src
+
+# build app
+RUN /src/pip_install_local.sh
