@@ -10,6 +10,7 @@ from ddt import ddt, data
 from datetime import datetime
 from pytz import UTC
 from mock import patch
+from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.utils import unittest
