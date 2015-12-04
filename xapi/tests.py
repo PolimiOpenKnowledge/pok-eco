@@ -142,11 +142,11 @@ class XapiSendOfflineTest(XapiTest):
             self.assertEqual(TrackingLog.objects.count(), 1)
 
 
+@override_settings(TRACKING_BACKENDS=XAPI_BACKEND_SETTINGS)
 class XapiSend2TincanTest(XapiTest):
     def setUp(self):
         super(XapiSend2TincanTest, self).setUp()
 
-    @override_settings(TRACKING_BACKENDS=XAPI_BACKEND_SETTINGS)
     @unittest.skipUnless(
         settings.TRACKING_BACKENDS['xapi']['OPTIONS']['URL'] != '',
         "#### Test data_2_tincan need a real LRS API URL#####"
