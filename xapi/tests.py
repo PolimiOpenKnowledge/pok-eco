@@ -66,7 +66,7 @@ TEST_BACKEND_OPTIONS = {
     "ID_COURSES": [SPLIT_COURSE_ID, COURSE_ID],  # list of course_id you want to track on LRS
     "USERNAME_LRS": os.environ.get('XAPI_USERNAME_LRS', ""),  # username for the LRS endpoint
     "PASSWORD_LRS": os.environ.get('XAPI_PASSWORD_LRS', ""),  # password for the LRS endpoint
-    "URL": os.environ.get('XAPI_URL_LRS', "http://mylrs.endpoint/xAPI/statements"),  # the LRS endpoint API URL
+    "URL": os.environ.get('XAPI_URL_LRS', ""),  # the LRS endpoint API URL
     "EXTRACTED_EVENT_NUMBER": 100,  # number of batch statements to extract from db and     sent in a job
     "HOMEPAGE_URL": TEST_HOMEPAGE_URL,
     "BASE_URL": "https://www.pok.polimi.it/",
@@ -145,6 +145,10 @@ class XapiSend2TincanTest(XapiTest):
         super(XapiSend2TincanTest, self).setUp()
 
     @override_settings(TRACKING_BACKENDS=XAPI_BACKEND_SETTINGS)
+    @unittest.skipUnless(
+        settings.TRACKING_BACKENDS['xapi']['OPTIONS']['URL'] != '',
+        "#### Test data_2_tincan need a real LRS API URL#####"
+    )
     def test_data_2_tincan(self):
         args = []
         opts = {}
