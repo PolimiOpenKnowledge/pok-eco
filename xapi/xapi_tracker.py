@@ -43,6 +43,7 @@ class TrackingLog(models.Model):
     dtcreated = models.DateTimeField('creation date')
     user_id = models.IntegerField(blank=True)
     course_id = CourseKeyField(max_length=255, blank=True)
+    original_event = models.TextField(blank=True)
     statement = models.TextField(blank=True)
     tincan_key = models.CharField(max_length=512, null=True, blank=True)
     tincan_error = models.TextField(blank=True, null=True, default='')
@@ -160,7 +161,8 @@ class XapiBackend(BaseBackend):
                         dtcreated=timestamp,  # event_edx['time'],
                         user_id=event_edx['context']['user_id'],
                         course_id=course_id,
-                        statement=statement
+                        statement=statement,
+                        original_event=event_edx
                     )
 
                     # We don't need to add duplication event test, so we save directly
