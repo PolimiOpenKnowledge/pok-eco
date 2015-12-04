@@ -12,6 +12,7 @@ from pytz import UTC
 from mock import patch
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.utils import unittest
 from django.core.management import call_command
 from social.apps.django_app.default.models import UserSocialAuth
 
