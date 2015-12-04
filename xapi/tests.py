@@ -10,7 +10,6 @@ from ddt import ddt, data
 from datetime import datetime
 from pytz import UTC
 from mock import patch
-from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.utils import unittest
@@ -142,7 +141,6 @@ class XapiSendOfflineTest(XapiTest):
             self.assertEqual(TrackingLog.objects.count(), 1)
 
 
-@override_settings(TRACKING_BACKENDS=XAPI_BACKEND_SETTINGS)
 class XapiSend2TincanTest(XapiTest):
     def setUp(self):
         super(XapiSend2TincanTest, self).setUp()
@@ -151,6 +149,7 @@ class XapiSend2TincanTest(XapiTest):
         os.environ.get('XAPI_URL_LRS') != '',
         "#### Test data_2_tincan need a real LRS API URL#####"
     )
+    @override_settings(TRACKING_BACKENDS=XAPI_BACKEND_SETTINGS)
     def test_data_2_tincan(self):
         args = []
         opts = {}
