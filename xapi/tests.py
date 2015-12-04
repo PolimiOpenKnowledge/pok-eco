@@ -146,7 +146,7 @@ class XapiSend2TincanTest(XapiTest):
         super(XapiSend2TincanTest, self).setUp()
 
     @unittest.skipUnless(
-        os.environ.get('XAPI_URL_LRS') != '',
+        os.environ.get('XAPI_URL_LRS', '') != '',
         "#### Test data_2_tincan need a real LRS API URL#####"
     )
     @override_settings(TRACKING_BACKENDS=XAPI_BACKEND_SETTINGS)
