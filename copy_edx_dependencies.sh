@@ -11,7 +11,7 @@ copyEdxApp()
 installEdxRequirements()
 {
   echo "Installing edx-platform requirements $1 .."
-  pip install --exists-action w -r requirements/edx/$1
+  pip install $2 -r requirements/edx/$1
   echo "..done"
 }
 
@@ -37,7 +37,7 @@ copyEdxApp verify_student lms
 cd "$PYTHONENV/src/edx-platform"
 installEdxRequirements pre.txt
 installEdxRequirements base.txt
-installEdxRequirements github.txt
+installEdxRequirements github.txt "--exists-action w"
 installEdxRequirements local.txt
 
 mkdir "$BUILD_DIR/test_root"
