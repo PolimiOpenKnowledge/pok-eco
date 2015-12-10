@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+# debug version
+pylint --version
+
 coverage run --source=xapi ./manage.py test xapi
 coverage report -m
 coverage run --source=ecoapi ./manage.py test ecoapi
