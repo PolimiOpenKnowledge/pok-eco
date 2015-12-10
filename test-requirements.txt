@@ -1,4 +1,4 @@
--e git+https://github.com/edx/edx-platform@named-release/cypress#egg=edx-platform==named-release/cypress
+-e git+https://github.com/marcore/edx-platform@pok-release-cypress#egg=edx-platform==pok-release-cypress
 
 pymongo==2.8.1
 South==1.0.1
