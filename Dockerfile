@@ -12,4 +12,6 @@ RUN /src/copy_edx_dependencies.sh
 # grab contents of source directory
 ADD . /src/
 
+RUN /src/pip_install_local.sh
+
 CMD /src/run_tests.sh
