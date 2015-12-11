@@ -17,4 +17,5 @@ dependencies:
 
 test:
   override:
+    - pip install --upgrade pylint==1.5.1
     - ./run_tests.sh
