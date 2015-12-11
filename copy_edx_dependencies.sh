@@ -39,7 +39,7 @@ installEdxRequirements pre.txt
 installEdxRequirements base.txt
 installEdxRequirements github.txt "--exists-action w"
 installEdxRequirements local.txt
-pip install -e --upgrade git+https://github.com/edx/edx-lint.git@v0.3.2#egg=edx_lint==0.3.2
+pip install --upgrade -e git+https://github.com/edx/edx-lint.git@v0.3.2#egg=edx_lint==0.3.2
 
 mkdir "$BUILD_DIR/test_root"
 cp -r "$PYTHONENV"/src/edx-platform/test_root/* "${BUILD_DIR}/test_root/"
