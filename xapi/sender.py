@@ -5,6 +5,7 @@ import json
 from django.conf import settings
 from xapi.models import TrackingLog
 
+
 class TinCanSender(object):
 
     @classmethod
