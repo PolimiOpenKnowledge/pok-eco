@@ -69,9 +69,8 @@ In this repository you find different Django application used for this integrati
     		}
     }
     ```
-    This backend add a translated event on a db table, then you need to add a cron job that extract
-    this statements (max EXTRACTED_EVENT_NUMBER each time) and push them to LRS endpoint using the
-    django command `send_data_2_tincan` .
+    This backend add a translated event on a db table, then you need to add a scheduled task that extract
+    this statements (max EXTRACTED_EVENT_NUMBER each time) and push them to LRS endpoint using the xapi.send_2_tin_can task name in djcelery config already activated in edx
 
 ## How to install
 
