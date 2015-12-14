@@ -25,7 +25,7 @@ class JsonResponse(HttpResponse):
 
 
 def heartbeat(request):  # pylint: disable=unused-argument
-    now = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    now = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
     risposta = {
         "alive_at": now
@@ -71,7 +71,7 @@ def user_courses(request, eco_user_id):
     student = User.objects.prefetch_related("groups").get(id=usa.user.id)
 
     course_enrollements = student.courseenrollment_set.all()
-    now = datetime.datetime.now(UTC())
+    now = datetime.now(UTC())
     for ce in course_enrollements:
         course_key = ce.course_id
         course_key_str = u'%s' % course_key
@@ -127,11 +127,11 @@ def optimized_grade(student, request, course_key):   # pylint: disable=unused-ar
     to set a periodic task to update those data with a day(?) retention.
     Update need the django command compute_grades in background
     '''
-    now = datetime.datetime.now(UTC())
+    now = datetime.now(UTC())
     task_args = [course_key.to_deprecated_string()]
     try:
         ocg = OfflineComputedGrade.objects.get(user=student, course_id=course_key)
-        if (ocg.updated + datetime.timedelta(days=1)) < now:
+        if (ocg.updated + timedelta(days=1)) < now:
             offline_calc.apply_async(task_args)
         return json.loads(ocg.gradeset)
     except OfflineComputedGrade.DoesNotExist:
