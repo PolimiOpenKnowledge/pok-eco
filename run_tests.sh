@@ -13,6 +13,6 @@ coverage report -m
 pep8 --config=.pep8 ecoapi
 pep8 --config=.pep8 xapi
 pep8 --config=.pep8 oai
-pylint --rcfile=.pylintrc ecoapi --report=no
-pylint --rcfile=.pylintrc xapi --report=no
-pylint --rcfile=.pylintrc oai --report=no
+pylint --rcfile=.pylintrc ecoapi
+pylint --rcfile=.pylintrc xapi
+pylint --rcfile=.pylintrc oai 
