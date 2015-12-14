@@ -1,5 +1,5 @@
 """ Views for OAI-PMH List Records API """
-
+from datetime import datetime
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
@@ -8,8 +8,6 @@ from django.utils import timezone
 
 from oaipmh.datestamp import tolerant_datestamp_to_datetime
 from oaipmh.error import DatestampError
-
-from datetime import datetime
 
 from .models import OaiFormat, OaiRecord, OaiSet
 from .utils import to_kv_pairs, OaiRequestError

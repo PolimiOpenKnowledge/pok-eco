@@ -1,6 +1,6 @@
+from datetime import timedelta
 from django.conf import settings
 
-from datetime import timedelta
 
 # Endpoint settings
 OAI_BASE_URL = "http"

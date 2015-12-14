@@ -1,13 +1,12 @@
 # -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
-
+import hashlib
 from django.contrib import admin
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone as DTZ
 from djcelery.models import TaskMeta
 
-import hashlib
 
 from .utils import nstr, ndt
 from .settings import OWN_SET_PREFIX, RESUMPTION_TOKEN_SALT, DISABLE_PRINT_OWN_SET_PREFIX
@@ -35,7 +34,7 @@ class OaiSource(models.Model):
         return OaiRecord.objects.filter(source=self.pk)
 
     def harvesting(self):
-        return not (self.harvester_state() in ['SUCCESS', 'FAILURE', 'REVOKED', 'DELETED'])
+        return self.harvester_state() not in ['SUCCESS', 'FAILURE', 'REVOKED', 'DELETED']
 
     def harvester_task(self):
         try:
