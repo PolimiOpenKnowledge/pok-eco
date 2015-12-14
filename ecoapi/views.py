@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
@@ -105,7 +104,6 @@ def user_courses(request, eco_user_id):
         spentTime = timedelta()
         for m in modules:
             spentTime += m.modified - m.created
-        spentTime = str(spentTime.seconds * 1000)  # Total time the user spent in this course in milliseconds
 
         risposta.append(
             {
@@ -116,7 +114,8 @@ def user_courses(request, eco_user_id):
                 "firstViewDate": firstViewDate,  # First StudentModule created
                 "lastViewDate": lastViewDate,  # Last StudentModule modified
                 "completedDate": completedDate,
-                "spentTime": spentTime
+                # Total time the user spent in this course in milliseconds
+                "spentTime": str(spentTime.seconds * 1000)
             }
         )
     return JsonResponse(risposta)
