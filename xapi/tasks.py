@@ -3,8 +3,7 @@ from django.conf import settings
 from xapi.sender import TinCanSender
 
 
-@task
+@task(name='xapi.send_2_tin_can')
 def send_2_tin_can():
     options = settings.TRACKING_BACKENDS['xapi']['OPTIONS']
-    if options.get("SEND_CRON_ENABLED"):
-        TinCanSender.send_2_tincan_by_settings()
+    TinCanSender.send_2_tincan_by_settings()
