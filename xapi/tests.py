@@ -10,6 +10,7 @@ from datetime import datetime
 from ddt import ddt, data
 from pytz import UTC
 from mock import patch
+from urlparse import urlparse
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.utils import unittest
@@ -228,6 +229,11 @@ class TinCanRuleTest(XapiTest):
         verb, obj = rule.convert(basic_event, course_id)
         self.assertIsNotNone(verb)
         self.assertIsNotNone(obj)
+        self.assertTrue(self.isUrl(obj.id))
+
+    def isUrl(self, url):
+        par = urlparse(url)
+        return par.scheme != '' and par.netloc != ''
 
     @data(
         "/courses/"+SPLIT_COURSE_ID+"/info",
