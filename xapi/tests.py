@@ -15,16 +15,17 @@ from django.test.utils import override_settings
 from django.utils import unittest
 from django.core.management import call_command
 
-from courseware.tests.helpers import get_request_for_user
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
 from social.apps.django_app.default.models import UserSocialAuth
-from student.tests.factories import UserFactory
 from tincan import (
     Activity,
     ActivityDefinition,
     LanguageMap
 )
+
+from courseware.tests.helpers import get_request_for_user
+from student.tests.factories import UserFactory
 
 from xapi.xapi_tracker import XapiBackend
 from xapi.tincan_wrapper import TinCanWrapper
