@@ -1,13 +1,13 @@
 import re
-
+from django.conf import settings
 from tincan import (
     Activity,
     ActivityDefinition,
     LanguageMap
 )
 from xapi.patterns.base import BasePattern
+
 from xapi.patterns.eco_verbs import LearnerReadsForumMessageVerb
-from django.conf import settings
 
 
 class ForumReadsRule(BasePattern, LearnerReadsForumMessageVerb):

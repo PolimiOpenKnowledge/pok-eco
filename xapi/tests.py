@@ -6,21 +6,26 @@ Replace this with more appropriate tests for your application.
 """
 import os
 import json
-from ddt import ddt, data
 from datetime import datetime
+from ddt import ddt, data
 from pytz import UTC
 from mock import patch
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.utils import unittest
 from django.core.management import call_command
-from social.apps.django_app.default.models import UserSocialAuth
 
-from student.tests.factories import UserFactory
 from courseware.tests.helpers import get_request_for_user
-
 from eventtracking import tracker
 from eventtracking.django import DjangoTracker
+from social.apps.django_app.default.models import UserSocialAuth
+from student.tests.factories import UserFactory
+from tincan import (
+    Activity,
+    ActivityDefinition,
+    LanguageMap
+)
+
 from xapi.xapi_tracker import XapiBackend
 from xapi.tincan_wrapper import TinCanWrapper
 from xapi.models import TrackingLog
@@ -46,11 +51,6 @@ from xapi.patterns import (
     SubmitsPeerAssessmentRule,
     SubmitsPeerFeedbackRule,
     SubmitsSelfFeedbackRule
-)
-from tincan import (
-    Activity,
-    ActivityDefinition,
-    LanguageMap
 )
 from xapi.patterns.eco_verbs import LearnerAccessesMoocVerb
 
@@ -198,12 +198,11 @@ class XapiSend2TincanTest(XapiTest):
             'context': context
         }
 
-        statement = json.dumps(statement)
         tldat = TrackingLog(
             dtcreated=timestamp,
             user_id=1,
             course_id=COURSE_ID,
-            statement=statement
+            statement=json.dumps(statement)
         ).save()
         call_command('send_data_2_tincan', *args, **opts)
         tldat = TrackingLog.objects.all()[:1].get()
@@ -256,11 +255,11 @@ class TinCanRuleTest(XapiTest):
         mock_get_course_title.return_value = "COURSE_TITLE"
         self.basic_event["event_source"] = "server"
         self.basic_event["event_type"] = "edx.course.enrollment.activated"
-        rule = LearnerEnrollMOOCRule()
-        self.base_rule_test(rule, self.basic_event, self.course_id)
+        ruleEnroll = LearnerEnrollMOOCRule()
+        self.base_rule_test(ruleEnroll, self.basic_event, self.course_id)
         self.basic_event["event_type"] = "edx.course.enrollment.deactivated"
-        rule = LearnerUnEnrollMOOCRule()
-        self.base_rule_test(rule, self.basic_event, self.course_id)
+        ruleUnenroll = LearnerUnEnrollMOOCRule()
+        self.base_rule_test(ruleUnenroll, self.basic_event, self.course_id)
 
     @data(
         "/courses/"+SPLIT_COURSE_ID+"/wiki/_create/***",

@@ -16,11 +16,10 @@ import logging
 import json
 
 from django.db import models
+from social.apps.django_app.default.models import UserSocialAuth
 
 from track.backends import BaseBackend
 from xmodule_django.models import CourseKeyField
-
-from social.apps.django_app.default.models import UserSocialAuth
 from courseware.courses import get_course_about_section
 import xapi.utils as xutils
 from xapi.tincan_wrapper import TinCanWrapper
@@ -155,13 +154,11 @@ class XapiBackend(BaseBackend):
                         'context': context
                     }
 
-                    statement = json.dumps(statement)
-
                     tldat = TrackingLog(
                         dtcreated=timestamp,  # event_edx['time'],
                         user_id=event_edx['context']['user_id'],
                         course_id=course_id,
-                        statement=statement,
+                        statement=json.dumps(statement),
                         original_event=event_edx
                     )
 

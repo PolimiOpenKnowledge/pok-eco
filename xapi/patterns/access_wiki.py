@@ -1,5 +1,5 @@
 import re
-
+from django.conf import settings
 from tincan import (
     Activity,
     ActivityDefinition,
@@ -10,7 +10,6 @@ from xapi.patterns.eco_verbs import (
     LearnerAccessesWikiVerb,
     LearnerAccessesWikiPageVerb
 )
-from django.conf import settings
 
 
 class BaseAccessWikiRule(BasePattern):  # pylint: disable=abstract-method

@@ -1,6 +1,6 @@
 
-import requests
 import json
+import requests
 
 from django.conf import settings
 from xapi.models import TrackingLog
@@ -18,7 +18,7 @@ class TinCanSender(object):
             options['EXTRACTED_EVENT_NUMBER'],
             10)
 
-    @classmethod
+    @classmethod  # pylint: disable-msg=too-many-arguments
     def send_2_tincan(cls, api_url, username_lrs, password_lrs, extract_event_number, timeout):
         headers = {
             "Content-Type": "application/json",

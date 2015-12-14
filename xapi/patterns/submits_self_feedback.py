@@ -1,5 +1,5 @@
 import re
-
+from django.conf import settings
 from tincan import (
     Activity,
     ActivityDefinition,
@@ -7,7 +7,7 @@ from tincan import (
 )
 from xapi.patterns.base import BasePattern
 from xapi.patterns.eco_verbs import LearnerSubmitsPeerProductVerb
-from django.conf import settings
+
 
 
 class SubmitsSelfFeedbackRule(BasePattern, LearnerSubmitsPeerProductVerb):

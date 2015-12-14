@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import json
-import dateutil.parser
 from optparse import make_option
+import dateutil.parser
 
 from django.core.management.base import BaseCommand, CommandError
 from xapi.models import TrackingLog

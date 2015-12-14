@@ -1,5 +1,5 @@
 import re
-# import json
+from django.conf import settings
 from tincan import (
     Activity,
     ActivityDefinition,
@@ -10,7 +10,6 @@ from xapi.patterns.eco_verbs import (
     LearnerCreatesWikiPageVerb,
     LearnerEditsWikiPageVerb
 )
-from django.conf import settings
 
 
 class BaseWikiRule(BasePattern):  # pylint: disable=abstract-method

@@ -2,8 +2,8 @@
 django admin pages for xapi_tracker model
 '''
 
-from xapi.models import TrackingLog
 from django.contrib import admin
+from xapi.models import TrackingLog
 
 
 class TrackingLogAdmin(admin.ModelAdmin):
