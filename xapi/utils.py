@@ -3,6 +3,7 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from courseware.courses import get_course_by_id, get_course_about_section
 
+
 def get_course(course_id):
     course_key = ""
     try:

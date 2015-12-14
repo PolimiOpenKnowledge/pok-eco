@@ -9,7 +9,6 @@ from xapi.patterns.base import BasePattern
 from xapi.patterns.eco_verbs import LearnerSubmitsPeerProductVerb
 
 
-
 class SubmitsSelfFeedbackRule(BasePattern, LearnerSubmitsPeerProductVerb):
     def match(self, evt, course_id):
         reg = '/courses/'+settings.COURSE_ID_PATTERN
