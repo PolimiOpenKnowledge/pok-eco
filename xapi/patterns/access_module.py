@@ -38,7 +38,7 @@ class AccessModuleRule(BasePattern, LearnerAccessesAModuleVerb):
         else:
             module = evt['event_type'].split('/')[-2:][0]
             obj = Activity(
-                id=self.get_object_id(course_id, module),
+                id=self.get_block_id(course_id, module),
                 definition=ActivityDefinition(
                     name=LanguageMap({'en-US': module}),
                     type="http://adlnet.gov/expapi/activities/module"
@@ -46,5 +46,5 @@ class AccessModuleRule(BasePattern, LearnerAccessesAModuleVerb):
             )
         return verb, obj
 
-    def get_object_id(self, course_id, module_id):
+    def get_block_id(self, course_id, module_id):
         return get_usage_key(course_id, module_id)

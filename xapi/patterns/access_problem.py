@@ -1,4 +1,3 @@
-import re
 from tincan import (
     Activity,
     ActivityDefinition,

@@ -2,7 +2,7 @@ import abc
 import re
 
 USAGE_PATTERN_ID = r'(P<course_key_string>[^/+]+(/|\+)[^/+]+(/|\+)[^/]+)'
-BLOCK_PATTERN_REGEX = USAGE_PATTERN_ID.replace('P<course_key_string>', 'block-v[\d]:')
+BLOCK_PATTERN_REGEX = USAGE_PATTERN_ID.replace('P<course_key_string>', r'block-v[\d]:')
 
 
 class BasePattern(object):
