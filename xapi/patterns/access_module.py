@@ -46,5 +46,6 @@ class AccessModuleRule(BasePattern, LearnerAccessesAModuleVerb):
             )
         return verb, obj
 
-    def get_block_id(self, course_id, module_id):
+    @staticmethod
+    def get_block_id(course_id, module_id):
         return get_usage_key(course_id, module_id)

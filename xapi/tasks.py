@@ -1,5 +1,5 @@
 from celery.task import task
-from django.conf import settings
+# from django.conf import settings
 from xapi.sender import TinCanSender
 
 

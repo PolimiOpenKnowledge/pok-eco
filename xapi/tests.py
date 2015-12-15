@@ -237,7 +237,8 @@ class TinCanRuleTest(XapiTest):
         if expected_obj_id:
             self.assertEqual(obj.id, expected_obj_id)
 
-    def isURI(self, url):
+    @staticmethod
+    def isURI(url):
         '''
         Basic URI validation for edx
         '''
