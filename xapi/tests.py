@@ -265,7 +265,7 @@ class TinCanRuleTest(XapiTest):
         "/courses/"+SPLIT_COURSE_ID+"/courseware/",
         "/courses/"+COURSE_ID+"/courseware/"
     )
-    @patch('xapi.patterns.AccessModuleRule.get_object_id')
+    @patch('xapi.patterns.AccessModuleRule.get_block_id')
     def test_access_module(self, event_type, mock_get_usage_key):
         mock_get_usage_key.return_value = "block-v1:ORG+TEST101+RUNCODE+type@sequential+block@122324"
         self.basic_event["event_type"] = event_type
@@ -339,8 +339,8 @@ class TinCanRuleTest(XapiTest):
         "play_video",
         "load_video"
     )
-    @patch('xapi.patterns.LoadVideoRule.get_object_id')
-    @patch('xapi.patterns.PlayVideoRule.get_object_id')
+    @patch('xapi.patterns.LoadVideoRule.get_block_id')
+    @patch('xapi.patterns.PlayVideoRule.get_block_id')
     def test_video(self, event_type, load_get_object_id, play_get_object_id):
         expected_object_id = "block-v1:+"+self.course_id+"+type@video+block@VIDEO_ID"
         load_get_object_id.return_value = expected_object_id
