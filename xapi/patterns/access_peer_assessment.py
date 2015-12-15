@@ -18,7 +18,7 @@ class AccessPeerAssessmentRule(BasePattern, LearnerAccessesPeerAssessmentVerb):
     def convert(self, evt, course_id):
         verb = self.get_verb()
         obj = Activity(
-            id=self.fix_id(self.base_url, evt['context']['path']),
+            id=self.get_object_id(evt['context']['path']),
             definition=ActivityDefinition(
                 name=LanguageMap({'en-US': evt['event_type'].split('render_peer_assessment')[0]}),
                 type="http://www.ecolearning.eu/expapi/activitytype/peerassessment"

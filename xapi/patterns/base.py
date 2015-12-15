@@ -1,4 +1,8 @@
 import abc
+import re
+
+USAGE_PATTERN_ID = r'(P<course_key_string>[^/+]+(/|\+)[^/+]+(/|\+)[^/]+)'
+BLOCK_PATTERN_REGEX = USAGE_PATTERN_ID.replace('P<course_key_string>', 'block-v[\d]:')
 
 
 class BasePattern(object):
@@ -25,3 +29,10 @@ class BasePattern(object):
         if not obj_id.startswith("https"):
             return base_url + obj_id
         return obj_id
+
+    def get_object_id(self, path):
+        match = re.search(BLOCK_PATTERN_REGEX, path)
+        if match:
+            return match.group(0)
+        else:
+            return None  # self.fix_id(self.base_url, path)

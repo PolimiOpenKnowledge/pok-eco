@@ -7,6 +7,7 @@ from tincan import (
 )
 from xapi.patterns.base import BasePattern
 from xapi.patterns.eco_verbs import LearnerAccessesAModuleVerb
+from xapi.utils import get_usage_key
 
 
 # learner_accesses_a_module
@@ -27,7 +28,8 @@ class AccessModuleRule(BasePattern, LearnerAccessesAModuleVerb):
         if seq_condition:
             module = evt['page'].split('/')[-2:][0]+"_"+evt['event']['new']
             obj = Activity(
-                id=evt['page']+"/"+evt['event']['new'],
+                # "block-v1:Polimi+FIS101+2015_M9+type@sequential+block@W2M1#1
+                id=evt['event']['id']+"#"+evt['event']['new'],
                 definition=ActivityDefinition(
                     name=LanguageMap({'en-US': module}),
                     type="http://adlnet.gov/expapi/activities/module"
@@ -36,10 +38,13 @@ class AccessModuleRule(BasePattern, LearnerAccessesAModuleVerb):
         else:
             module = evt['event_type'].split('/')[-2:][0]
             obj = Activity(
-                id=self.fix_id(self.base_url, evt['context']['path']),
+                id=self.get_object_id(course_id, module),
                 definition=ActivityDefinition(
                     name=LanguageMap({'en-US': module}),
                     type="http://adlnet.gov/expapi/activities/module"
                 )
             )
         return verb, obj
+
+    def get_object_id(self, course_id, module_id):
+        return get_usage_key(course_id, module_id)

@@ -8,6 +8,7 @@ from xapi.patterns.eco_verbs import (
     LoadVideoVerb,
     PlayVideoVerb
 )
+from xapi.utils import get_usage_key
 
 
 class BaseVideoRule(BasePattern):  # pylint: disable=abstract-method
@@ -15,13 +16,16 @@ class BaseVideoRule(BasePattern):  # pylint: disable=abstract-method
     def convert(self, evt, course_id):
         verb = self.get_verb()  # pylint: disable=no-member
         obj = Activity(
-            id=self.fix_id(self.base_url, evt['page']),
+            id=self.get_object_id(course_id, evt['event']['id']),
             definition=ActivityDefinition(
                 name=LanguageMap({'en-US': evt['event']['id']}),
                 type="http://activitystrea.ms/schema/1.0/video"
             )
         )
         return verb, obj
+
+    def get_object_id(self, course_id, module_id):
+        return get_usage_key(course_id, module_id)
 
 
 class PlayVideoRule(BaseVideoRule, PlayVideoVerb):

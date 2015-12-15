@@ -64,6 +64,7 @@ TEST_HOMEPAGE_URL = "https://portal.ecolearning.eu"
 TEST_USERNAME = "test-actor"
 TEST_FILE_TRACKING = os.getcwd()+"/xapi/test_data/tracking.log"
 TEST_FILE_TRACKING_OFFLINE = os.getcwd()+"/xapi/test_data/tracking_offline.log"
+OAI_PREFIX = 'oai:it.polimi.pok:'
 TEST_BACKEND_OPTIONS = {
     "name": "xapi",
     "ID_COURSES": [SPLIT_COURSE_ID, COURSE_ID],  # list of course_id you want to track on LRS
@@ -73,7 +74,7 @@ TEST_BACKEND_OPTIONS = {
     "EXTRACTED_EVENT_NUMBER": 100,  # number of batch statements to extract from db and     sent in a job
     "HOMEPAGE_URL": TEST_HOMEPAGE_URL,
     "BASE_URL": "https://www.pok.polimi.it/",
-    'OAI_PREFIX': 'oai:it.polimi.pok:'
+    'OAI_PREFIX': OAI_PREFIX
 }
 XAPI_BACKEND_SETTINGS = {
     'xapi': {
@@ -81,6 +82,7 @@ XAPI_BACKEND_SETTINGS = {
         'OPTIONS': TEST_BACKEND_OPTIONS
     }
 }
+OPENASSESSMENT_KEY = "block-v1:edx+Demo+demo:1+2+3+type@openassessment+block@Name"
 
 
 class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
@@ -156,7 +158,7 @@ class XapiSend2TincanTest(XapiTest):
         args = []
         opts = {}
         obj = Activity(
-            id=self.backend.base_url + "TEST_EVENT_ID",
+            id="block-v1:Polimi+FIS101+2015_M9+type@video+block@W1M1L1_video",
             definition=ActivityDefinition(
                 name=LanguageMap({'en-US': self.backend.oai_prefix + COURSE_ID}),
                 type="http://adlnet.gov/expapi/activities/course"
@@ -223,17 +225,25 @@ class TinCanRuleTest(XapiTest):
         self.basic_event = json.loads(lines[0])
         self.course_id = SPLIT_COURSE_ID
 
-    def base_rule_test(self, rule, basic_event, course_id):
+    def base_rule_test(self, rule, basic_event, course_id, expected_obj_id):
         is_matched = rule.match(basic_event, course_id)
         self.assertTrue(is_matched)
         verb, obj = rule.convert(basic_event, course_id)
         self.assertIsNotNone(verb)
         self.assertIsNotNone(obj)
-        self.assertTrue(self.isUrl(obj.id))
+        self.assertTrue(self.isURI(obj.id))
+        if expected_obj_id:
+            self.assertEqual(obj.id, expected_obj_id)
 
-    def isUrl(self, url):
+    def isURI(self, url):
+        '''
+        Basic URI validation for edx
+        '''
         par = urlparse(url)
-        return par.scheme != '' and par.netloc != ''
+        validURI = par.scheme != '' and (par.netloc != '' or par.path != '')
+        if not validURI:
+            print par
+        return validURI
 
     @data(
         "/courses/"+SPLIT_COURSE_ID+"/info",
@@ -243,30 +253,34 @@ class TinCanRuleTest(XapiTest):
     )
     def test_access_course(self, event_type):
         self.basic_event["event_type"] = event_type
-        rule = AccessCourseRule()
-        self.base_rule_test(rule, self.basic_event, self.course_id)
+        expected_object_id = OAI_PREFIX + self.course_id
+        rule = AccessCourseRule(**TEST_BACKEND_OPTIONS)
+        self.base_rule_test(rule, self.basic_event, self.course_id, expected_object_id)
 
     @data(
-        "/courses/"+SPLIT_COURSE_ID+"/courseware/122324",
-        "/courses/"+COURSE_ID+"/courseware/122324",
+        "/courses/"+SPLIT_COURSE_ID+"/courseware/abibo/122324",
+        "/courses/"+COURSE_ID+"/courseware/abibo/122324",
         "/courses/"+SPLIT_COURSE_ID+"/courseware/",
         "/courses/"+COURSE_ID+"/courseware/"
     )
-    def test_access_module(self, event_type):
+    @patch('xapi.patterns.AccessModuleRule.get_object_id')
+    def test_access_module(self, event_type, mock_get_usage_key):
+        mock_get_usage_key.return_value = "block-v1:ORG+TEST101+RUNCODE+type@sequential+block@122324"
         self.basic_event["event_type"] = event_type
-        rule = AccessModuleRule()
-        self.base_rule_test(rule, self.basic_event, self.course_id)
+        rule = AccessModuleRule(**TEST_BACKEND_OPTIONS)
+        self.base_rule_test(rule, self.basic_event, self.course_id, mock_get_usage_key.return_value)
 
     @patch('xapi.utils.get_course_title')
     def test_enrollment(self, mock_get_course_title):
         mock_get_course_title.return_value = "COURSE_TITLE"
+        expected_object_id = OAI_PREFIX + self.course_id
         self.basic_event["event_source"] = "server"
         self.basic_event["event_type"] = "edx.course.enrollment.activated"
-        ruleEnroll = LearnerEnrollMOOCRule()
-        self.base_rule_test(ruleEnroll, self.basic_event, self.course_id)
+        ruleEnroll = LearnerEnrollMOOCRule(**TEST_BACKEND_OPTIONS)
+        self.base_rule_test(ruleEnroll, self.basic_event, self.course_id, expected_object_id)
         self.basic_event["event_type"] = "edx.course.enrollment.deactivated"
-        ruleUnenroll = LearnerUnEnrollMOOCRule()
-        self.base_rule_test(ruleUnenroll, self.basic_event, self.course_id)
+        ruleUnenroll = LearnerUnEnrollMOOCRule(**TEST_BACKEND_OPTIONS)
+        self.base_rule_test(ruleUnenroll, self.basic_event, self.course_id, expected_object_id)
 
     @data(
         "/courses/"+SPLIT_COURSE_ID+"/wiki/_create/***",
@@ -299,29 +313,36 @@ class TinCanRuleTest(XapiTest):
         "/courses/"+COURSE_ID
     )
     def test_access_problem(self, baseeventtype):
+        expected_object_id = "block-v1:edx+Demo+demo+type@problem+block@__27"
         event_type = baseeventtype
-        event_type += "/xblock/block-v1:edx+Demo+demo+type@problem+block@__27"
+        event_type += "/xblock/"+expected_object_id
         event_type += "/handler/xmodule_handler/problem_get"
         self.basic_event["event_type"] = event_type
         self.basic_event["event_source"] = "server"
-        rule = AccessProblemRule()
-        self.base_rule_test(rule, self.basic_event, self.course_id)
+        rule = AccessProblemRule(**TEST_BACKEND_OPTIONS)
+        self.base_rule_test(rule, self.basic_event, self.course_id, expected_object_id)
 
     def test_problem_check(self):
         self.basic_event["event_type"] = "problem_check"
         self.basic_event["event_source"] = "server"
-        event = {"problem_id": "PROBLEM_ID"}
+        expected_object_id = "block-v1:edx+Demo+demo+type@problem+block@W1M2Q1_001"
+        event = {"problem_id": expected_object_id}
         context = {"module": {"display_name": "Quiz 1"}}
         self.basic_event["event"] = event
         self.basic_event["context"] = context
-        rule = ProblemCheckRule()
-        self.base_rule_test(rule, self.basic_event, self.course_id)
+        rule = ProblemCheckRule(**TEST_BACKEND_OPTIONS)
+        self.base_rule_test(rule, self.basic_event, self.course_id, expected_object_id)
 
     @data(
         "play_video",
         "load_video"
     )
-    def test_video(self, event_type):
+    @patch('xapi.patterns.LoadVideoRule.get_object_id')
+    @patch('xapi.patterns.PlayVideoRule.get_object_id')
+    def test_video(self, event_type, load_get_object_id, play_get_object_id):
+        expected_object_id = "block-v1:+"+self.course_id+"+type@video+block@VIDEO_ID"
+        load_get_object_id.return_value = expected_object_id
+        play_get_object_id.return_value = expected_object_id
         self.basic_event["event_type"] = event_type
         self.basic_event["event_source"] = "browser"
         event = {"id": "VIDEO_ID"}
@@ -337,6 +358,8 @@ class TinCanRuleTest(XapiTest):
         verb, obj = tincan.to_xapi(self.basic_event, self.course_id)
         self.assertIsNotNone(verb)
         self.assertIsNotNone(obj)
+        self.assertTrue(self.isURI(obj.id))
+        self.assertEqual(obj.id, expected_object_id)
 
     @data(
         "edx.forum.thread.created",
@@ -373,19 +396,28 @@ class TinCanRuleTest(XapiTest):
         self.assertIsNotNone(obj)
 
     @data(
-        "/courses/"+SPLIT_COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/render_peer_assessment",
-        "/courses/"+COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/render_peer_assessment",
-        "/courses/"+SPLIT_COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/submit",
-        "/courses/"+COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/submit",
-        "/courses/"+SPLIT_COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/peer_assess",
-        "/courses/"+COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/peer_assess",
-        "/courses/"+SPLIT_COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/self_assess",
-        "/courses/"+COURSE_ID+"/xblock/XBLOCK_KEY_@+:/handler/self_assess",
+        "/courses/"+SPLIT_COURSE_ID+"/xblock/"+OPENASSESSMENT_KEY+"/handler/render_peer_assessment",
+        "/courses/"+COURSE_ID+"/xblock/"+OPENASSESSMENT_KEY+"/handler/render_peer_assessment",
+        "/courses/"+SPLIT_COURSE_ID+"/xblock/"+OPENASSESSMENT_KEY+"/handler/submit",
+        "/courses/"+COURSE_ID+"/xblock/"+OPENASSESSMENT_KEY+"/handler/submit",
+        "/courses/"+SPLIT_COURSE_ID+"/xblock/"+OPENASSESSMENT_KEY+"/handler/peer_assess",
+        "/courses/"+COURSE_ID+"/xblock/"+OPENASSESSMENT_KEY+"/handler/peer_assess",
+        "/courses/"+SPLIT_COURSE_ID+"/xblock/"+OPENASSESSMENT_KEY+"/handler/self_assess",
+        "/courses/"+COURSE_ID+"/xblock/"+OPENASSESSMENT_KEY+"/handler/self_assess",
 
     )
-    def test_peer(self, event_type):
+    @patch('xapi.patterns.AccessPeerAssessmentRule.get_object_id')
+    @patch('xapi.patterns.SubmitsPeerAssessmentRule.get_object_id')
+    @patch('xapi.patterns.SubmitsPeerFeedbackRule.get_object_id')
+    @patch('xapi.patterns.SubmitsSelfFeedbackRule.get_object_id')
+    def test_peer(self, event_type, a, b, c, d):
+        expected_object_id = OPENASSESSMENT_KEY
+        a.return_value = expected_object_id
+        b.return_value = expected_object_id
+        c.return_value = expected_object_id
+        d.return_value = expected_object_id
         self.basic_event["event_type"] = event_type
-        context = {"path": "PATH"}
+        context = {"path": event_type}
         self.basic_event["context"] = context
         tincan = self.backend.tincan
         tincan.patterns = [
@@ -400,3 +432,5 @@ class TinCanRuleTest(XapiTest):
         verb, obj = tincan.to_xapi(self.basic_event, self.course_id)
         self.assertIsNotNone(verb)
         self.assertIsNotNone(obj)
+        self.assertTrue(self.isURI(obj.id))
+        self.assertEqual(obj.id, expected_object_id)

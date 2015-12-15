@@ -15,7 +15,7 @@ class ProblemCheckRule(BasePattern, LearnerAnswersQuestionVerb):
     def convert(self, evt, course_id):
         verb = self.get_verb()
         obj = Activity(
-            id=self.fix_id(self.base_url, evt['event']['problem_id']),
+            id=evt['event']['problem_id'],
             definition=ActivityDefinition(
                 name=LanguageMap({'en-US': evt['context']['module']['display_name']}),
                 type="http://adlnet.gov/expapi/activities/question"
