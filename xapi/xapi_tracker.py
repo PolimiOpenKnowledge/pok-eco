@@ -140,9 +140,15 @@ class XapiBackend(BaseBackend):
                     timestamp = event_edx['time'].isoformat()  # ststrftime("%Y-%m-%dT%H:%M:%S%f%z")
                 except AttributeError:
                     timestamp = event_edx['time']
+                actor = None
+                try:
+                    actor = self.get_actor(event_edx['context']['user_id'])
+                except UserSocialAuth.DoesNotExist:
+                    # Only ECO user need to be tracked
+                    return
 
                 verb, obj = self.to_xapi(event_edx, course_id)
-                actor = self.get_actor(event_edx['context']['user_id'])
+
                 context = self.get_context(course_id)
                 # verb = None means to not record the action
                 if verb:
