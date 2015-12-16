@@ -37,6 +37,7 @@ install:
 # command to run tests and quality checks
 script:
     - ./copy_edx_dependencies.sh
+    - pip install --upgrade pylint==1.5.1
     - ./run_tests.sh
 
 branches:
