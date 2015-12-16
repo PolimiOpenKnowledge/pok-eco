@@ -20,11 +20,13 @@ setup(
     ],
     packages=['oai', 'ecoapi', 'xapi'],
     dependency_links=[
-        "https://github.com/RusticiSoftware/TinCanPython.git#egg=tincan",
+        "https://github.com/RusticiSoftware/TinCanPython.git@0.0.5#egg=tincan",
         "https://github.com/infrae/pyoai/archive/2.4.4.zip#egg=pyoai==2.4.4",
     ],
     install_requires=[
         "Django >= 1.4, < 1.5",
-        "django-celery==3.1.16"
+        "django-celery==3.1.16",
+        "tincan==0.0.5",
+        "pyoai==2.4.4"
     ]
 )
