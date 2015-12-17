@@ -1,3 +1,4 @@
+import json
 import re
 
 from tincan import (
@@ -26,10 +27,19 @@ class AccessModuleRule(BasePattern, LearnerAccessesAModuleVerb):
             evt['event_type'] == "seq_prev"
         )
         if seq_condition:
-            module = evt['page'].split('/')[-2:][0]+"_"+evt['event']['new']
+            module_id = None
+            children_id = None
+            try:
+                module_id = evt['event']['id']
+                children_id = evt['event']['new']
+            except TypeError:
+                internal_event = json.loads(evt['event'])
+                module_id = internal_event['id']
+                children_id = internal_event['new']
+            module = evt['page'].split('/')[-2:][0]+"_"+children_id
             obj = Activity(
                 # "block-v1:Polimi+FIS101+2015_M9+type@sequential+block@W2M1#1
-                id=evt['event']['id']+"#"+evt['event']['new'],
+                id=module_id+"#"+children_id,
                 definition=ActivityDefinition(
                     name=LanguageMap({'en-US': module}),
                     type="http://adlnet.gov/expapi/activities/module"

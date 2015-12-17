@@ -1,3 +1,4 @@
+import json
 from tincan import (
     Activity,
     ActivityDefinition,
@@ -15,10 +16,16 @@ class BaseVideoRule(BasePattern):  # pylint: disable=abstract-method
 
     def convert(self, evt, course_id):
         verb = self.get_verb()  # pylint: disable=no-member
+        module_id = None
+        try:
+            module_id = evt['event']['id']
+        except TypeError:
+            internal_event = json.loads(evt['event'])
+            module_id = internal_event['id']
         obj = Activity(
-            id=self.get_block_id(course_id, evt['event']['id']),
+            id=self.get_block_id(course_id, module_id),
             definition=ActivityDefinition(
-                name=LanguageMap({'en-US': evt['event']['id']}),
+                name=LanguageMap({'en-US': module_id}),
                 type="http://activitystrea.ms/schema/1.0/video"
             )
         )
