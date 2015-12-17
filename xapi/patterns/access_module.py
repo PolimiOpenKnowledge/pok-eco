@@ -31,11 +31,11 @@ class AccessModuleRule(BasePattern, LearnerAccessesAModuleVerb):
             children_id = None
             try:
                 module_id = evt['event']['id']
-                children_id = evt['event']['new']
+                children_id = str(evt['event']['new'])
             except TypeError:
                 internal_event = json.loads(evt['event'])
                 module_id = internal_event['id']
-                children_id = internal_event['new']
+                children_id = str(internal_event['new'])
             module = evt['page'].split('/')[-2:][0]+"_"+children_id
             obj = Activity(
                 # "block-v1:Polimi+FIS101+2015_M9+type@sequential+block@W2M1#1
