@@ -143,8 +143,8 @@ class XapiBackend(BaseBackend):
                 actor = None
                 try:
                     actor = self.get_actor(event_edx['context']['user_id'])
-                except UserSocialAuth.DoesNotExist:
-                    # Only ECO user need to be tracked
+                except (ValueError, UserSocialAuth.DoesNotExist) as e:
+                    # Only logged ECO user need to be tracked
                     return
 
                 verb, obj = self.to_xapi(event_edx, course_id)
