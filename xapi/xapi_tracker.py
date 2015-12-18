@@ -15,7 +15,6 @@ import logging
 # import datetime
 import json
 
-from django.db import models
 from social.apps.django_app.default.models import UserSocialAuth
 
 from track.backends import BaseBackend
@@ -57,7 +56,7 @@ class XapiBackend(BaseBackend):
     def oai_prefix(self):
         return self.backend_setting('oai_prefix', [])
 
-    #  pylint: disable=attribute-defined-outside-init
+    @staticmethod
     def backend_setting(self, setting_name, default=None):
         """ Get a setting, from XapiBackendConfig """
         from xapi.models import XapiBackendConfig
