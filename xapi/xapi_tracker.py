@@ -56,13 +56,13 @@ class XapiBackend(BaseBackend):
     def oai_prefix(self):
         return self.backend_setting('oai_prefix', [])
 
-    @staticmethod
+    #  pylint: disable=attribute-defined-outside-init
     def backend_setting(self, setting_name, default=None):
         """ Get a setting, from XapiBackendConfig """
         from xapi.models import XapiBackendConfig
-        config = XapiBackendConfig.current()
-        if hasattr(config, str(setting_name)):
-            return getattr(config, str(setting_name))
+        self.config = XapiBackendConfig.current()
+        if hasattr(self.config, str(setting_name)):
+            return getattr(self.config, str(setting_name))
         else:
             return default
 
