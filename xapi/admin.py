@@ -11,4 +11,6 @@ class TrackingLogAdmin(admin.ModelAdmin):
     list_filter = ['exported']
     date_hierarchy = 'dtcreated'
 
-admin.site.register(TrackingLog, TrackingLogAdmin, XapiBackendConfig)
+admin.site.register(TrackingLog)
+admin.site.register(TrackingLogAdmin)
+admin.site.register(XapiBackendConfig)

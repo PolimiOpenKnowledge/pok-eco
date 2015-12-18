@@ -36,7 +36,7 @@ class BasePattern(object):
         if hasattr(self._config, str(setting_name)):
             return getattr(self._config, str(setting_name))
         else:
-            raise KeyError
+            return default
 
     # pylint: disable=no-self-use
     def fix_id(self, base_url, obj_id):

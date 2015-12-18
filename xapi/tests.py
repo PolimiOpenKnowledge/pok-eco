@@ -99,14 +99,10 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
         self.user = user
         self.request = get_request_for_user(user)
-        self.create_config()
-        self.backend = XapiBackend()
-        self.tincanwrapper = TinCanWrapper()
-
-    def create_config(self, **kwargs):
-        """Creates a new ProgramsApiConfig with DEFAULTS, updated with any provided overrides."""
         fields = dict(XAPI_BACKEND_CONFIG, **kwargs)
         XapiBackendConfig(**fields).save()
+        self.backend = XapiBackend()
+        self.tincanwrapper = TinCanWrapper()
 
     def test_get_actor(self):
 

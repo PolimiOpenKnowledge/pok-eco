@@ -3,7 +3,6 @@
 import json
 import requests
 
-from django.conf import settings
 from xapi.models import TrackingLog, XapiBackendConfig
 
 
@@ -11,13 +10,6 @@ class TinCanSender(object):
 
     @classmethod
     def send_2_tincan_by_settings(cls):
-        # options = settings.TRACKING_BACKENDS['xapi']['OPTIONS']
-        # cls.send_2_tincan(
-        #    options['URL'],
-        #    options['USERNAME_LRS'],
-        #    options['PASSWORD_LRS'],
-        #    options['EXTRACTED_EVENT_NUMBER'],
-        #    10)
         options = XapiBackendConfig.current()
         cls.send_2_tincan(
             options.lrs_api_url,

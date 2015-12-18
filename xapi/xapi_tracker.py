@@ -20,7 +20,7 @@ from social.apps.django_app.default.models import UserSocialAuth
 
 from track.backends import BaseBackend
 from courseware.courses import get_course_about_section
-from xapi.models import TrackingLog, XapiBackendConfig
+from xapi.models import TrackingLog
 import xapi.utils as xutils
 from xapi.tincan_wrapper import TinCanWrapper
 
@@ -53,6 +53,10 @@ class XapiBackend(BaseBackend):
     def course_ids(self):
         return self.backend_setting('id_courses', [])
 
+    @property
+    def oai_prefix(self):
+        return self.backend_setting('oai_prefix', [])
+
     #  pylint: disable=attribute-defined-outside-init
     def backend_setting(self, setting_name, default=None):
         """ Get a setting, from XapiBackendConfig """
@@ -61,7 +65,7 @@ class XapiBackend(BaseBackend):
         if hasattr(config, str(setting_name)):
             return getattr(config, str(setting_name))
         else:
-            raise KeyError
+            return default
 
     # See https://github.com/adlnet/edx-xapi-bridge/blob/master/xapi-bridge/converter.py
     def to_xapi(self, evt, course_id):
