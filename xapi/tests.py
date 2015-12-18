@@ -99,7 +99,7 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
         self.user = user
         self.request = get_request_for_user(user)
-        fields = dict(XAPI_BACKEND_CONFIG, **kwargs)
+        fields = dict(XAPI_BACKEND_CONFIG)
         XapiBackendConfig(**fields).save()
         self.backend = XapiBackend()
         self.tincanwrapper = TinCanWrapper()
