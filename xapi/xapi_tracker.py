@@ -120,7 +120,7 @@ class XapiBackend(BaseBackend):
                 course_id = event['POST'].get('course_id', None)[0]
             except:
                 pass  # No event data, just skip
-        if course_id in self.course_ids:
+        if course_id != '' and course_id in self.course_ids:
             try:
                 # Sometimes we receive time as python datetime, sometimes as string...
                 try:
