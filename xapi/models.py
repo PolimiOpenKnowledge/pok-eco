@@ -47,7 +47,7 @@ class XapiBackendConfig(ConfigurationModel):
     )
     password_lrs = models.TextField(
         blank=True,
-        verbose_name="USERNAME_LRS",
+        verbose_name="PASSWORD_LRS",
         help_text="password for the LRS endpoint"
     )
     oai_prefix = models.CharField(
@@ -69,7 +69,7 @@ class XapiBackendConfig(ConfigurationModel):
 
     extracted_event_number = models.IntegerField(
         default=50,
-        verbose_name="EXTRACTED_EVENT_NUMBER",
+        verbose_name="EXTRACTED EVENT NUMBER",
         help_text=(
             'The maximum number of extracted event to send each iteration'
         )
