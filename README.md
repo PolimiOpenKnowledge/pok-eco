@@ -31,15 +31,7 @@ In this repository you find different Django application used for this integrati
       "xapi": {
         "ENGINE": "xapi.xapi_tracker.XapiBackend",
         "OPTIONS": {
-                "name": "xapi",
-                "ID_COURSES": [],  # list of course_id you want to track on LRS
-                "USERNAME_LRS": "",  # username for the LRS endpoint
-                "PASSWORD_LRS": "",  # password for the LRS endpoint
-                "URL": "http://mylrs.endpoint/xAPI/statements",  # the LRS endpoint API URL
-                "HOMEPAGE_URL": "",  # homepage url for user profile (third party auth)
-                "BASE_URL": "",  # base url for lms platform
-                'OAI_PREFIX': '',  # the oai prefix course (eg oai:it.polimi.pok:)
-                "EXTRACTED_EVENT_NUMBER": 100  # number of batch statements to extract from db and sent in a job
+                "name": "xapi"
         }
       }
     }
@@ -60,15 +52,11 @@ In this repository you find different Django application used for this integrati
                 		"ENGINE": "xapi.xapi_tracker.XapiBackend",
                 		"OPTIONS": {
                       "name": "xapi",
-                      "ID_COURSES": [],  # list of course_id you want to track on LRS
-                      "USERNAME_LRS": "",  # username for the LRS endpoint
-                      "PASSWORD_LRS": "",  # password for the LRS endpoint
-                      "URL": "http://mylrs.endpoint/xAPI/statements",  # the LRS endpoint API URL
-                      "EXTRACTED_EVENT_NUMBER": 100  # number of batch statements to extract from db and     sent in a job
                 		}
     		}
     }
     ```
+    Moreover you can config some additional property of the process in the XapiBackendConfig model via Django Admin.
     This backend add a translated event on a db table, then you need to add a scheduled task that extract
     this statements (max EXTRACTED_EVENT_NUMBER each time) and push them to LRS endpoint using the xapi.send_2_tin_can task name in djcelery config already activated in edx
 
