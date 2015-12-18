@@ -32,7 +32,7 @@ from student.tests.factories import UserFactory
 
 from xapi.xapi_tracker import XapiBackend
 from xapi.tincan_wrapper import TinCanWrapper
-from xapi.models import TrackingLog
+from xapi.models import TrackingLog, XapiBackendConfig
 from xapi.patterns import (
     AccessCourseRule,
     AccessModuleRule,
@@ -67,21 +67,22 @@ TEST_USERNAME = "test-actor"
 TEST_FILE_TRACKING = os.getcwd()+"/xapi/test_data/tracking.log"
 TEST_FILE_TRACKING_OFFLINE = os.getcwd()+"/xapi/test_data/tracking_offline.log"
 OAI_PREFIX = 'oai:it.polimi.pok:'
-TEST_BACKEND_OPTIONS = {
-    "name": "xapi",
-    "ID_COURSES": [SPLIT_COURSE_ID, COURSE_ID],  # list of course_id you want to track on LRS
-    "USERNAME_LRS": os.environ.get('XAPI_USERNAME_LRS', ""),  # username for the LRS endpoint
-    "PASSWORD_LRS": os.environ.get('XAPI_PASSWORD_LRS', ""),  # password for the LRS endpoint
-    "URL": os.environ.get('XAPI_URL_LRS', ""),  # the LRS endpoint API URL
-    "EXTRACTED_EVENT_NUMBER": 100,  # number of batch statements to extract from db and     sent in a job
-    "HOMEPAGE_URL": TEST_HOMEPAGE_URL,
-    "BASE_URL": "https://www.pok.polimi.it/",
-    'OAI_PREFIX': OAI_PREFIX
+XAPI_BACKEND_CONFIG = {
+    "id_courses": SPLIT_COURSE_ID + "," + COURSE_ID,
+    "username_lrs": os.environ.get('XAPI_USERNAME_LRS', ""),  # username for the LRS endpoint
+    "password_lrs": os.environ.get('XAPI_PASSWORD_LRS', ""),  # password for the LRS endpoint
+    "lrs_api_url": os.environ.get('XAPI_URL_LRS', ""),  # the LRS endpoint API URL
+    "extracted_event_number": 100,  # number of batch statements to extract from db and     sent in a job
+    "user_profile_home_url": TEST_HOMEPAGE_URL,
+    "base_url": "https://www.pok.polimi.it/",
+    "oai_prefix": OAI_PREFIX
 }
 XAPI_BACKEND_SETTINGS = {
     'xapi': {
         'ENGINE': 'xapi.xapi_tracker.XapiBackend',
-        'OPTIONS': TEST_BACKEND_OPTIONS
+        'OPTIONS': {
+            "name": "xapi",
+        }
     }
 }
 OPENASSESSMENT_KEY = "block-v1:edx+Demo+demo:1+2+3+type@openassessment+block@Name"
@@ -98,9 +99,14 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
         UserSocialAuth.objects.create(user=user, provider="eco", uid=TEST_UID)
         self.user = user
         self.request = get_request_for_user(user)
-        options = TEST_BACKEND_OPTIONS
-        self.backend = XapiBackend(**options)
-        self.tincanwrapper = TinCanWrapper(**options)
+        self.create_config()
+        self.backend = XapiBackend()
+        self.tincanwrapper = TinCanWrapper()
+
+    def create_config(self, **kwargs):
+        """Creates a new ProgramsApiConfig with DEFAULTS, updated with any provided overrides."""
+        fields = dict(XAPI_BACKEND_CONFIG, **kwargs)
+        XapiBackendConfig(**fields).save()
 
     def test_get_actor(self):
 
@@ -135,8 +141,7 @@ class XapiSendOfflineTest(XapiTest):
 
     def test_send_offline(self):
         args = []
-        opts = {"filename": TEST_FILE_TRACKING_OFFLINE,
-                "course_ids": (",").join(TEST_BACKEND_OPTIONS.get("ID_COURSES"))}
+        opts = {"filename": TEST_FILE_TRACKING_OFFLINE}
         with patch('xapi.xapi_tracker.XapiBackend.get_context') as get_context:
             get_context.return_value = {}
             call_command('send_offline_data_2_tincan', *args, **opts)
@@ -162,14 +167,14 @@ class XapiSend2TincanTest(XapiTest):
         obj = Activity(
             id="block-v1:Polimi+FIS101+2015_M9+type@video+block@W1M1L1_video",
             definition=ActivityDefinition(
-                name=LanguageMap({'en-US': self.backend.oai_prefix + COURSE_ID}),
+                name=LanguageMap({'en-US': OAI_PREFIX + COURSE_ID}),
                 type="http://adlnet.gov/expapi/activities/course"
             )
         )
         verb = LearnerAccessesMoocVerb.get_verb()
         timestamp = datetime(2012, 1, 1, tzinfo=UTC).isoformat()
         course_parent = {
-            "id":  self.backend.oai_prefix + COURSE_ID,
+            "id":  OAI_PREFIX + COURSE_ID,
             "objectType": "Activity",
             "definition": {
                 "name": {
@@ -257,7 +262,7 @@ class TinCanRuleTest(XapiTest):
     def test_access_course(self, event_type):
         self.basic_event["event_type"] = event_type
         expected_object_id = OAI_PREFIX + self.course_id
-        rule = AccessCourseRule(**TEST_BACKEND_OPTIONS)
+        rule = AccessCourseRule()
         self.base_rule_test(rule, self.basic_event, self.course_id, expected_object_id)
 
     @data(
@@ -270,7 +275,7 @@ class TinCanRuleTest(XapiTest):
     def test_access_module(self, event_type, mock_get_usage_key):
         mock_get_usage_key.return_value = "block-v1:ORG+TEST101+RUNCODE+type@sequential+block@122324"
         self.basic_event["event_type"] = event_type
-        rule = AccessModuleRule(**TEST_BACKEND_OPTIONS)
+        rule = AccessModuleRule()
         self.base_rule_test(rule, self.basic_event, self.course_id, mock_get_usage_key.return_value)
 
     @patch('xapi.utils.get_course_title')
@@ -279,10 +284,10 @@ class TinCanRuleTest(XapiTest):
         expected_object_id = OAI_PREFIX + self.course_id
         self.basic_event["event_source"] = "server"
         self.basic_event["event_type"] = "edx.course.enrollment.activated"
-        ruleEnroll = LearnerEnrollMOOCRule(**TEST_BACKEND_OPTIONS)
+        ruleEnroll = LearnerEnrollMOOCRule()
         self.base_rule_test(ruleEnroll, self.basic_event, self.course_id, expected_object_id)
         self.basic_event["event_type"] = "edx.course.enrollment.deactivated"
-        ruleUnenroll = LearnerUnEnrollMOOCRule(**TEST_BACKEND_OPTIONS)
+        ruleUnenroll = LearnerUnEnrollMOOCRule()
         self.base_rule_test(ruleUnenroll, self.basic_event, self.course_id, expected_object_id)
 
     @data(
@@ -322,7 +327,7 @@ class TinCanRuleTest(XapiTest):
         event_type += "/handler/xmodule_handler/problem_get"
         self.basic_event["event_type"] = event_type
         self.basic_event["event_source"] = "server"
-        rule = AccessProblemRule(**TEST_BACKEND_OPTIONS)
+        rule = AccessProblemRule()
         self.base_rule_test(rule, self.basic_event, self.course_id, expected_object_id)
 
     def test_problem_check(self):
@@ -333,7 +338,7 @@ class TinCanRuleTest(XapiTest):
         context = {"module": {"display_name": "Quiz 1"}}
         self.basic_event["event"] = event
         self.basic_event["context"] = context
-        rule = ProblemCheckRule(**TEST_BACKEND_OPTIONS)
+        rule = ProblemCheckRule()
         self.base_rule_test(rule, self.basic_event, self.course_id, expected_object_id)
 
     @data(

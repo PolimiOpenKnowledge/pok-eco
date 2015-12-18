@@ -20,30 +20,19 @@ class Command(BaseCommand):
             help="specify import file",
             metavar="FILE"
         ),
-        make_option(
-            "-c",
-            "--courses",
-            dest="course_ids",
-            help="specify course_ids comma separated",
-            action="store"
-        ),
     )
 
     def handle(self, *args, **options):
         # make sure file option is present
         if options['filename'] is None:
             raise CommandError("Option `--file=...` must be specified.")
-        if options['course_ids'] is None:
-            raise CommandError("Option `--courses=...` must be specified.")
 
         # Open the file, parse it and store the data, if not already present
         filename = options['filename']
         raw_data = open(filename).read()
         lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
 
-        courses = options['course_ids'].split(",")
-        opts = {"ID_COURSES": courses}
-        x = XapiBackend(**opts)
+        x = XapiBackend()
 
         process_data(x, lines)
 

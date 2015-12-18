@@ -19,44 +19,14 @@ from django.db import models
 from social.apps.django_app.default.models import UserSocialAuth
 
 from track.backends import BaseBackend
-from xmodule_django.models import CourseKeyField
 from courseware.courses import get_course_about_section
+from xapi.models import TrackingLog, XapiBackendConfig
 import xapi.utils as xutils
 from xapi.tincan_wrapper import TinCanWrapper
 
 # TODO: è giusto? era così:
 # log = logging.getLogger('track.backends.django')
 log = logging.getLogger('xapi.xapi_tracker')
-
-
-LOGFIELDS = [
-    'user_id',
-    'course_id',
-    'statement',
-]
-
-
-class TrackingLog(models.Model):
-    """This model defines the fields that are stored in the tracking log database."""
-
-    dtcreated = models.DateTimeField('creation date')
-    user_id = models.IntegerField(blank=True)
-    course_id = CourseKeyField(max_length=255, blank=True)
-    original_event = models.TextField(blank=True)
-    statement = models.TextField(blank=True)
-    tincan_key = models.CharField(max_length=512, null=True, blank=True)
-    tincan_error = models.TextField(blank=True, null=True, default='')
-    exported = models.BooleanField(default=False)
-
-    class Meta(object):
-        app_label = 'xapi'
-        db_table = 'xapi_trackinglog'
-
-    def __unicode__(self):
-        fmt = (
-            u"[{self.dtcreated}] {self.user_id}@{self.course_id}: "
-        )
-        return fmt.format(self=self)  # pylint: disable=redundant-keyword-arg
 
 
 class XapiBackend(BaseBackend):
@@ -72,12 +42,26 @@ class XapiBackend(BaseBackend):
 
         super(XapiBackend, self).__init__(**options)
 
-        self.course_ids = set(options.get('ID_COURSES', []))
-        self.base_url = options.get('BASE_URL', '')
-        self.homepage_url = options.get('HOMEPAGE_URL', '')
-        self.oai_prefix = options.get('OAI_PREFIX', '')
         self.name = name
-        self.tincan = TinCanWrapper(**options)
+        self.tincan = TinCanWrapper()
+
+    @property
+    def homepage_url(self):
+        return self.backend_setting('user_profile_home_url', '')
+
+    @property
+    def course_ids(self):
+        return self.backend_setting('id_courses', [])
+
+    #  pylint: disable=attribute-defined-outside-init
+    def backend_setting(self, setting_name, default=None):
+        """ Get a setting, from XapiBackendConfig """
+        from xapi.models import XapiBackendConfig
+        config = XapiBackendConfig.current()
+        if hasattr(config, str(setting_name)):
+            return getattr(config, str(setting_name))
+        else:
+            raise KeyError
 
     # See https://github.com/adlnet/edx-xapi-bridge/blob/master/xapi-bridge/converter.py
     def to_xapi(self, evt, course_id):

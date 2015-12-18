@@ -11,11 +11,6 @@ class BasePattern(object):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, **options):
-        self.base_url = options.get('BASE_URL', '')
-        self.homepage_url = options.get('HOMEPAGE_URL', '')
-        self.oai_prefix = options.get('OAI_PREFIX', '')
-
     @abc.abstractmethod
     def match(self, evt, course_id):
         pass
@@ -23,6 +18,25 @@ class BasePattern(object):
     @abc.abstractmethod
     def convert(self, evt, course_id):
         pass
+
+    @property
+    def base_url(self):
+        return self.backend_setting('base_url', '')
+
+    @property
+    def oai_prefix(self):
+        return self.backend_setting('oai_prefix', '')
+
+    #  pylint: disable=attribute-defined-outside-init
+    def backend_setting(self, setting_name, default=None):
+        """ Get a setting, from XapiBackendConfig """
+        if not hasattr(self, '_config'):
+            from xapi.models import XapiBackendConfig
+            self._config = XapiBackendConfig.current()
+        if hasattr(self._config, str(setting_name)):
+            return getattr(self._config, str(setting_name))
+        else:
+            raise KeyError
 
     # pylint: disable=no-self-use
     def fix_id(self, base_url, obj_id):

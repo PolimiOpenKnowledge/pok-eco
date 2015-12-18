@@ -28,34 +28,34 @@ from xapi.patterns import (
 class TinCanWrapper(object):
     """Wrap edx event and translate to tincan with a set of rules"""
 
-    def __init__(self, **options):
+    def __init__(self):
         """
         Configure wrapper used by the backend.
         """
 
-        # super(TinCanWrapper, self).__init__(**options)
+        # super(TinCanWrapper, self).__init__()
         self.patterns = [
-            AccessCourseRule(**options),
-            AccessModuleRule(**options),
-            LearnerEnrollMOOCRule(**options),
-            LearnerUnEnrollMOOCRule(**options),
-            CreateWikiRule(**options),
-            EditWikiRule(**options),
-            AccessWikiPageRule(**options),
-            AccessWikiRule(**options),
-            AccessProblemRule(**options),
-            ProblemCheckRule(**options),
-            LoadVideoRule(**options),
-            PlayVideoRule(**options),
-            ForumCreateThreadRule(**options),
-            ForumReplyRule(**options),
-            ForumLikesRule(**options),
-            ForumReadsRule(**options),
-            ForumAccessRule(**options),
-            AccessPeerAssessmentRule(**options),
-            SubmitsPeerAssessmentRule(**options),
-            SubmitsPeerFeedbackRule(**options),
-            SubmitsSelfFeedbackRule(**options)
+            AccessCourseRule(),
+            AccessModuleRule(),
+            LearnerEnrollMOOCRule(),
+            LearnerUnEnrollMOOCRule(),
+            CreateWikiRule(),
+            EditWikiRule(),
+            AccessWikiPageRule(),
+            AccessWikiRule(),
+            AccessProblemRule(),
+            ProblemCheckRule(),
+            LoadVideoRule(),
+            PlayVideoRule(),
+            ForumCreateThreadRule(),
+            ForumReplyRule(),
+            ForumLikesRule(),
+            ForumReadsRule(),
+            ForumAccessRule(),
+            AccessPeerAssessmentRule(),
+            SubmitsPeerAssessmentRule(),
+            SubmitsPeerFeedbackRule(),
+            SubmitsSelfFeedbackRule()
         ]
 
     def to_xapi(self, evt, course_id):
