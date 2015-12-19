@@ -56,6 +56,9 @@ class XapiBackend(BaseBackend):
     def oai_prefix(self):
         return self.backend_setting('oai_prefix', [])
 
+    def is_enabled(self):
+        return self.backend_setting('enabled', False)
+
     #  pylint: disable=attribute-defined-outside-init
     def backend_setting(self, setting_name, default=None):
         """ Get a setting, from XapiBackendConfig """
@@ -112,6 +115,9 @@ class XapiBackend(BaseBackend):
         return context
 
     def send(self, event_edx):
+        if not self.is_enabled():
+            log.warn("Xapi Backend disabled")
+            return
         course_id = event_edx['context'].get('course_id', None)
         if course_id is None or course_id == '':
             try:

@@ -75,7 +75,8 @@ XAPI_BACKEND_CONFIG = {
     "extracted_event_number": 100,  # number of batch statements to extract from db and     sent in a job
     "user_profile_home_url": TEST_HOMEPAGE_URL,
     "base_url": "https://www.pok.polimi.it/",
-    "oai_prefix": OAI_PREFIX
+    "oai_prefix": OAI_PREFIX,
+    "enabled": True
 }
 XAPI_BACKEND_SETTINGS = {
     'xapi': {
