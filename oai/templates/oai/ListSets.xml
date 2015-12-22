@@ -1,6 +1,6 @@
 {% extends "oai/endpoint-common.xml" %}
 {% block mainContent %}
-<ListSets>{% for record in matches.all %}
+<ListSets>{% for record in matches %}
 <set>
     <setSpec>{{ record }}</setSpec>
     <setName>{% if record.fullname %}{{ record.fullname }}{% else %}{{ record.name }}{% endif %}</setName>

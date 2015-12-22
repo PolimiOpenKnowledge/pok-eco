@@ -2,7 +2,7 @@
 {% load iso %}
 {% block mainContent %}
 {% if matches %}
-<ListRecords>{% for record in matches.all %}
+<ListRecords>{% for record in matches %}
 <record>
 	{% if record.deleted %}
 	<header status="deleted">
@@ -20,4 +20,3 @@
 <resumptionToken cursor="{{ token.cursor }}" completeListSize="{{ token.total_count }}">{{ token.key }}</resumptionToken>
 {% endif %}
 </ListRecords>{% else %}<error code="noRecordsMatch">The query returned no results.</error>{% endif %}{% endblock %}
-
