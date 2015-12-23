@@ -90,8 +90,8 @@ class XapiBackend(BaseBackend):
     def get_context(self, course_id):
         parents = []
         course = xutils.get_course(course_id)
-        title = get_course_about_section(course, "title")
-        description = get_course_about_section(course, "short_description")
+        title = xutils.get_course_title(course_id)
+        description = xutils.get_course_description(course_id, user_id)
         course_parent = {
             "id":  self.oai_prefix + course_id,
             "objectType": "Activity",
@@ -134,15 +134,16 @@ class XapiBackend(BaseBackend):
                 except AttributeError:
                     timestamp = event_edx['time']
                 actor = None
+                user_id = json.loads(event_edx['context']).get('user_id', 0)
                 try:
-                    actor = self.get_actor(event_edx['context']['user_id'])
+                    actor = self.get_actor(user_id)
                 except (ValueError, UserSocialAuth.DoesNotExist) as e:
                     # Only logged ECO user need to be tracked
                     return
 
                 verb, obj = self.to_xapi(event_edx, course_id)
 
-                context = self.get_context(course_id)
+                context = self.get_context(course_id, user_id)
                 # verb = None means to not record the action
                 if verb:
                     statement = {
@@ -155,7 +156,7 @@ class XapiBackend(BaseBackend):
 
                     tldat = TrackingLog(
                         dtcreated=timestamp,  # event_edx['time'],
-                        user_id=event_edx['context']['user_id'],
+                        user_id=user_id,
                         course_id=course_id,
                         statement=json.dumps(statement),
                         original_event=event_edx

@@ -51,7 +51,7 @@ def process_data(x, lines):
             continue
 
         # event['context']['user_id'] = 6 # used only for local test, comment in the real environment
-        user_id = event['context']['user_id']
+        user_id = event['context'].get('user_id')
         if user_id == '':
             continue
 
