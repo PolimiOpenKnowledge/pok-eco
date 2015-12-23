@@ -3,7 +3,7 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
 from courseware.courses import get_course_by_id, get_course_about_section
-from courseware.courses.tests.helpers import get_request_for_user
+from courseware.tests.helpers import get_request_for_user
 from courseware.module_render import get_module
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 
