@@ -87,7 +87,7 @@ class XapiBackend(BaseBackend):
         }
         return actor
 
-    def get_context(self, course_id):
+    def get_context(self, course_id, user_id):
         parents = []
         course = xutils.get_course(course_id)
         title = xutils.get_course_title(course_id)
