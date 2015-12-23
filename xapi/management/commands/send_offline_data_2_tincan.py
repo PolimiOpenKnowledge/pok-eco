@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import gzip
 import json
 from optparse import make_option
 import dateutil.parser
@@ -29,7 +29,10 @@ class Command(BaseCommand):
 
         # Open the file, parse it and store the data, if not already present
         filename = options['filename']
-        raw_data = open(filename).read()
+        if filename.split('.')[-1] == 'gz':
+            raw_data = gzip.open(filename, 'rb').read()
+        else:
+            raw_data = open(filename).read()
         lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
 
         x = XapiBackend()
@@ -76,4 +79,4 @@ def process_data(x, lines):
             event['time'] = dt
             x.send(event)
 
-    print "Imported %s events ", str(i)
+    print "%s events sent to backend", str(i)
