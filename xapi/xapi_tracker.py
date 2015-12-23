@@ -18,7 +18,6 @@ import json
 from social.apps.django_app.default.models import UserSocialAuth
 
 from track.backends import BaseBackend
-from courseware.courses import get_course_about_section
 from xapi.models import TrackingLog
 import xapi.utils as xutils
 from xapi.tincan_wrapper import TinCanWrapper
