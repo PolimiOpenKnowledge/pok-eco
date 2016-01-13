@@ -3,10 +3,21 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
 from courseware.courses import get_course_by_id, get_course_about_section
-from courseware.tests.helpers import get_request_for_user
 from courseware.module_render import get_module
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
+from django.test.client import RequestFactory
 
+
+def get_request_for_user(user):
+    """Create a request object for user."""
+    request = RequestFactory()
+    request.user = user
+    request.COOKIES = {}
+    request.META = {}
+    request.is_secure = lambda: True
+    request.get_host = lambda: "edx.org"
+    request.method = 'GET'
+    return request
 
 def get_course_key(course_id):
     course_key = ""
