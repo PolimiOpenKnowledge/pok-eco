@@ -135,7 +135,7 @@ class XapiBackend(BaseBackend):
                 actor = None
                 user_id = 0
                 try:
-                    user_id = event_edx['context']).get('user_id', 0)
+                    user_id = event_edx['context'].get('user_id', 0)
                 except:
                     user_id = json.loads(event_edx['context']).get('user_id', 0)
                 try:
