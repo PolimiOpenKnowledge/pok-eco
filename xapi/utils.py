@@ -2,10 +2,11 @@ from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
+from django.contrib.auth.models import User
+from django.test.client import RequestFactory
+from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from courseware.courses import get_course_by_id, get_course_about_section
 from courseware.module_render import get_module
-from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
-from django.test.client import RequestFactory
 
 
 def get_request_for_user(user):
@@ -47,8 +48,6 @@ def get_course_description(course_id, user_id):
     request = get_request_for_user(user)
     module = get_module(user, request, course.location.replace(category='about', name="short_description"), [])
     return module.data
-
-    get_course_about_section(course, "short_description")
 
 
 def get_usage_key(course_id, module_id):

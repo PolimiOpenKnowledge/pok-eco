@@ -88,7 +88,6 @@ class XapiBackend(BaseBackend):
 
     def get_context(self, course_id, user_id):
         parents = []
-        course = xutils.get_course(course_id)
         title = xutils.get_course_title(course_id)
         description = xutils.get_course_description(course_id, user_id)
         course_parent = {
