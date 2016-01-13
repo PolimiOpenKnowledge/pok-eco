@@ -5,7 +5,6 @@ from xmodule.modulestore.django import modulestore
 from django.contrib.auth.models import User
 from django.test.client import RequestFactory
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
-from courseware.courses import get_course_by_id, get_course_about_section
 from courseware.module_render import get_module
 
 
