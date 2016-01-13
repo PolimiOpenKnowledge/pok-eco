@@ -19,6 +19,7 @@ def get_request_for_user(user):
     request.method = 'GET'
     return request
 
+
 def get_course_key(course_id):
     course_key = ""
     try:
