@@ -133,7 +133,11 @@ class XapiBackend(BaseBackend):
                 except AttributeError:
                     timestamp = event_edx['time']
                 actor = None
-                user_id = json.loads(event_edx['context']).get('user_id', 0)
+                user_id = 0
+                try:
+                    user_id = event_edx['context']).get('user_id', 0)
+                except:
+                    user_id = json.loads(event_edx['context']).get('user_id', 0)
                 try:
                     actor = self.get_actor(user_id)
                 except (ValueError, UserSocialAuth.DoesNotExist) as e:
