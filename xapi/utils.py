@@ -44,7 +44,7 @@ def get_course_title(course_id):
 
 def get_course_description(course_id, user_id):
     course = get_course(course_id)
-    user = User.objects.get(user_id)
+    user = User.objects.get(id=user_id)
     request = get_request_for_user(user)
     module = get_module(user, request, course.location.replace(category='about', name="short_description"), [])
     return module.data
