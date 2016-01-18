@@ -77,3 +77,9 @@ class ECOOpenIdBackend(BaseOAuth2):
         )
         values['username'] = values['nickname']
         return values
+
+    def get_key_and_secret(self):
+        """Return tuple with Consumer Key and Consumer Secret for current
+        service provider. Must return (key, secret), order *must* be respected.
+        """
+        return self.additional_setting('KEY'), self.additional_setting('SECRET')
