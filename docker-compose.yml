@@ -6,7 +6,7 @@ front:
     DJANGO_SETTINGS_MODULE: test-settings
     XAPI_USERNAME_LRS: "username"
     XAPI_PASSWORD_LRS: "password"
-    XAPI_URL_LRS: "http://your.lrs"
+    XAPI_URL_LRS: "" #http://your.lrs
 
 mongo:
   image: mongo

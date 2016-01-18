@@ -150,8 +150,8 @@ class XapiBackend(BaseBackend):
                 if verb:
                     statement = {
                         'actor': actor,
-                        'verb': verb.to_json(),
-                        'object': obj.to_json(),
+                        'verb': verb,
+                        'object': obj,
                         'timestamp': timestamp,
                         'context': context
                     }
