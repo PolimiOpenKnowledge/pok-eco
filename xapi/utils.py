@@ -47,7 +47,10 @@ def get_course_description(course_id, user_id):
     user = User.objects.get(id=user_id)
     request = get_request_for_user(user)
     module = get_module(user, request, course.location.replace(category='about', name="short_description"), [])
-    return module.data
+    if module:
+        return module.data
+    else:
+        return ""
 
 
 def get_usage_key(course_id, module_id):
