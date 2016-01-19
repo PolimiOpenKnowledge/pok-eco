@@ -10,9 +10,9 @@ them on LRS.
 # schema changes or eventually deprecated.
 
 from __future__ import absolute_import
-
+import pytz
 import logging
-# import datetime
+import datetime
 import json
 
 from social.apps.django_app.default.models import UserSocialAuth
@@ -129,10 +129,16 @@ class XapiBackend(BaseBackend):
         if course_id != '' and course_id in self.course_ids:
             try:
                 # Sometimes we receive time as python datetime, sometimes as string...
-                try:
-                    timestamp = event_edx['time'].isoformat()  # ststrftime("%Y-%m-%dT%H:%M:%S%f%z")
-                except AttributeError:
-                    timestamp = event_edx['time']
+                timepart = event_edx['time']
+
+                if type(timepart) is not datetime.datetime:
+                    timepart = datetime.datetime.strptime(timepart, "%Y-%m-%dT%H:%M:%S%f%z")
+
+                if timepart.tzinfo:
+                    timestamp = timepart.replace(microsecond=0)
+                else:
+                    timestamp = pytz.utc.localize(timepart).replace(microsecond=0)
+
                 actor = None
                 user_id = 0
                 try:
@@ -153,13 +159,13 @@ class XapiBackend(BaseBackend):
                     statement = Statement(
                         actor=actor,
                         verb=verb,
-                        object=object,
+                        object=obj,
                         context=context,
                         timestamp=timestamp
                     )
 
                     tldat = TrackingLog(
-                        dtcreated=timestamp,  # event_edx['time'],
+                        dtcreated=timestamp,
                         user_id=user_id,
                         course_id=course_id,
                         statement=statement.to_json(),
