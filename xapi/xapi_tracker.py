@@ -16,7 +16,17 @@ import logging
 import json
 
 from social.apps.django_app.default.models import UserSocialAuth
-
+from tincan import (
+    Activity,
+    ActivityDefinition,
+    Agent,
+    AgentAccount,
+    Context,
+    ContextActivities,
+    LanguageMap,
+    Statement,
+    Verb
+)
 from track.backends import BaseBackend
 from xapi.models import TrackingLog
 import xapi.utils as xutils
@@ -76,40 +86,32 @@ class XapiBackend(BaseBackend):
         # View http://192.168.33.10:8000/admin/default/usersocialauth/
         # No need to check existance, because is mandatory
         usereco = UserSocialAuth.objects.get(user=user_id)
-
-        actor = {
-            "objectType": "Agent",
-            "account": {
-                "homePage": "%s?user=%s" % (self.homepage_url, usereco.uid),
-                "name": usereco.uid
-            }
-        }
+        actor = Agent(
+            account=AgentAccount(
+                homePage="%s?user=%s" % (self.homepage_url, usereco.uid),
+                name=usereco.uid
+            )
+        )
         return actor
 
     def get_context(self, course_id, user_id):
         parents = []
         title = xutils.get_course_title(course_id)
         description = xutils.get_course_description(course_id, user_id)
-        course_parent = {
-            "id":  self.oai_prefix + course_id,
-            "objectType": "Activity",
-            "definition": {
-                "name": {
-                    "en-US": title
-                },
-                "description": {
-                    "en-US": description
-                },
-                "type": "http://adlnet.gov/expapi/activities/course"
-            }
-        }
+        course_parent = Activity(
+            id=self.oai_prefix + course_id,
+            definition=ActivityDefinition(
+                name=LanguageMap({'en-US': title}),
+                description=LanguageMap({'en-US': description}),
+                type="http://adlnet.gov/expapi/activities/course"
+            )
+        )
         parents.append(course_parent)
-
-        context = {
-            "contextActivities": {
-                "parent": parents
-            }
-        }
+        context = Context(
+            contextActivities=ContextActivities(
+                parent=parents
+            )
+        )
         return context
 
     def send(self, event_edx):
@@ -148,19 +150,19 @@ class XapiBackend(BaseBackend):
                 context = self.get_context(course_id, user_id)
                 # verb = None means to not record the action
                 if verb:
-                    statement = {
-                        'actor': actor,
-                        'verb': verb,
-                        'object': obj,
-                        'timestamp': timestamp,
-                        'context': context
-                    }
+                    statement = Statement(
+                        actor=actor,
+                        verb=verb,
+                        object=object,
+                        context=context,
+                        timestamp=timestamp
+                    )
 
                     tldat = TrackingLog(
                         dtcreated=timestamp,  # event_edx['time'],
                         user_id=user_id,
                         course_id=course_id,
-                        statement=json.dumps(statement),
+                        statement=statement.to_json(),
                         original_event=event_edx
                     )
 
