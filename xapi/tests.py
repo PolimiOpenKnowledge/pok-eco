@@ -26,6 +26,9 @@ from tincan import (
     ActivityDefinition,
     Agent,
     AgentAccount,
+    Context,
+    ContextActivities,
+    Extensions,
     LanguageMap
 )
 
@@ -89,6 +92,7 @@ XAPI_BACKEND_SETTINGS = {
     }
 }
 OPENASSESSMENT_KEY = "block-v1:edx+Demo+demo:1+2+3+type@openassessment+block@Name"
+TIME_MILLIS = "2015-09-25T15:27:05.152330+00:00"
 
 
 class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
@@ -110,17 +114,12 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
     def test_get_actor(self):
 
         expected_actor = Agent(
-            account= AgentAccount(
+            account=AgentAccount(
                 home_page="%s?user=%s" % (TEST_HOMEPAGE_URL, TEST_UID),
                 name=TEST_UID
-            ))
-        {
-            "objectType": "Agent",
-            "account": {
-                "homePage": "%s?user=%s" % (TEST_HOMEPAGE_URL, TEST_UID),
-                "name": TEST_UID
-            }
-        }
+            )
+        )
+
         actor = self.backend.get_actor(self.user.id)
         self.assertIsNotNone(actor)
         self.assertEqual(expected_actor, actor)
@@ -134,7 +133,23 @@ class XapiSendOfflineTest(XapiTest):
         args = []
         opts = {"filename": TEST_FILE_TRACKING_OFFLINE}
         with patch('xapi.xapi_tracker.XapiBackend.get_context') as get_context:
-            get_context.return_value = {}
+            parents = []
+            course_parent = Activity(
+                id=OAI_PREFIX + COURSE_ID,
+                definition=ActivityDefinition(
+                    name=LanguageMap({'en-US': "title"}),
+                    description=LanguageMap({'en-US': "description"}),
+                    type="http://adlnet.gov/expapi/activities/course"
+                )
+            )
+            parents.append(course_parent)
+            context = Context(
+                contextActivities=ContextActivities(
+                    parent=parents
+                ),
+                extensions=Extensions({"time_with_millis": TIME_MILLIS})
+            )
+            get_context.return_value = context
             call_command('send_offline_data_2_tincan', *args, **opts)
             self.assertEqual(TrackingLog.objects.count(), 1)
 

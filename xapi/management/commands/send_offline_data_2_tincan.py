@@ -55,9 +55,8 @@ def process_data(x, lines):
         user_id = event['context'].get('user_id')
         if user_id == '':
             continue
-
         # Search for events of same user in the same date (seconds precision)
-        tls = TrackingLog.objects.filter(dtcreated=dt, user_id=user_id)
+        tls = TrackingLog.objects.filter(dtcreated=xutils.make_datetime_for_tincan(dt), user_id=user_id)
         if tls:
             differentMillis = True
             for t in tls:
