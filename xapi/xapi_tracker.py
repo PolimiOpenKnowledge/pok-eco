@@ -10,9 +10,7 @@ them on LRS.
 # schema changes or eventually deprecated.
 
 from __future__ import absolute_import
-import pytz
 import logging
-import datetime
 import json
 
 from social.apps.django_app.default.models import UserSocialAuth
@@ -23,6 +21,7 @@ from tincan import (
     AgentAccount,
     Context,
     ContextActivities,
+    Extensions,
     LanguageMap,
     Statement,
     Verb
@@ -110,7 +109,8 @@ class XapiBackend(BaseBackend):
         context = Context(
             contextActivities=ContextActivities(
                 parent=parents
-            )
+            ),
+            extensions=Extensions({})
         )
         return context
 
@@ -118,6 +118,10 @@ class XapiBackend(BaseBackend):
         if not self.is_enabled():
             log.warn("Xapi Backend disabled")
             return
+        else:
+            self.process_event(event_edx)
+
+    def process_event(self, event_edx):
         course_id = event_edx['context'].get('course_id', None)
         if course_id is None or course_id == '':
             try:
@@ -130,14 +134,7 @@ class XapiBackend(BaseBackend):
             try:
                 # Sometimes we receive time as python datetime, sometimes as string...
                 timepart = event_edx['time']
-
-                if type(timepart) is not datetime.datetime:
-                    timepart = datetime.datetime.strptime(timepart, "%Y-%m-%dT%H:%M:%S%f%z")
-
-                if timepart.tzinfo:
-                    timestamp = timepart.replace(microsecond=0)
-                else:
-                    timestamp = pytz.utc.localize(timepart).replace(microsecond=0)
+                timestamp = xutils.make_datetime_for_tincan(timepart)
 
                 actor = None
                 user_id = 0
@@ -154,6 +151,8 @@ class XapiBackend(BaseBackend):
                 verb, obj = self.to_xapi(event_edx, course_id)
 
                 context = self.get_context(course_id, user_id)
+                d = {"time_with_millis": timepart}
+                context.extensions = Extensions(d)
                 # verb = None means to not record the action
                 if verb:
                     statement = Statement(

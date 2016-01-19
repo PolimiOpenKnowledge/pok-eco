@@ -1,3 +1,5 @@
+import datetime
+import pytz
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
@@ -65,3 +67,14 @@ def get_usage_key(course_id, module_id):
     course_key = CourseKey.from_string(course_id)
     items = modulestore().get_items(course_key, qualifiers={'name': module_id})
     return items[0].location.to_deprecated_string()
+
+
+def make_datetime_for_tincan(timepart):
+    if type(timepart) is not datetime.datetime:
+        timepart = datetime.datetime.strptime(timepart, "%Y-%m-%dT%H:%M:%S%f%z")
+
+    if timepart.tzinfo:
+        timestamp = timepart.replace(microsecond=0)
+    else:
+        timestamp = pytz.utc.localize(timepart).replace(microsecond=0)
+    return timestamp

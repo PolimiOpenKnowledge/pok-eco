@@ -5,8 +5,10 @@ from optparse import make_option
 import dateutil.parser
 
 from django.core.management.base import BaseCommand, CommandError
+from tincan import Statement
 from xapi.models import TrackingLog
 from xapi.xapi_tracker import XapiBackend
+import xapi.utils as xutils
 
 
 class Command(BaseCommand):
@@ -36,7 +38,6 @@ class Command(BaseCommand):
         lines = [l.strip() for l in raw_data.split('\n') if l.strip() != '']
 
         x = XapiBackend()
-
         process_data(x, lines)
 
 
@@ -60,14 +61,20 @@ def process_data(x, lines):
         if tls:
             differentMillis = True
             for t in tls:
-                t_event = json.loads(t.statement)
-                if t_event['timestamp'] == event['time']:
-                    differentMillis = False
-                    break
+                statement = Statement.from_json(t.statement)
+
+                try:
+                    t_event = statement.context.extensions['time_with_millis']
+                    if t_event == event['time']:
+                        differentMillis = False
+                        break
+                except:
+                    pass
+
             if differentMillis:
                 i = i + 1
                 event['time'] = dt
-                x.send(event)
+                x.process_event(event)
             else:
                 # Skip duplicate events
                 # print "Tracking event already exists for dt: %s and user_id : %s ", event['time'], user_id
@@ -77,6 +84,6 @@ def process_data(x, lines):
         else:
             i = i + 1
             event['time'] = dt
-            x.send(event)
+            x.process_event(event)
 
     print "%s events sent to backend", str(i)
