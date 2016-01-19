@@ -24,6 +24,8 @@ from social.apps.django_app.default.models import UserSocialAuth
 from tincan import (
     Activity,
     ActivityDefinition,
+    Agent,
+    AgentAccount,
     LanguageMap
 )
 
@@ -107,7 +109,12 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
 
     def test_get_actor(self):
 
-        expected_actor = {
+        expected_actor = Agent(
+            account= AgentAccount(
+                home_page="%s?user=%s" % (TEST_HOMEPAGE_URL, TEST_UID),
+                name=TEST_UID
+            ))
+        {
             "objectType": "Agent",
             "account": {
                 "homePage": "%s?user=%s" % (TEST_HOMEPAGE_URL, TEST_UID),
@@ -117,19 +124,6 @@ class XapiTest(TestCase):   # pylint: disable=too-many-ancestors
         actor = self.backend.get_actor(self.user.id)
         self.assertIsNotNone(actor)
         self.assertEqual(expected_actor, actor)
-
-    def test_tincan(self):
-        from tincan import Agent, AgentAccount
-        account = AgentAccount(
-            home_page="%s?user=%s" % (TEST_HOMEPAGE_URL, TEST_UID),
-            name=TEST_UID
-        )
-        expected_actor = Agent(
-            account=account
-        )
-        actor = self.backend.get_actor(self.user.id)
-        self.assertIsNotNone(actor)
-        self.assertEqual(expected_actor.to_json(), json.dumps(actor))
 
 
 class XapiSendOfflineTest(XapiTest):
