@@ -72,7 +72,6 @@ def process_data(x, lines):
 
             if differentMillis:
                 i = i + 1
-                event['time'] = dt
                 x.process_event(event)
             else:
                 # Skip duplicate events
@@ -82,7 +81,6 @@ def process_data(x, lines):
 
         else:
             i = i + 1
-            event['time'] = dt
             x.process_event(event)
 
     print "%s events sent to backend", str(i)

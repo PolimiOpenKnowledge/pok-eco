@@ -1,4 +1,5 @@
 import datetime
+from dateutil.parser import parse
 import pytz
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
@@ -9,6 +10,7 @@ from django.test.client import RequestFactory
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from courseware.courses import get_course_by_id
 from courseware.module_render import get_module
+from track.utils import DateTimeJSONEncoder
 
 
 def get_request_for_user(user):
@@ -71,7 +73,7 @@ def get_usage_key(course_id, module_id):
 
 def make_datetime_for_tincan(timepart):
     if not isinstance(timepart, datetime.datetime):
-        timepart = datetime.datetime.strptime(timepart, "%Y-%m-%dT%H:%M:%S%f%z")
+        timepart = parse(timepart)  # datetime.datetime.strptime(timepart, "%Y-%m-%dT%H:%M:%S%f%z")
 
     if timepart.tzinfo:
         timestamp = timepart.replace(microsecond=0)
