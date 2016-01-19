@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import gzip
 import json
 from optparse import make_option
-import dateutil.parser
 
-from django.core.management.base import BaseCommand, CommandError
-from tincan import Statement, Agent, Verb, Activity, Context
+from django.core.management.base import BaseCommand
+from tincan import Agent, Verb, Activity, Context
 from xapi.models import TrackingLog
 
 

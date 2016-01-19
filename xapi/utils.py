@@ -70,7 +70,7 @@ def get_usage_key(course_id, module_id):
 
 
 def make_datetime_for_tincan(timepart):
-    if type(timepart) is not datetime.datetime:
+    if not isinstance(timepart, datetime.datetime):
         timepart = datetime.datetime.strptime(timepart, "%Y-%m-%dT%H:%M:%S%f%z")
 
     if timepart.tzinfo:

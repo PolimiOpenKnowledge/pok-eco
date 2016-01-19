@@ -23,8 +23,7 @@ from tincan import (
     ContextActivities,
     Extensions,
     LanguageMap,
-    Statement,
-    Verb
+    Statement
 )
 from track.backends import BaseBackend
 from xapi.models import TrackingLog

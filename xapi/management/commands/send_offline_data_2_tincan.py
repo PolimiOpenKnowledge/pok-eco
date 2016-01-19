@@ -67,7 +67,7 @@ def process_data(x, lines):
                     if t_event == event['time']:
                         differentMillis = False
                         break
-                except:
+                except:  # pylint: disable=bare-except
                     pass
 
             if differentMillis:
