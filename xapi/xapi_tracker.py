@@ -26,6 +26,7 @@ from tincan import (
     Statement
 )
 from track.backends import BaseBackend
+from track.utils import DateTimeJSONEncoder
 from xapi.models import TrackingLog
 import xapi.utils as xutils
 from xapi.tincan_wrapper import TinCanWrapper
@@ -167,7 +168,7 @@ class XapiBackend(BaseBackend):
                         user_id=user_id,
                         course_id=course_id,
                         statement=statement.to_json(),
-                        original_event=event_edx
+                        original_event=json.dumps(event_edx, cls=DateTimeJSONEncoder)
                     )
 
                     # We don't need to add duplication event test, so we save directly
