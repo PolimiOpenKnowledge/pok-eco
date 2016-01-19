@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     option_list = BaseCommand.option_list + (
         make_option(
-            "-en",
+            "-e",
             "--extract-event-number",
             dest="extract_event_number",
             help="Number of extract event"
@@ -35,7 +35,7 @@ class Command(BaseCommand):
             statement_json = json.loads(evt.statement)
             statement = {
                 'actor': Agent.from_json(json.dumps(statement_json['actor'])),
-                'verb': Agent.from_json(json.dumps(statement_json['verb'])),
+                'verb': Verb.from_json(json.dumps(statement_json['verb'])),
                 'object': Activity.from_json(json.dumps(statement_json['object'])),
                 'timestamp': statement_json['timestamp'],
                 'context': Context.from_json(json.dumps(statement_json['context'])),
