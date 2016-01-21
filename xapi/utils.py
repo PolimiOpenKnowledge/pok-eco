@@ -10,7 +10,6 @@ from django.test.client import RequestFactory
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from courseware.courses import get_course_by_id
 from courseware.module_render import get_module
-from track.utils import DateTimeJSONEncoder
 
 
 def get_request_for_user(user):
