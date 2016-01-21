@@ -7,8 +7,8 @@ from config_models.models import ConfigurationModel
 class TrackingLog(models.Model):
     """This model defines the fields that are stored in the tracking log database."""
 
-    dtcreated = models.DateTimeField('creation date')
-    user_id = models.IntegerField(blank=True)
+    dtcreated = models.DateTimeField('creation date', db_index=True)
+    user_id = models.IntegerField(blank=True, db_index=True)
     course_id = CourseKeyField(max_length=255, blank=True)
     original_event = models.TextField(blank=True)
     statement = models.TextField(blank=True)
