@@ -7,12 +7,14 @@ from django.shortcuts import get_object_or_404
 from django.utils.timezone import UTC
 from social.apps.django_app.default.models import UserSocialAuth
 # from courseware import grades
-
+from opaque_keys.edx.keys import CourseKey
+from opaque_keys import InvalidKeyError
+from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
 from courseware.models import StudentModule, OfflineComputedGrade
 from courseware.courses import get_course_by_id
-from .models import Teacher
-from .tasks import offline_calc
+from .models import Teacher, CourseStructure
+from .tasks import offline_calc, update_course_structure
 
 
 class JsonResponse(HttpResponse):
@@ -152,6 +154,10 @@ def tasks(request, course_id):
         course_key = CourseKey.from_string(course_id)
     except InvalidKeyError:
         course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    course = modulestore().get_course(course_id, depth=depth)
-    print course
-    return JsonResponse(course_key)
+    course = modulestore().get_course(course_key, 3)
+    try:
+        structure = CourseStructure.objects.get(course_id=course_key)
+        return JsonResponse(structure.structure_json)
+    except CourseStructure.DoesNotExist:
+        tasks.update_course_structure.delay(unicode(self.course.id))
+        return JsonResponse(status=503, headers={'Retry-After': '120'})

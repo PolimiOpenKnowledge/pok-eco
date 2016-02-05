@@ -4,8 +4,9 @@ from datetime import date
 from os.path import splitext
 
 from django.db import models
-
-# TODO: creare un modulo per queste funzioni?
+from model_utils.models import TimeStampedModel
+from util.models import CompressedTextField
+from xmodule_django.models import CourseKeyField
 
 
 def sanitize_basename(unsafe_basename):
@@ -61,3 +62,14 @@ class TeacherDescription(models.Model):
 
     class Meta(object):
         unique_together = ['teacher', 'language']
+
+
+class CourseStructureCache(TimeStampedModel):
+    course_id = CourseKeyField(max_length=255, db_index=True, unique=True, verbose_name='Course ID')
+    structure_json = CompressedTextField(verbose_name='Structure JSON', blank=True, null=True)
+
+    @property
+    def structure(self):
+        if self.structure_json:
+            return json.loads(self.structure_json)
+        return None
