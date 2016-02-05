@@ -138,3 +138,11 @@ def optimized_grade(student, request, course_key):   # pylint: disable=unused-ar
         grade_summary = dict(percent=0)  # assume this and run task for calculate
         offline_calc.apply_async(task_args)
         return grade_summary
+
+
+def tasks(request, course_id):
+    '''
+    Retrieve course structure for Learning Analytics integration
+    https://docs.google.com/document/d/1pTcAm9o9XrHXgiXkm7YzFWHqusvPQN4xRnVuMDjg-lA
+    '''
+    return JsonResponse(course_id)
