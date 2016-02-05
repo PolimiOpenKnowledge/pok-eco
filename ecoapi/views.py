@@ -13,7 +13,7 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
 from courseware.models import StudentModule, OfflineComputedGrade
 from courseware.courses import get_course_by_id
-from .models import Teacher, CourseStructure
+from .models import Teacher, CourseStructureCache
 from .tasks import offline_calc, update_course_structure
 
 
@@ -156,8 +156,8 @@ def tasks(request, course_id):
         course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     course = modulestore().get_course(course_key, 3)
     try:
-        structure = CourseStructure.objects.get(course_id=course_key)
+        structure = CourseStructureCache.objects.get(course_id=course_key)
         return JsonResponse(structure.structure_json)
-    except CourseStructure.DoesNotExist:
+    except CourseStructureCache.DoesNotExist:
         tasks.update_course_structure.delay(unicode(self.course.id))
         return JsonResponse(status=503, headers={'Retry-After': '120'})
