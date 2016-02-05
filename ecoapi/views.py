@@ -159,5 +159,5 @@ def tasks(request, course_id):
         structure = CourseStructureCache.objects.get(course_id=course_key)
         return JsonResponse(structure.structure_json)
     except CourseStructureCache.DoesNotExist:
-        tasks.update_course_structure.delay(unicode(self.course.id))
-        return JsonResponse(status=503, headers={'Retry-After': '120'})
+        update_course_structure.delay(unicode(course_key))
+        return JsonResponse(status=503)
