@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.timezone import UTC
 from social.apps.django_app.default.models import UserSocialAuth
 # from courseware import grades
+
+from xmodule.modulestore.django import modulestore
 from courseware.models import StudentModule, OfflineComputedGrade
 from courseware.courses import get_course_by_id
 from .models import Teacher
@@ -145,4 +147,11 @@ def tasks(request, course_id):
     Retrieve course structure for Learning Analytics integration
     https://docs.google.com/document/d/1pTcAm9o9XrHXgiXkm7YzFWHqusvPQN4xRnVuMDjg-lA
     '''
-    return JsonResponse(course_id)
+    course_key = ""
+    try:
+        course_key = CourseKey.from_string(course_id)
+    except InvalidKeyError:
+        course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+    course = modulestore().get_course(course_id, depth=depth)
+    print course
+    return JsonResponse(course_key)
