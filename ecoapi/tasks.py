@@ -2,6 +2,7 @@ import json
 import logging
 from celery.task import task
 from instructor.offline_gradecalc import offline_grade_calculation
+from courseware.courses import get_course_by_id
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
@@ -24,6 +25,11 @@ def _generate_course_structure(course_key):
     """
     Generates a course structure dictionary for the specified course.
     """
+    try:
+        course = get_course_by_id(course_key)
+    except Http404:
+        log.error("course with %s not found", course_key.to_deprecated_string())
+        return
     course = modulestore().get_course(course_key, depth=None)
     blocks_stack = [course]
     blocks_dict = {}
@@ -34,25 +40,26 @@ def _generate_course_structure(course_key):
         block = {
             "id": key,
             "type": curr_block.category,
-            "children": [unicode(child.scope_ids.usage_id) for child in children]
+            "completedTimestamp": str(course.end_date)
+            # "children": [unicode(child.scope_ids.usage_id) for child in children]
         }
 
         # Retrieve these attributes separately so that we can fail gracefully if the block doesn't have the attribute.
-        attrs = (('graded', False), ('format', None), ("completedTimestamp", None), ("relativeCompletion", None))
-        for attr, default in attrs:
-            if hasattr(curr_block, attr):
-                block[attr] = getattr(curr_block, attr, default)
-            else:
-                log.warning('Failed to retrieve %s attribute of block %s. Defaulting to %s.', attr, key, default)
-                block[attr] = default
+        #attrs = (('end_date', None), ('format', None), ("completedTimestamp", None), ("relativeCompletion", None))
+        #for attr, default in attrs:
+        #    if hasattr(curr_block, attr):
+        #        block[attr] = getattr(curr_block, attr, default)
+        #    else:
+        #        log.warning('Failed to retrieve %s attribute of block %s. Defaulting to %s.', attr, key, default)
+        #        block[attr] = default
 
         blocks_dict[key] = block
 
         # Add this blocks children to the stack so that we can traverse them as well.
         blocks_stack.extend(children)
     return {
-        "moocId": "oaiprefixTODO"+course_key,
-        "tasks": blocks_dict.items()
+        "moocId": "oaiprefixTODO"+course_key.to_deprecated_string(),
+        "tasks": json.dumps(blocks_dict.items())
     }
 
 
