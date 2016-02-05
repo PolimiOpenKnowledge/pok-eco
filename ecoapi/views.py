@@ -157,7 +157,7 @@ def tasks(request, course_id):
     course = modulestore().get_course(course_key, 3)
     try:
         structure = CourseStructureCache.objects.get(course_id=course_key)
-        return JsonResponse(structure.structure_json)
+        return JsonResponse(json.loads(structure.structure_json))
     except CourseStructureCache.DoesNotExist:
         update_course_structure.delay(unicode(course_key))
         return JsonResponse(status=503)
