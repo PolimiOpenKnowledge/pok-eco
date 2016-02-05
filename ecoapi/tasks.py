@@ -1,3 +1,5 @@
+import json
+import logging
 from celery.task import task
 from instructor.offline_gradecalc import offline_grade_calculation
 from opaque_keys.edx.keys import CourseKey
@@ -5,6 +7,8 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
 # TODO: add a better task management to prevent concurrent task execution with some course_id
+
+log = logging.getLogger('edx.celery.task')
 
 
 @task()
@@ -58,7 +62,7 @@ def update_course_structure(course_key):
     Regenerates and updates the course structure (in the database) for the specified course.
     """
     # Import here to avoid circular import.
-    from .models import CourseStructure
+    from .models import CourseStructureCache
 
     # Ideally we'd like to accept a CourseLocator; however, CourseLocator is not JSON-serializable (by default) so
     # Celery's delayed tasks fail to start. For this reason, callers should pass the course key as a Unicode string.
@@ -75,7 +79,7 @@ def update_course_structure(course_key):
 
     structure_json = json.dumps(structure)
 
-    cs, created = CourseStructure.objects.get_or_create(
+    cs, created = CourseStructureCache.objects.get_or_create(
         course_id=course_key,
         defaults={'structure_json': structure_json}
     )
