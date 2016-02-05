@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from .models import Teacher, TeacherDescription
+from .models import Teacher, TeacherDescription, CourseStructureCache
 
 
 class TeacherDescriptionInline(admin.TabularInline):
@@ -16,3 +16,4 @@ class TeacherAdmin(admin.ModelAdmin):
     inlines = [TeacherDescriptionInline]
 
 admin.site.register(Teacher, TeacherAdmin)
+admin.site.register(CourseStructureCache)
