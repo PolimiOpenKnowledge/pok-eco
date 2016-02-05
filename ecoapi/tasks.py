@@ -30,6 +30,8 @@ def _generate_course_structure(course_key):
     except Http404:
         log.error("course with %s not found", course_key.to_deprecated_string())
         return
+
+    end_date = course.end_datetime_text()
     course = modulestore().get_course(course_key, depth=None)
     blocks_stack = [course]
     blocks_dict = {}
@@ -40,7 +42,7 @@ def _generate_course_structure(course_key):
         block = {
             "id": key,
             "type": curr_block.category,
-            "completedTimestamp": str(course.end_date)
+            "completedTimestamp": str(end_date)
             # "children": [unicode(child.scope_ids.usage_id) for child in children]
         }
 
@@ -59,7 +61,7 @@ def _generate_course_structure(course_key):
         blocks_stack.extend(children)
     return {
         "moocId": "oaiprefixTODO"+course_key.to_deprecated_string(),
-        "tasks": json.dumps(blocks_dict.items())
+        "tasks": blocks_dict.values()
     }
 
 
