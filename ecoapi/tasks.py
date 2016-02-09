@@ -57,8 +57,8 @@ def _generate_course_structure(course_key):
         }
 
         # Retrieve these attributes separately so that we can fail gracefully if the block doesn't have the attribute.
-        #attrs = (('end_date', None), ('format', None), ("completedTimestamp", None), ("relativeCompletion", None))
-        #for attr, default in attrs:
+        # attrs = (('end_date', None), ('format', None), ("completedTimestamp", None), ("relativeCompletion", None))
+        # for attr, default in attrs:
         #    if hasattr(curr_block, attr):
         #        block[attr] = getattr(curr_block, attr, default)
         #    else:
