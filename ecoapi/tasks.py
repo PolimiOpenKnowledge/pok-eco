@@ -2,7 +2,6 @@ import json
 import logging
 from celery.task import task
 from instructor.offline_gradecalc import offline_grade_calculation
-from courseware.courses import get_course_by_id
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
@@ -53,7 +52,6 @@ def _generate_course_structure(course_key):
             "id": key,
             "type": typeblock,
             "completedTimestamp": end_date
-            # "children": [unicode(child.scope_ids.usage_id) for child in children]
         }
 
         # Retrieve these attributes separately so that we can fail gracefully if the block doesn't have the attribute.
