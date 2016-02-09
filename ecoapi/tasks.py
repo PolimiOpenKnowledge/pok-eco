@@ -7,9 +7,23 @@ from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
+from track.utils import DateTimeJSONEncoder
 # TODO: add a better task management to prevent concurrent task execution with some course_id
 
 log = logging.getLogger('edx.celery.task')
+# TODO : configurable
+OAI_PREFIX = 'oai:it.polimi.pok:'
+ACTIVITY_TYPE = {
+    "html": "http://adlnet.gov/expapi/activities/module",
+    "video": "http://activitystrea.ms/schema/1.0/video",
+    "problem": "http://adlnet.gov/expapi/activities/question",
+    "openassessment": "http://www.ecolearning.eu/expapi/activitytype/peerassessment",
+    "discussion": "http://id.tincanapi.com/activitytype/discussion",
+    "chapter": "http://adlnet.gov/expapi/activities/module",  # page ?
+    "sequential": "http://adlnet.gov/expapi/activities/module",  # page ?
+    "vertical": "http://adlnet.gov/expapi/activities/module",
+
+}
 
 
 @task()
@@ -25,24 +39,20 @@ def _generate_course_structure(course_key):
     """
     Generates a course structure dictionary for the specified course.
     """
-    try:
-        course = get_course_by_id(course_key)
-    except Http404:
-        log.error("course with %s not found", course_key.to_deprecated_string())
-        return
 
-    end_date = course.end_datetime_text()
     course = modulestore().get_course(course_key, depth=None)
+    end_date = course.end
     blocks_stack = [course]
     blocks_dict = {}
     while blocks_stack:
         curr_block = blocks_stack.pop()
         children = curr_block.get_children() if curr_block.has_children else []
         key = unicode(curr_block.scope_ids.usage_id)
+        typeblock = ACTIVITY_TYPE.get(curr_block.category, curr_block.category)
         block = {
             "id": key,
-            "type": curr_block.category,
-            "completedTimestamp": str(end_date)
+            "type": typeblock,
+            "completedTimestamp": end_date
             # "children": [unicode(child.scope_ids.usage_id) for child in children]
         }
 
@@ -60,7 +70,7 @@ def _generate_course_structure(course_key):
         # Add this blocks children to the stack so that we can traverse them as well.
         blocks_stack.extend(children)
     return {
-        "moocId": "oaiprefixTODO"+course_key.to_deprecated_string(),
+        "moocId": OAI_PREFIX+course_key.to_deprecated_string(),
         "tasks": blocks_dict.values()
     }
 
@@ -86,7 +96,7 @@ def update_course_structure(course_key):
         log.exception('An error occurred while generating course structure: %s', ex.message)
         raise
 
-    structure_json = json.dumps(structure)
+    structure_json = json.dumps(structure, cls=DateTimeJSONEncoder)
 
     cs, created = CourseStructureCache.objects.get_or_create(
         course_id=course_key,
