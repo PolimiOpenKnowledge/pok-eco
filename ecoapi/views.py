@@ -12,6 +12,8 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from courseware.models import StudentModule, OfflineComputedGrade
 from courseware.courses import get_course_by_id
+from oai.models import OaiRecord
+from xapi.models import XapiBackendConfig
 from .models import Teacher, CourseStructureCache
 from .tasks import offline_calc, update_course_structure
 
@@ -149,11 +151,13 @@ def tasks(request, course_id):  # pylint: disable=unused-argument
     https://docs.google.com/document/d/1pTcAm9o9XrHXgiXkm7YzFWHqusvPQN4xRnVuMDjg-lA
     '''
     course_key = ""
+    oai_prefix = XapiBackendConfig.current().oai_prefix
+    course_id = course_id.replace(oai_prefix, "")
     try:
         course_key = CourseKey.from_string(course_id)
     except InvalidKeyError:
         course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    oai_prefix = XapiBackendConfig.current().oai_prefix
+
     try:
         oai_course = OaiRecord.objects.get(identifier=oai_prefix + course_id)
     except OaiRecord.DoesNotExist:
