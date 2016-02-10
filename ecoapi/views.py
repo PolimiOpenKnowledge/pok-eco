@@ -10,7 +10,6 @@ from social.apps.django_app.default.models import UserSocialAuth
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
-from xmodule.modulestore.django import modulestore
 from courseware.models import StudentModule, OfflineComputedGrade
 from courseware.courses import get_course_by_id
 from .models import Teacher, CourseStructureCache
@@ -144,7 +143,7 @@ def optimized_grade(student, request, course_key):   # pylint: disable=unused-ar
         return grade_summary
 
 
-def tasks(request, course_id):
+def tasks(request, course_id):  # pylint: disable=unused-argument
     '''
     Retrieve course structure for Learning Analytics integration
     https://docs.google.com/document/d/1pTcAm9o9XrHXgiXkm7YzFWHqusvPQN4xRnVuMDjg-lA
