@@ -10,7 +10,6 @@ from track.utils import DateTimeJSONEncoder
 from xapi.models import XapiBackendConfig
 
 log = logging.getLogger('edx.celery.task')
-OAI_PREFIX = XapiBackendConfig.current().oai_prefix
 ACTIVITY_TYPE = {
     "html": "http://adlnet.gov/expapi/activities/module",
     "video": "http://activitystrea.ms/schema/1.0/video",
@@ -67,8 +66,9 @@ def _generate_course_structure(course_key):
 
         # Add this blocks children to the stack so that we can traverse them as well.
         blocks_stack.extend(children)
+    oai_prefix = XapiBackendConfig.current().oai_prefix
     return {
-        "moocId": OAI_PREFIX+course_key.to_deprecated_string(),
+        "moocId": oai_prefix+course_key.to_deprecated_string(),
         "tasks": blocks_dict.values()
     }
 

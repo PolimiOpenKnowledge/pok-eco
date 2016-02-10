@@ -153,10 +153,11 @@ def tasks(request, course_id):  # pylint: disable=unused-argument
         course_key = CourseKey.from_string(course_id)
     except InvalidKeyError:
         course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    # try:
-    #     oai_course = OaiRecord.objects.get(identifier=OAI_PREFIX + course_id)
-    # except OaiRecord.DoesNotExist:
-    #     return JsonResponse(status=404)
+    oai_prefix = XapiBackendConfig.current().oai_prefix
+    try:
+        oai_course = OaiRecord.objects.get(identifier=oai_prefix + course_id)
+    except OaiRecord.DoesNotExist:
+        return JsonResponse(status=404)
     try:
         structure = CourseStructureCache.objects.get(course_id=course_key)
         return JsonResponse(json.loads(structure.structure_json))
