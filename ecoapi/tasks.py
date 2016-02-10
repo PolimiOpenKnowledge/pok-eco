@@ -7,11 +7,10 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
 from track.utils import DateTimeJSONEncoder
-# TODO: add a better task management to prevent concurrent task execution with some course_id
+from xapi.models import XapiBackendConfig
 
 log = logging.getLogger('edx.celery.task')
-# TODO : configurable
-OAI_PREFIX = 'oai:it.polimi.pok:'
+OAI_PREFIX = XapiBackendConfig.current().oai_prefix
 ACTIVITY_TYPE = {
     "html": "http://adlnet.gov/expapi/activities/module",
     "video": "http://activitystrea.ms/schema/1.0/video",
@@ -25,6 +24,7 @@ ACTIVITY_TYPE = {
 }
 
 
+# TODO: add a better task management to prevent concurrent task execution with some course_id
 @task()
 def offline_calc(course_id):
     try:
