@@ -159,7 +159,7 @@ def tasks(request, course_id):  # pylint: disable=unused-argument
         course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
 
     try:
-        oai_course = OaiRecord.objects.get(identifier=oai_prefix + course_id)
+        oai_course = OaiRecord.objects.get(identifier=oai_prefix + course_id)  # pylint: disable=unused-variable
     except OaiRecord.DoesNotExist:
         return JsonResponse(status=404)
     try:
