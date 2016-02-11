@@ -14,8 +14,8 @@ from courseware.models import StudentModule, OfflineComputedGrade
 from courseware.courses import get_course_by_id
 from oai.models import OaiRecord
 from xapi.models import XapiBackendConfig
-from .models import Teacher, CourseStructureCache
-from .tasks import offline_calc, update_course_structure
+from ecoapi.models import Teacher, CourseStructureCache
+from ecoapi.tasks import offline_calc, update_course_structure
 
 
 class JsonResponse(HttpResponse):

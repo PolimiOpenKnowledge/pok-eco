@@ -7,6 +7,7 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
 from track.utils import DateTimeJSONEncoder
+from ecoapi.models import CourseStructureCache
 from xapi.models import XapiBackendConfig
 
 log = logging.getLogger('edx.celery.task')
@@ -78,8 +79,6 @@ def update_course_structure(course_key):
     """
     Regenerates and updates the course structure (in the database) for the specified course.
     """
-    # Import here to avoid circular import.
-    from .models import CourseStructureCache
 
     # Ideally we'd like to accept a CourseLocator; however, CourseLocator is not JSON-serializable (by default) so
     # Celery's delayed tasks fail to start. For this reason, callers should pass the course key as a Unicode string.
