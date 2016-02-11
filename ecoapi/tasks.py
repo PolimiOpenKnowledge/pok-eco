@@ -74,7 +74,7 @@ def _generate_course_structure(course_key):
     }
 
 
-@task(name=u'ecoapi.tasks.update_course_structure')
+@task(name=u'ecoapi.update_course_structure')
 def update_course_structure(course_key):
     """
     Regenerates and updates the course structure (in the database) for the specified course.
