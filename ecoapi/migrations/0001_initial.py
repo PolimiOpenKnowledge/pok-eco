@@ -37,4 +37,17 @@ class Migration(migrations.Migration):
                 ('image', models.URLField(help_text=b"URL of the teacher's image", max_length=1024, null=True, blank=True)),
             ],
         ),
+        migrations.CreateModel(
+            name='TeacherDescription',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('language', models.CharField(max_length=2, choices=[(b'en', b'English'), (b'it', b'Italiano')])),
+                ('label', models.TextField()),
+                ('teacher', models.ForeignKey(to='ecoapi.Teacher')),
+            ],
+        ),
+        migrations.AlterUniqueTogether(
+            name='teacherdescription',
+            unique_together=set([('teacher', 'language')]),
+        ),
     ]

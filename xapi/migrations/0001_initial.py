@@ -11,19 +11,9 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('ecoapi', '0001_initial'),
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='TeacherDescription',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('language', models.CharField(max_length=2, choices=[(b'en', b'English'), (b'it', b'Italiano')])),
-                ('label', models.TextField()),
-                ('teacher', models.ForeignKey(to='ecoapi.Teacher')),
-            ],
-        ),
         migrations.CreateModel(
             name='TrackingLog',
             fields=[
@@ -61,9 +51,5 @@ class Migration(migrations.Migration):
                 'ordering': ('-change_date',),
                 'abstract': False,
             },
-        ),
-        migrations.AlterUniqueTogether(
-            name='teacherdescription',
-            unique_together=set([('teacher', 'language')]),
         ),
     ]
