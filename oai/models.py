@@ -65,7 +65,6 @@ class OaiError(models.Model):
         return self.text
 
 
-
 # An OAI set. If it is not associated with a source, it means that it is introduced by us
 class OaiSet(models.Model):
     source = models.ForeignKey(OaiSource, null=True, blank=True)
@@ -175,6 +174,7 @@ class OaiRecordAdmin(admin.ModelAdmin):
 
     class Meta(object):
         app_label = 'oai'
+
 
 # A resumption token for the output interface
 class ResumptionToken(models.Model):

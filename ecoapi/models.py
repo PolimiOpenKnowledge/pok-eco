@@ -63,7 +63,7 @@ class TeacherDescription(models.Model):
 
     class Meta(object):
         unique_together = ['teacher', 'language']
-        app_label = 'xapi'
+        app_label = 'ecoapi'
 
 
 class CourseStructureCache(TimeStampedModel):
