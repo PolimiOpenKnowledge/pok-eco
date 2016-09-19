@@ -1,9 +1,9 @@
 machine:
   python:
-    version: 2.7.3
+    version: 2.7.10
   environment:
     DJANGO_SETTINGS_MODULE: test-settings
-    PYTHONENV: /home/ubuntu/virtualenvs/venv-2.7.3
+    PYTHONENV: /home/ubuntu/virtualenvs/venv-2.7.10
     BUILD_DIR: /home/ubuntu/pok-eco
 dependencies:
   pre:

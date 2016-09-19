@@ -31,7 +31,6 @@ copyEdxApp microsite_configuration common
 copyEdxApp certificates lms
 copyEdxApp branding lms
 copyEdxApp courseware lms
-copyEdxApp psychometrics lms
 copyEdxApp verify_student lms
 
 cd "$PYTHONENV/src/edx-platform"
