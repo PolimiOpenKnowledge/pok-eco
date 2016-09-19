@@ -28,6 +28,8 @@ copyEdxApp third_party_auth common
 copyEdxApp student common
 copyEdxApp xblock_django common
 copyEdxApp microsite_configuration common
+copyEdxApp enrollment common
+copyEdxApp instructor_task lms
 copyEdxApp certificates lms
 copyEdxApp branding lms
 copyEdxApp courseware lms

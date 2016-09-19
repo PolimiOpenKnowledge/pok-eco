@@ -24,6 +24,9 @@ class OaiSource(models.Model):
     status = models.CharField(max_length=255, null=True, blank=True)  # Status of the harvester
     last_change = models.DateTimeField(auto_now=True)  # Last change made to this model
 
+    class Meta(object):
+        app_label = 'oai'
+
     def __unicode__(self):
         return self.name
 
@@ -55,8 +58,12 @@ class OaiError(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
     text = models.CharField(max_length=512, null=True, blank=True)
 
+    class Meta(object):
+        app_label = 'oai'
+
     def __unicode__(self):
         return self.text
+
 
 
 # An OAI set. If it is not associated with a source, it means that it is introduced by us
@@ -66,6 +73,9 @@ class OaiSet(models.Model):
     fullname = models.CharField(max_length=512, null=True, blank=True)
 
     unique_together = ('name', 'source')
+
+    class Meta(object):
+        app_label = 'oai'
 
     # pylint: disable=E1101
     def __unicode__(self):
@@ -101,6 +111,9 @@ class OaiFormat(models.Model):
     schema = models.CharField(max_length=512, null=True, blank=True)
     namespace = models.CharField(max_length=512, null=True, blank=True)
 
+    class Meta(object):
+        app_label = 'oai'
+
     def __unicode__(self):
         return self.name
 
@@ -122,6 +135,9 @@ class OaiRecord(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
 
     date_removed = models.DateTimeField(null=True, blank=True)
+
+    class Meta(object):
+        app_label = 'oai'
 
     # For now all query need to show also deleted object so this custom managers is not really used
     # objects = managers.OaiRecordManager()
@@ -157,6 +173,8 @@ class OaiRecordAdmin(admin.ModelAdmin):
 #            qs = qs.order_by(*ordering)
 #        return qs
 
+    class Meta(object):
+        app_label = 'oai'
 
 # A resumption token for the output interface
 class ResumptionToken(models.Model):
@@ -170,6 +188,9 @@ class ResumptionToken(models.Model):
     cursor = models.IntegerField()
     total_count = models.IntegerField()
     key = models.CharField(max_length=128, null=True, blank=True)
+
+    class Meta(object):
+        app_label = 'oai'
 
     def __unicode__(self):
         return self.key
