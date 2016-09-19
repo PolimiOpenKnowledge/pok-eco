@@ -15,6 +15,8 @@ INSTALLED_APPS = (
     # Add edx required
     'instructor_task',
     'enrollment',
+    # Student Identity Verification
+    'lms.djangoapps.verify_student',
     # ADD EDX-platform dependencies before test
     'xmodule_django',
     'track',
