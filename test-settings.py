@@ -13,6 +13,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     # Add edx required
+    'instructor_task',
+    'enrollment',
     # ADD EDX-platform dependencies before test
     'xmodule_django',
     'track',
