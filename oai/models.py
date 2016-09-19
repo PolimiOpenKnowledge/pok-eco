@@ -138,9 +138,6 @@ class OaiRecord(models.Model):
     class Meta(object):
         app_label = 'oai'
 
-    # For now all query need to show also deleted object so this custom managers is not really used
-    # objects = managers.OaiRecordManager()
-
     def deleted(self):
         return self.date_removed is not None
     deleted.boolean = False
