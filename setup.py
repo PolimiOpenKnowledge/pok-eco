@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='pok-eco',
-    version='0.2.1',
+    version='0.2.2',
     description='POK-ECO Integrations ',
     author='METID - Politecnico di Milano',
     url='http://www.metid.polimi.it',
@@ -24,7 +24,7 @@ setup(
         "https://github.com/infrae/pyoai/archive/2.4.4.zip#egg=pyoai==2.4.4",
     ],
     install_requires=[
-        "Django >= 1.4, < 1.5",
+        "django==1.8.7",
         "django-celery==3.1.16",
         "tincan==0.0.5",
         "pyoai==2.4.4"
