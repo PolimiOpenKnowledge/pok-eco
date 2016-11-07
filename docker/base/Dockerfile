@@ -31,7 +31,7 @@ RUN apt-get install -y \
   liblapack-dev \
   libgeos-dev \
   libffi6 \
-  libffi-dev
-
+  libffi-dev \
+  libtiff4-dev libjpeg8-dev zlib1g-dev liblcms2-dev libwebp-dev tcl8.5-dev tk8.5-dev python-tk
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
