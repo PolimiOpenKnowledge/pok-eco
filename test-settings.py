@@ -120,3 +120,5 @@ CONTENTSTORE = {
 }
 
 MICROSITE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrositeBackend'
+MICROSITE_TEMPLATE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrositeTemplateBackend'
+MICROSITE_DATABASE_TEMPLATE_CACHE_TTL = 5 * 60
