@@ -30,6 +30,7 @@ copyEdxApp xblock_django common
 copyEdxApp microsite_configuration common
 copyEdxApp enrollment common
 copyEdxApp instructor_task lms
+copyEdxApp badges lms
 copyEdxApp certificates lms
 copyEdxApp branding lms
 copyEdxApp courseware lms
