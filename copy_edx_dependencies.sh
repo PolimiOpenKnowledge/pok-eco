@@ -34,6 +34,7 @@ copyEdxApp badges lms
 copyEdxApp certificates lms
 copyEdxApp branding lms
 copyEdxApp commerce lms
+copyEdxApp coursewarehistoryextended lms
 copyEdxApp courseware lms
 copyEdxApp verify_student lms
 
