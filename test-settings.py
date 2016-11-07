@@ -118,3 +118,5 @@ CONTENTSTORE = {
         'db': 'xcontent'
     }
 }
+
+MICROSITE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrositeBackend'
