@@ -33,6 +33,7 @@ copyEdxApp instructor_task lms
 copyEdxApp badges lms
 copyEdxApp certificates lms
 copyEdxApp branding lms
+copyEdxApp commerce lms
 copyEdxApp courseware lms
 copyEdxApp verify_student lms
 
