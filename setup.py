@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='pok-eco',
-    version='0.2.3',
+    version='0.2.4',
     description='POK-ECO Integrations ',
     author='METID - Politecnico di Milano',
     url='http://www.metid.polimi.it',
