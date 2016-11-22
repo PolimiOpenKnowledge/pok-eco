@@ -2,7 +2,7 @@
 import json
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
-from django.http import HttpResponse, Http404, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import UTC
 from social.apps.django_app.default.models import UserSocialAuth
@@ -150,10 +150,10 @@ def tasks(request, course_id):  # pylint: disable=unused-argument
     try:
         oai_course = OaiRecord.objects.get(identifier=oai_prefix + course_id)  # pylint: disable=unused-variable
     except OaiRecord.DoesNotExist:
-        return JsonResponse(status=404)
+        return JsonResponse({}, status=404)
     try:
         structure = CourseStructureCache.objects.get(course_id=course_key)
         return JsonResponse(json.loads(structure.structure_json))
     except CourseStructureCache.DoesNotExist:
         update_course_structure.delay(unicode(course_key))
-        return JsonResponse(status=503)
+        return JsonResponse({}, status=503)
