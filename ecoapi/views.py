@@ -2,7 +2,7 @@
 import json
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import UTC
 from social.apps.django_app.default.models import UserSocialAuth
@@ -16,17 +16,6 @@ from oai.models import OaiRecord
 from xapi.models import XapiBackendConfig
 from ecoapi.models import Teacher, CourseStructureCache
 from ecoapi.tasks import offline_calc, update_course_structure
-
-
-class JsonResponse(HttpResponse):
-    """
-    Wrapper for HttpResponse with the right content type and the dump to json.
-    """
-    # pylint: disable=dangerous-default-value
-    def __init__(self, content={}, mimetype=None, status=None,
-                 content_type='application/json'):
-        super(JsonResponse, self).__init__(json.dumps(content), mimetype=mimetype,
-                                           status=status, content_type=content_type)
 
 
 def heartbeat(request):  # pylint: disable=unused-argument
