@@ -112,7 +112,7 @@ def user_courses(request, eco_user_id):
                 "spentTime": str(spentTime.seconds * 1000)
             }
         )
-    return JsonResponse(risposta)
+    return JsonResponse(risposta, safe=False)
 
 
 def optimized_grade(student, request, course_key):   # pylint: disable=unused-argument
