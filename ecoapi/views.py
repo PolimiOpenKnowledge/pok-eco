@@ -51,7 +51,7 @@ def teacher_view(request, id_teacher):  # pylint: disable=unused-argument
         "imageUrl": imageurl,
         "desc": descriptions
     }
-    return JsonResponse(risposta)
+    return JsonResponse(risposta, safe=False)
 
 
 def user_courses(request, eco_user_id):
