@@ -74,3 +74,6 @@ class XapiBackendConfig(ConfigurationModel):
             'The maximum number of extracted event to send each iteration'
         )
     )
+
+    class Meta(object):
+        app_label = 'xapi'
