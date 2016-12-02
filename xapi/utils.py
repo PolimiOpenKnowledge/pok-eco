@@ -30,6 +30,7 @@ def get_course_key(course_id):
         course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     return course_key
 
+
 def get_course_title(course_id):
     course_key = get_course_key(course_id)
     title = CourseOverview.get_from_id(course_key).display_name
