@@ -59,7 +59,7 @@ def user_courses(request, eco_user_id):
     try:
         usa = get_object_or_404(UserSocialAuth, uid=eco_user_id)
     except Http404:
-        return JsonResponse(risposta)
+        return JsonResponse(risposta, safe=False)
     # The pre-fetching of groups is done to make auth checks not require an
     # additional DB lookup (this kills the Progress page in particular).
     student = User.objects.prefetch_related("groups").get(id=usa.user.id)
